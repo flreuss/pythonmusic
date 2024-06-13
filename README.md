@@ -1,6 +1,8 @@
 # PythonMusic
 *make music with computers*
 
+![Classes](resources/classes.png)
+
 ## Requirements
 - Python >=3.7
 
