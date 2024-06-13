@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pythonmusic"
+version = "0.0.1"
+dependencies = [
+  "mido",
+  "pygame",
+  "python-osc",
+]
+authors = [
+  { name = "Darius Löschner", email = "darius.loeschner@uni-potsdam.de" },
+  { name = "Florian Reuß", email = "florian.reuss.1@uni-potsdam.de" },
+]
+description = "Make music in python"
+readme = "README.md"
+requires-python = ">=3.5"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python",
+]
+keywords = []
+
+[projects.urls]
+Homepage = "https://gitup.uni-potsdam.de/music-with-pc/pythonmusic"
+
