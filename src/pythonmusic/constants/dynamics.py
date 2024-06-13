@@ -1,3 +1,7 @@
+"""
+Defines constants for note dynamics.
+"""
+
 FFF: int = 127
 """Defines dynamic constant for *forte fortissimo*."""
 FF: int = 111
