@@ -2,7 +2,7 @@
 Defines MIDI instrument constants
 """
 
-from util import make_instrument
+from pythonmusic.util import make_instrument
 
 
 # Piano

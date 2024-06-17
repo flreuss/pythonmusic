@@ -2,7 +2,7 @@
 Defines constants for note lengths.
 """
 
-from util import dotted
+from pythonmusic.util import dotted
 
 # Quarter Note
 QUARTER_NOTE: float = 1.0

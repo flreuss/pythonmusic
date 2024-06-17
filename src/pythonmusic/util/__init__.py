@@ -1,3 +1,4 @@
+from pythonmusic.util.checks import assert_range
 def make_instrument(patch: int, bank: int = 0) -> int:
     """
     Creates the internal int representation of an instrument.
