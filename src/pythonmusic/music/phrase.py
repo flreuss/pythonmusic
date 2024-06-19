@@ -17,7 +17,7 @@ class Phrase:
         self.notes: list = []
         self.add_notes(notes)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.notes.__len__()
 
     def __str__(self) -> str:
