@@ -2,7 +2,13 @@
 Defines constants for note lengths.
 """
 
-from pythonmusic.util import dotted
+
+def _dotted(base: float, dots: int) -> float:
+    """Returns the note unit value of a base note augmented by dots."""
+    if dots < 1:
+        return base
+    return base * (2 - (0.5 ** float(dots)))
+
 
 # Quarter Note
 QUARTER_NOTE: float = 1.0
@@ -62,7 +68,7 @@ DEMISEMI_QUAVER: float = THIRTYSECOND_NOTE
 
 
 # Dotted Quarter Note
-DOTTED_QUARTER_NOTE: float = dotted(QUARTER_NOTE, 1)
+DOTTED_QUARTER_NOTE: float = _dotted(QUARTER_NOTE, 1)
 """Defines the length constant for a dotted *quarter note* or *crotchet*."""
 DQN: float = DOTTED_QUARTER_NOTE
 """Defines the length constant for a dotted *quarter note* or *crotchet*."""
@@ -70,7 +76,7 @@ DOTTED_CROTCHET: float = DOTTED_QUARTER_NOTE
 """Defines the length constant for a dotted *quarter note* or *crotchet*."""
 
 # Double Dotted Quarter Note
-DOUBLE_DOTTED_QUARTER_NOTE: float = dotted(QUARTER_NOTE, 2)
+DOUBLE_DOTTED_QUARTER_NOTE: float = _dotted(QUARTER_NOTE, 2)
 """Defines the length constant for a double dotted *quarter note* or *crotchet*."""
 DDQN: float = DOUBLE_DOTTED_QUARTER_NOTE
 """Defines the length constant for a dotted *quarter note* or *crotchet*."""
@@ -78,7 +84,7 @@ DOUBLE_DOTTED_CROTCHET: float = DOUBLE_DOTTED_QUARTER_NOTE
 """Defines the length constant for a dotted *quarter note* or *crotchet*."""
 
 # Dotted Half Note
-DOTTED_HALF_NOTE: float = dotted(HALF_NOTE, 1)
+DOTTED_HALF_NOTE: float = _dotted(HALF_NOTE, 1)
 """Defines the length constant for a dotted *half note* or *minim*."""
 DHN: float = DOTTED_HALF_NOTE
 """Defines the length constant for a dotted *half note* or *minim*."""
@@ -86,7 +92,7 @@ DOTTED_MINIM: float = DOTTED_HALF_NOTE
 """Defines the length constant for a dotted *half note* or *minim*."""
 
 # Double Dotted Half Note
-DOUBLE_DOTTED_HALF_NOTE: float = dotted(HALF_NOTE, 2)
+DOUBLE_DOTTED_HALF_NOTE: float = _dotted(HALF_NOTE, 2)
 """Defines the length constant for a double dotted *half note* or *minim*."""
 DDHN: float = DOUBLE_DOTTED_HALF_NOTE
 """Defines the length constant for a double dotted *half note* or *minim*."""
@@ -94,7 +100,7 @@ DOUBLE_DOTTED_MINIM: float = DOUBLE_DOTTED_HALF_NOTE
 """Defines the length constant for a double dotted *half note* or *minim*."""
 
 # Dotted While Note
-DOTTED_WHOLE_NOTE: float = dotted(WHOLE_NOTE, 1)
+DOTTED_WHOLE_NOTE: float = _dotted(WHOLE_NOTE, 1)
 """Defines the length constant for a dotted *whole note* or *semibreve*."""
 DWN: float = DOTTED_WHOLE_NOTE
 """Defines the length constant for a dotted *whole note* or *semibreve*."""
@@ -103,7 +109,7 @@ DOTTED_SEMI_BREVE: float = DOTTED_WHOLE_NOTE
 
 
 # Dotted Eighth Note
-DOTTED_EIGHTH_NOTE: float = dotted(EIGHTH_NOTE, 1)
+DOTTED_EIGHTH_NOTE: float = _dotted(EIGHTH_NOTE, 1)
 """Defines the length constant for a dotted *eighth note* or *quaver*."""
 DEN: float = DOTTED_EIGHTH_NOTE
 """Defines the length constant for a dotted *eighth note* or *quaver*."""
@@ -111,7 +117,7 @@ DOTTED_QUAVER: float = DOTTED_EIGHTH_NOTE
 """Defines the length constant for a dotted *eighth note* or *quaver*."""
 
 # Double Dotted Eighth Note
-DOUBLE_DOTTED_EIGHTH_NOTE: float = dotted(EIGHTH_NOTE, 2)
+DOUBLE_DOTTED_EIGHTH_NOTE: float = _dotted(EIGHTH_NOTE, 2)
 """Defines the length constant for a double dotted *eighth note* or *crotchet*."""
 DDEN: float = DOUBLE_DOTTED_EIGHTH_NOTE
 """Defines the length constant for a double dotted *eighth note* or *crotchet*."""
