@@ -1,4 +1,4 @@
-from functools import reduce
+from functools import reduce as _reduce
 from .note import Note
 
 
@@ -35,7 +35,7 @@ class Phrase:
 
         :return: The total duration of the phrase
         """
-        return reduce(
+        return _reduce(
             lambda previous, note: previous + note.duration, self.notes, 0
         )
 
