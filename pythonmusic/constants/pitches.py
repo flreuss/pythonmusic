@@ -1,5 +1,13 @@
 # Yes, this is ChatGPT
 
+REST: int = -1
+"""
+Rest pitch constant.
+
+This value does not correspont to a valid MIDI value, but is handles internally
+as a rest.
+"""
+
 C_1: int = 0
 """Pitch constant for C_1, MIDI pitch 0"""
 
