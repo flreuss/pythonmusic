@@ -1,7 +1,7 @@
 from copy import deepcopy as _deepcopy
 import typing as _typing
-from util.checks import assert_range as _assert_range
-from constants.dynamics import MF as _MF
+from pythonmusic.util.checks import assert_range as _assert_range
+from pythonmusic.constants.dynamics import MF as _MF
 
 # TODO: add pitches
 # import constants.pitches import REST as _REST
@@ -63,7 +63,7 @@ class Note:
 
     def is_rest(self) -> bool:
         """Returns `True` if this note is a rest."""
-        raise NotImplemented
+        return self._pitch == _REST
 
     def as_rest(self) -> _typing.Self:
         """Returns a rest with this notes duration."""
