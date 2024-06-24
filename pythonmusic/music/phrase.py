@@ -15,13 +15,22 @@ class Phrase:
         :param list[Note] notes: A list of notes to add to the phrase
         """
         self.notes: list = []
+        # Deep copies the notes given to the phrase. Modification should happen
+        # inside the phrase, not the original array.
         self.add_notes(notes)
 
     def __len__(self) -> int:
         return self.notes.__len__()
 
     def __str__(self) -> str:
-        return f"Phrase({self.notes.__str__()})"
+        notes_str = ""
+        note_end_index = len(self.notes) - 1
+        for index, note in enumerate(self.notes):
+            notes_str += str(note)
+            if not index == note_end_index:
+                notes_str += ", "
+
+        return f"Phrase({notes_str})"
 
     def length(self) -> int:
         """Returns the number of notes in the phrase."""
