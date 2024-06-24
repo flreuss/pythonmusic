@@ -11,7 +11,7 @@ REST = -1
 
 class NoteTests(unittest.TestCase):
     def test_init(self):
-        """Test Note.__init__"""
+        """Tests initialiser of Note"""
 
         note = Note(0, DURATION, DYNAMIC)
         note = Note(REST, DURATION, DYNAMIC)
@@ -22,7 +22,7 @@ class NoteTests(unittest.TestCase):
         self.assertEqual(note.dynamic, DYNAMIC)
 
     def test_range_check_pitch_above(self):
-        """Test Note.__init__ and propery out of bounds pitch (above)"""
+        """Tests Note initialiser with an above out of bounds pitch"""
         with self.assertRaises(ValueError):
             _ = Note(127 + 1, DURATION, DYNAMIC)
         with self.assertRaises(ValueError):
@@ -30,7 +30,7 @@ class NoteTests(unittest.TestCase):
             note.pitch = 127 + 1
 
     def test_range_check_pitch_below(self):
-        """Test Note.__init__ and property out of bounds pitch (below)"""
+        """Tests Note initialiser with a below out of range pitch"""
         with self.assertRaises(ValueError):
             _ = Note(-20, DURATION, DYNAMIC)
         with self.assertRaises(ValueError):
@@ -38,7 +38,7 @@ class NoteTests(unittest.TestCase):
             note.pitch = -20
 
     def test_range_check_dynamic_above(self):
-        """Test Note.__init__ and property out of bounds dynamic (above)"""
+        """Tests Note initialiser with an above out of bounds dynamic"""
         with self.assertRaises(ValueError):
             _ = Note(PITCH, DURATION, 127 + 1)
         with self.assertRaises(ValueError):
@@ -46,7 +46,7 @@ class NoteTests(unittest.TestCase):
             note.dynamic = 127 + 1
 
     def test_range_check_dynamic_below(self):
-        """Test Note.__init__ and property out of bounds dynamic (below)"""
+        """Tests Note initialiser with a below out of bounds dynamic"""
         with self.assertRaises(ValueError):
             _ = Note(PITCH, DURATION, -1)
         with self.assertRaises(ValueError):
@@ -54,19 +54,19 @@ class NoteTests(unittest.TestCase):
             note.dynamic = -20
 
     def test_str(self):
-        """Test Note.__str__"""
+        """Tests Note __str__ dunder method"""
         note = Note(30, 1.0, 40)
         self.assertEqual(note.__str__(), "Note(30, 1.0, 40)")
 
     def test_eq(self):
-        """Test Note.__eq__"""
+        """Tests Note __eq__ dunder method"""
         note_a = Note(PITCH, DURATION, DYNAMIC)
         note_b = Note(PITCH, DURATION, DYNAMIC)
 
         self.assertEqual(note_a, note_b)
 
     def test_is_rest(self):
-        """Test Note().is_rest"""
+        """Tests Note is_rest() check"""
         note = Note(PITCH, DURATION, DYNAMIC)
         self.assertFalse(note.is_rest())
 
@@ -80,7 +80,7 @@ class NoteTests(unittest.TestCase):
         self.assertTrue(rest.is_rest())
 
     def test_as_rest(self):
-        """Test Note().as_rest"""
+        """Tests that Note as_rest() returns a valid rest"""
         note = Note(PITCH, DURATION, DYNAMIC)
         rest = note.as_rest()
 
