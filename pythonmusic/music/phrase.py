@@ -14,7 +14,7 @@ class Phrase:
 
         :param list[Note] notes: A list of notes to add to the phrase
         """
-        self.notes: list = []
+        self.notes: list[Note] = []
         # Deep copies the notes given to the phrase. Modification should happen
         # inside the phrase, not the original array.
         self.add_notes(notes)
@@ -119,24 +119,40 @@ class Phrase:
     def min_pitch(self) -> int | None:
         """
         Returns the smallest pitch in the phrase or `None` if empty.
+        Ignores rests.
 
         :return: The smallest pitch in the phrase of `None` if empty
         """
         if len(self.notes) == 0:
             return None
 
-        return min(map(lambda note: note.pitch, self.notes))
+        # TODO: check if manually is faster
+        # This has potential for terrible time complexity, as this can be done
+        # in a single for-loop. Python may optimise this with generators, though.
+        # Kindly check at a later date.
+        return min(
+            map(
+                lambda note: note.pitch,
+                filter(lambda note: not note.is_rest(), self.notes),
+            )
+        )
 
     def max_pitch(self) -> int | None:
         """
         Returns the highest pitch in the phrase or `None` if empty.
+        Ignores rests.
 
         :return: The highest pitch in the phrase of `None` if empty
         """
         if len(self.notes) == 0:
             return None
 
-        return max(map(lambda note: note.pitch, self.notes))
+        return max(
+            map(
+                lambda note: note.pitch,
+                filter(lambda note: not note.is_rest(), self.notes),
+            )
+        )
 
     def min_duration(self) -> float | None:
         """
@@ -163,21 +179,33 @@ class Phrase:
     def min_dynamic(self) -> int | None:
         """
         Returns the smallest dynamic in the phrase or `None` if empty.
+        Ignores rests.
 
         :return: The smallest dynamic in the phrase of `None` if empty
         """
         if len(self.notes) == 0:
             return None
 
-        return min(map(lambda note: note.dynamic, self.notes))
+        return min(
+            map(
+                lambda note: note.dynamic,
+                filter(lambda note: not note.is_rest(), self.notes),
+            )
+        )
 
     def max_dynamic(self) -> int | None:
         """
         Returns the highest dynamic in the phrase or `None` if empty.
+        Ignores rests.
 
         :return: The highest dynamic in the phrase of `None` if empty
         """
         if len(self.notes) == 0:
             return None
 
-        return max(map(lambda note: note.dynamic, self.notes))
+        return max(
+            map(
+                lambda note: note.dynamic,
+                filter(lambda note: not note.is_rest(), self.notes),
+            )
+        )
