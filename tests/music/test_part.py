@@ -5,6 +5,11 @@ from pythonmusic.music.part import Part
 from pythonmusic.constants import *
 
 
+PHRASE_A = Phrase([Note(1, 5.0), Note(1, 4.0), Note(1, 1.0)])
+PHRASE_B = Phrase([Note(1, 10.0)])
+PHRASE_C = Phrase([Note(1, 5.0), Note(1, 5.0)])
+
+
 class PartTests(unittest.TestCase):
     def test_init(self):
         """Tests Part initialiser"""
@@ -46,16 +51,58 @@ class PartTests(unittest.TestCase):
 
     def test_duration(self):
         """Tests Part duration() method"""
-        phrase_a = Phrase([Note(1, 5.0), Note(1, 4.0), Note(1, 1.0)])
-        phrase_b = Phrase([Note(1, 10.0)])
-        phrase_c = Phrase([Note(1, 5.0), Note(1, 5.0)])
-
-        part = Part(phrases=[phrase_a, phrase_b, phrase_c])
+        part = Part(phrases=[PHRASE_A, PHRASE_B, PHRASE_C])
         self.assertEqual(part.duration(), 30.0)
 
         part = Part()
-        part.add_phrase(phrase_a)  # 10
-        part.add_phrase(phrase_b, 5.0)  # 15
-        part.add_phrase(phrase_c)  # 25
+        part.add_phrase(PHRASE_A)  # 10
+        part.add_phrase(PHRASE_B, 5.0)  # 15
+        part.add_phrase(PHRASE_C)  # 25
 
         self.assertEqual(part.duration(), 25.0)
+
+    def test_add_phrase(self):
+        """Tests Part add_phrase() method"""
+        part = Part()
+        self.assertEqual(len(part.phrases), 0)
+
+        part.add_phrase(PHRASE_A)
+        self.assertEqual(len(part.phrases), 1)
+        self.assertEqual(part.duration(), 10.0)
+
+        part.add_phrase(PHRASE_B)
+        self.assertEqual(len(part.phrases), 2)
+        self.assertEqual(part.duration(), 20.0)
+
+        part.add_phrase(PHRASE_C, 15.0)
+        self.assertEqual(len(part.phrases), 3)
+        self.assertEqual(part.duration(), 25.0)
+
+    def test_add_phrases(self):
+        """Test Part add_phrases() method"""
+        part = Part()
+        part.add_phrases([PHRASE_A, PHRASE_B, PHRASE_C])
+        self.assertEqual(len(part.phrases), 3)
+        self.assertEqual(
+            part.phrases, [(0.0, PHRASE_A), (10.0, PHRASE_B), (20.0, PHRASE_C)]
+        )
+
+        part = Part()
+        part.add_phrases([PHRASE_A, PHRASE_B, PHRASE_C], [0.0, 1.0, 2.0])
+        self.assertEqual(
+            part.phrases, [(0.0, PHRASE_A), (1.0, PHRASE_B), (2.0, PHRASE_C)]
+        )
+        self.assertEqual(part.duration(), 12.0)
+
+    def test_remove_phrase(self):
+        """Tests Part remove_phrase() method"""
+        part = Part(phrases=[PHRASE_A, PHRASE_B, PHRASE_C])
+        part.remove_phrase(PHRASE_B)
+        self.assertEqual(part.phrases, [(0.0, PHRASE_A), (20.0, PHRASE_C)])
+
+    def test_clear(self):
+        """Tests Part clear() method"""
+        part = Part(phrases=[PHRASE_A, PHRASE_B, PHRASE_C])
+        self.assertEqual(len(part.phrases), 3)
+        part.clear()
+        self.assertEqual(len(part.phrases), 0)

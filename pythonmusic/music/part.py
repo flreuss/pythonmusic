@@ -73,7 +73,9 @@ class Part:
         self.phrases.append((start_time, phrase))
 
     def add_phrases(
-        self, phrases: list[Phrase], start_times: list[float | None] | None
+        self,
+        phrases: list[Phrase],
+        start_times: list[float | None] | None = None,
     ):
         """
         Adds the given phrases to the part.
