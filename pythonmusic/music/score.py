@@ -20,11 +20,6 @@ class Score:
     def __len__(self) -> int:
         return self.parts.__len__()
 
-    def __str__(self) -> str:
-        title_str = f"{self.title}, " if self.title is not None else ""
-        parts_str = f"{len(self.parts)} Parts"
-        return f"Score({title_str}, {parts_str}, {self.tempo})"
-
     def length(self) -> int:
         """Returns the number of of parts in the score."""
         return len(self)
