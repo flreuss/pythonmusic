@@ -41,7 +41,7 @@ def make_instrument(patch: int, bank: int = 0) -> int:
             A composite integer containing the patch in the lower and the
             variation bank in the upper byte.
     """
-    assert_range(patch, 1, 127)
+    assert_range(patch, 1, 128)
     # TODO: Check if 9 really is the highest-used bank; consider just unlocking this
     assert_range(bank, 0, 9)
     return (bank << 8) | patch
