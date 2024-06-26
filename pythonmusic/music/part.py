@@ -11,7 +11,7 @@ class Part:
     # TODO: Check if channel 1 should be default channel
     def __init__(
         self,
-        title: str | None,
+        title: str | None = None,
         instrument: int = _ACOUSTIC_GRAND_PIANO,
         channel: int = 1,
         phrases: list[Phrase] = [],
@@ -27,11 +27,6 @@ class Part:
 
     def __len__(self) -> int:
         return self.phrases.__len__()
-
-    def __str__(self) -> str:
-        title_str = f"{self.title}, " if self.title is not None else ""
-        phrases_str = f"{len(self.phrases)} Phrases"
-        return f"Part({title_str}, {self.instrument}, {self.channel}, {phrases_str}, {self.panning})"
 
     def length(self) -> int:
         """Returns the number of phrases in the part."""
@@ -78,7 +73,9 @@ class Part:
         self.phrases.append((start_time, phrase))
 
     def add_phrases(
-        self, phrases: list[Phrase], start_times: list[float | None] | None
+        self,
+        phrases: list[Phrase],
+        start_times: list[float | None] | None = None,
     ):
         """
         Adds the given phrases to the part.
