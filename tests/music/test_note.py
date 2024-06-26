@@ -1,5 +1,5 @@
 import unittest
-from pythonmusic.music import Note, Rest
+from pythonmusic.music import Note
 
 PITCH = 50
 DURATION = 1.0

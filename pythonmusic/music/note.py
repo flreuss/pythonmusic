@@ -74,9 +74,4 @@ class Note:
     @staticmethod
     def rest(duration: float) -> "Note":
         """Constrcuts a rest from the given duration."""
-        return Rest(duration)
-
-
-class Rest(Note):
-    def __init__(self, duration: float) -> None:
-        super().__init__(-1, duration, 0)
+        return Note(_REST, duration, 0)
