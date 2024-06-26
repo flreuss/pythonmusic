@@ -1,5 +1,5 @@
 """
-Defines constants for note dynamics.
+Defines MIDI constants for music notation dynamics.
 """
 
 FFF: int = 127
