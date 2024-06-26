@@ -2,10 +2,7 @@ from copy import deepcopy as _deepcopy
 import typing as _typing
 from pythonmusic.util.checks import assert_range as _assert_range
 from pythonmusic.constants.dynamics import MF as _MF
-
-# TODO: add pitches
-# import constants.pitches import REST as _REST
-_REST = -1
+from pythonmusic.constants.pitches import REST as _REST
 
 
 class Note:

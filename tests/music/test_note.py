@@ -1,12 +1,10 @@
 import unittest
 from pythonmusic.music import Note
+from pythonmusic.constants.pitches import REST
 
 PITCH = 50
 DURATION = 1.0
 DYNAMIC = 127
-
-# TODO: replace with constant
-REST = -1
 
 
 class NoteTests(unittest.TestCase):
