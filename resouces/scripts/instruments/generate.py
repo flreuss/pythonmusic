@@ -35,7 +35,6 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 instruments: str = ""
 
 for patch, bank, name in data:
-    # this will require manual editing of the constant label
     constant_label: str = (
         name.upper()
         .strip()
