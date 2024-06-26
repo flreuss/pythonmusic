@@ -1,5 +1,5 @@
 """
-Defines constants for note lengths.
+Defines MIDI constants for note and rest durations.
 """
 
 

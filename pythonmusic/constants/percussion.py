@@ -1,5 +1,5 @@
 """
-MIDI Constants for percussion pitches.
+Defines MIDI Constants for percussion pitches.
 """
 
 ACOUSTIC_BASS_DRUM: int = 35

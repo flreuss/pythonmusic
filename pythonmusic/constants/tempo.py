@@ -1,3 +1,7 @@
+"""
+Defines constants that approximate the corresponding musical tempo.
+"""
+
 LARGO: float = 50.0
 """Defines the tempo constant for *largo*."""
 LARGHETTO: float = 60.0

@@ -1,3 +1,7 @@
+"""
+Defines common scales by their offset from a root note.
+"""
+
 MAJOR: list[int] = [0, 2, 4, 5, 7, 9, 11]
 """Scale constant for the major scale."""
 

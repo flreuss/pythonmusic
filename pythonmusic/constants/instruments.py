@@ -1,5 +1,5 @@
 """
-Defines MIDI instrument constants
+Defines MIDI constants for GM Level 2 Instruments
 """
 
 from pythonmusic.util import make_instrument
