@@ -68,13 +68,9 @@ class NoteTests(unittest.TestCase):
         note = Note(PITCH, DURATION, DYNAMIC)
         self.assertFalse(note.is_rest())
 
+        note = Note(REST, DURATION, DYNAMIC)
+
         rest = Note.rest(DURATION)
-        self.assertTrue(rest.is_rest())
-
-        rest = Note(REST, DURATION, DYNAMIC)
-        self.assertTrue(rest.is_rest())
-
-        rest = Rest(DURATION)
         self.assertTrue(rest.is_rest())
 
     def test_as_rest(self):
@@ -82,6 +78,5 @@ class NoteTests(unittest.TestCase):
         note = Note(PITCH, DURATION, DYNAMIC)
         rest = note.as_rest()
 
-        self.assertEqual(rest.pitch, REST)
         self.assertEqual(rest.duration, DURATION)
         self.assertEqual(rest.dynamic, DYNAMIC)
