@@ -1,5 +1,7 @@
-from copy import deepcopy as _deepcopy
+from copy import copy as _copy
 import typing as _typing
+from pythonmusic.constants.articulations import LEGATO as _LEGATO
+from pythonmusic.constants.articulations import ACCENT as _ACCENT
 from pythonmusic.util.checks import assert_range as _assert_range
 from pythonmusic.constants.dynamics import MF as _MF
 from pythonmusic.constants.pitches import REST as _REST
@@ -13,9 +15,15 @@ class Note:
 
     # Instructs python to store notes as a tuple. This can potentially reduce the
     # memory foot print of large scores.
-    __slots__ = ("_pitch", "_dynamic", "duration")
+    __slots__ = ("_pitch", "_dynamic", "duration", "_articulation")
 
-    def __init__(self, pitch: int, duration: float, dynamic: int = _MF) -> None:
+    def __init__(
+        self,
+        pitch: int,
+        duration: float,
+        dynamic: int = _MF,
+        articulations: list[int] = [],
+    ) -> None:
         # Asserts that the given pitch and dynamic values can be represented
         # with a i8 / are in MIDI range. Pitch is allowed to be below 0 to
         # accommodate rests
@@ -25,6 +33,10 @@ class Note:
         self._pitch: int = pitch
         self._dynamic: int = dynamic
         self.duration: float = duration
+        self._articulation: int = 0x0
+
+        for articulation in articulations:
+            self.add_articulation(articulation)
 
     def __str__(self) -> str:
         return f"Note({self._pitch}, {self.duration}, {self._dynamic})"
@@ -58,13 +70,53 @@ class Note:
         _assert_range(new_value, 0, 127)
         self._dynamic = new_value
 
+    def add_articulation(self, articulation: int):
+        """
+        Adds the given articulation to the note.
+
+        Use the constants defined in `pythonmusic.constants.articulations`.
+        """
+        self._articulation |= articulation
+
+    def remove_articulation(self, articulation: int):
+        """
+        Removes the given articulation from the note.
+
+        Use the constants defined in `pythonmusic.constants.articulations`.
+        """
+        self._articulation &= ~articulation
+
+    def has_articulation(self, articulation: int) -> bool:
+        """
+        Returns `True` if this note has the given articulation.
+
+        Use the constants defined in `pythonmusic.constants.articulations`.
+        """
+        return self._articulation & articulation == articulation
+
+    def with_legato(self) -> _typing.Self:
+        """
+        Returns this note with added legato.
+        """
+        note = _copy(self)
+        note.add_articulation(_LEGATO)
+        return note
+
+    def with_accent(self) -> _typing.Self:
+        """
+        Returns this note with added accent.
+        """
+        note = _copy(self)
+        note.add_articulation(_ACCENT)
+        return note
+
     def is_rest(self) -> bool:
         """Returns `True` if this note is a rest."""
         return self._pitch == _REST
 
     def as_rest(self) -> _typing.Self:
         """Returns a rest with this notes duration."""
-        rest = _deepcopy(self)
+        rest = _copy(self)
         rest.pitch = _REST
         return rest
 

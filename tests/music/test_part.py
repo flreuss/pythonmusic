@@ -15,25 +15,25 @@ class PartTests(unittest.TestCase):
         """Tests Part initialiser"""
         part = Part()
         self.assertEqual(part.title, None)
-        self.assertEqual(part.instrument, instruments.ACOUSTIC_GRAND_PIANO)
+        self.assertEqual(part.instrument, ACOUSTIC_GRAND_PIANO)
         self.assertEqual(part.channel, 1)
         self.assertEqual(part.phrases, [])
-        self.assertEqual(part.panning, panning.PAN_CENTER)
+        self.assertEqual(part.panning, PAN_CENTER)
 
         phrase = Phrase([Note(1, 1), Note(2, 2)])
         part = Part(
             title="Harpsichord",
-            instrument=instruments.HARPSICHORD,
+            instrument=HARPSICHORD,
             channel=5,
             phrases=[phrase],
-            panning=panning.PAN_LEFT,
+            panning=PAN_LEFT,
         )
         self.assertEqual(part.title, "Harpsichord")
-        self.assertEqual(part.instrument, instruments.HARPSICHORD)
+        self.assertEqual(part.instrument, HARPSICHORD)
         self.assertEqual(part.channel, 5)
         # test for add_phrases tests this more in depth
         self.assertEqual(part.phrases, [(0, phrase)])
-        self.assertEqual(part.panning, panning.PAN_LEFT)
+        self.assertEqual(part.panning, PAN_LEFT)
 
     def test_len(self):
         """Tests Part __len__() dunder method"""

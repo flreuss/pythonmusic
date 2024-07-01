@@ -2,10 +2,15 @@
 Defines MIDI constants for GM Level 2 Instruments
 """
 
-from pythonmusic.util import make_instrument
+
+def _make_instrument(patch: int, bank: int = 0) -> int:
+    assert patch in range(1, 128 + 1)
+    # TODO: Check if 9 really is the highest-used bank; consider just unlocking this
+    assert bank in range(0, 9 + 1)
+    return (bank << 8) | patch
 
 
-ACOUSTIC_GRAND_PIANO: int = make_instrument(1, 0)
+ACOUSTIC_GRAND_PIANO: int = _make_instrument(1, 0)
 """
 Instrument constant for Acoustic Grand Piano.
 
@@ -14,7 +19,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-WIDE_ACOUSTIC_GRAND: int = make_instrument(1, 1)
+WIDE_ACOUSTIC_GRAND: int = _make_instrument(1, 1)
 """
 Instrument constant for Wide Acoustic Grand.
 
@@ -23,7 +28,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DARK_ACOUSTIC_GRAND: int = make_instrument(1, 2)
+DARK_ACOUSTIC_GRAND: int = _make_instrument(1, 2)
 """
 Instrument constant for Dark Acoustic Grand.
 
@@ -32,7 +37,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BRIGHT_ACOUSTIC_PIANO: int = make_instrument(2, 0)
+BRIGHT_ACOUSTIC_PIANO: int = _make_instrument(2, 0)
 """
 Instrument constant for Bright Acoustic Piano.
 
@@ -41,7 +46,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-WIDE_BRIGHT_ACOUSTIC: int = make_instrument(2, 1)
+WIDE_BRIGHT_ACOUSTIC: int = _make_instrument(2, 1)
 """
 Instrument constant for Wide Bright Acoustic.
 
@@ -50,7 +55,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ELECTRIC_GRAND_PIANO: int = make_instrument(3, 0)
+ELECTRIC_GRAND_PIANO: int = _make_instrument(3, 0)
 """
 Instrument constant for Electric Grand Piano.
 
@@ -59,7 +64,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-WIDE_ELECTRIC_GRAND: int = make_instrument(3, 1)
+WIDE_ELECTRIC_GRAND: int = _make_instrument(3, 1)
 """
 Instrument constant for Wide Electric Grand.
 
@@ -68,7 +73,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-HONKY_TONK_PIANO: int = make_instrument(4, 0)
+HONKY_TONK_PIANO: int = _make_instrument(4, 0)
 """
 Instrument constant for Honky-tonk Piano.
 
@@ -77,7 +82,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-WIDE_HONKY_TONK: int = make_instrument(4, 1)
+WIDE_HONKY_TONK: int = _make_instrument(4, 1)
 """
 Instrument constant for Wide Honky-tonk.
 
@@ -86,7 +91,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-RHODES_PIANO: int = make_instrument(5, 0)
+RHODES_PIANO: int = _make_instrument(5, 0)
 """
 Instrument constant for Rhodes Piano.
 
@@ -95,7 +100,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DETUNED_ELECTRIC_PIANO_1: int = make_instrument(5, 1)
+DETUNED_ELECTRIC_PIANO_1: int = _make_instrument(5, 1)
 """
 Instrument constant for Detuned Electric Piano 1.
 
@@ -104,7 +109,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ELECTRIC_PIANO_1_VARIATION: int = make_instrument(5, 2)
+ELECTRIC_PIANO_1_VARIATION: int = _make_instrument(5, 2)
 """
 Instrument constant for Electric Piano 1 Variation.
 
@@ -113,7 +118,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ELECTRIC_PIANO_60S: int = make_instrument(5, 3)
+ELECTRIC_PIANO_60S: int = _make_instrument(5, 3)
 """
 Instrument constant for Electric Piano 60's.
 
@@ -122,7 +127,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CHORUSED_ELECTRIC_PIANO: int = make_instrument(6, 0)
+CHORUSED_ELECTRIC_PIANO: int = _make_instrument(6, 0)
 """
 Instrument constant for Chorused Electric Piano.
 
@@ -131,7 +136,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DETUNED_ELECTRIC_PIANO_2: int = make_instrument(6, 1)
+DETUNED_ELECTRIC_PIANO_2: int = _make_instrument(6, 1)
 """
 Instrument constant for Detuned Electric Piano 2.
 
@@ -140,7 +145,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ELECTRIC_PIANO_2_VARIATION: int = make_instrument(6, 2)
+ELECTRIC_PIANO_2_VARIATION: int = _make_instrument(6, 2)
 """
 Instrument constant for Electric Piano 2 Variation.
 
@@ -149,7 +154,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ELECTRIC_PIANO_LEGEND: int = make_instrument(6, 3)
+ELECTRIC_PIANO_LEGEND: int = _make_instrument(6, 3)
 """
 Instrument constant for Electric Piano Legend.
 
@@ -158,7 +163,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ELECTRIC_PIANO_PHASE: int = make_instrument(6, 4)
+ELECTRIC_PIANO_PHASE: int = _make_instrument(6, 4)
 """
 Instrument constant for Electric Piano Phase.
 
@@ -167,7 +172,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-HARPSICHORD: int = make_instrument(7, 0)
+HARPSICHORD: int = _make_instrument(7, 0)
 """
 Instrument constant for Harpsichord.
 
@@ -176,7 +181,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-COUPLED_HARPSICHORD: int = make_instrument(7, 1)
+COUPLED_HARPSICHORD: int = _make_instrument(7, 1)
 """
 Instrument constant for Coupled Harpsichord.
 
@@ -185,7 +190,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-WIDE_HARPSICHORD: int = make_instrument(7, 2)
+WIDE_HARPSICHORD: int = _make_instrument(7, 2)
 """
 Instrument constant for Wide Harpsichord.
 
@@ -194,7 +199,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-OPEN_HARPSICHORD: int = make_instrument(7, 3)
+OPEN_HARPSICHORD: int = _make_instrument(7, 3)
 """
 Instrument constant for Open Harpsichord.
 
@@ -203,7 +208,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CLAVINET: int = make_instrument(8, 0)
+CLAVINET: int = _make_instrument(8, 0)
 """
 Instrument constant for Clavinet.
 
@@ -212,7 +217,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-PULSE_CLAVINET: int = make_instrument(8, 1)
+PULSE_CLAVINET: int = _make_instrument(8, 1)
 """
 Instrument constant for Pulse Clavinet .
 
@@ -221,7 +226,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ACOUSTIC_GRAND_PIANO: int = make_instrument(1, 0)
+ACOUSTIC_GRAND_PIANO: int = _make_instrument(1, 0)
 """
 Instrument constant for Acoustic Grand Piano.
 
@@ -230,7 +235,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-WIDE_ACOUSTIC_GRAND: int = make_instrument(1, 1)
+WIDE_ACOUSTIC_GRAND: int = _make_instrument(1, 1)
 """
 Instrument constant for Wide Acoustic Grand.
 
@@ -239,7 +244,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DARK_ACOUSTIC_GRAND: int = make_instrument(1, 2)
+DARK_ACOUSTIC_GRAND: int = _make_instrument(1, 2)
 """
 Instrument constant for Dark Acoustic Grand.
 
@@ -248,7 +253,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BRIGHT_ACOUSTIC_PIANO: int = make_instrument(2, 0)
+BRIGHT_ACOUSTIC_PIANO: int = _make_instrument(2, 0)
 """
 Instrument constant for Bright Acoustic Piano.
 
@@ -257,7 +262,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-WIDE_BRIGHT_ACOUSTIC: int = make_instrument(2, 1)
+WIDE_BRIGHT_ACOUSTIC: int = _make_instrument(2, 1)
 """
 Instrument constant for Wide Bright Acoustic.
 
@@ -266,7 +271,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ELECTRIC_GRAND_PIANO: int = make_instrument(3, 0)
+ELECTRIC_GRAND_PIANO: int = _make_instrument(3, 0)
 """
 Instrument constant for Electric Grand Piano.
 
@@ -275,7 +280,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-WIDE_ELECTRIC_GRAND: int = make_instrument(3, 1)
+WIDE_ELECTRIC_GRAND: int = _make_instrument(3, 1)
 """
 Instrument constant for Wide Electric Grand.
 
@@ -284,7 +289,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-HONKY_TONK_PIANO: int = make_instrument(4, 0)
+HONKY_TONK_PIANO: int = _make_instrument(4, 0)
 """
 Instrument constant for Honky-tonk Piano.
 
@@ -293,7 +298,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-WIDE_HONKY_TONK: int = make_instrument(4, 1)
+WIDE_HONKY_TONK: int = _make_instrument(4, 1)
 """
 Instrument constant for Wide Honky-tonk.
 
@@ -302,7 +307,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-RHODES_PIANO: int = make_instrument(5, 0)
+RHODES_PIANO: int = _make_instrument(5, 0)
 """
 Instrument constant for Rhodes Piano.
 
@@ -311,7 +316,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DETUNED_ELECTRIC_PIANO_1: int = make_instrument(5, 1)
+DETUNED_ELECTRIC_PIANO_1: int = _make_instrument(5, 1)
 """
 Instrument constant for Detuned Electric Piano 1.
 
@@ -320,7 +325,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ELECTRIC_PIANO_1_VARIATION: int = make_instrument(5, 2)
+ELECTRIC_PIANO_1_VARIATION: int = _make_instrument(5, 2)
 """
 Instrument constant for Electric Piano 1 Variation.
 
@@ -329,7 +334,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ELECTRIC_PIANO_60S: int = make_instrument(5, 3)
+ELECTRIC_PIANO_60S: int = _make_instrument(5, 3)
 """
 Instrument constant for Electric Piano 60's.
 
@@ -338,7 +343,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CHORUSED_ELECTRIC_PIANO: int = make_instrument(6, 0)
+CHORUSED_ELECTRIC_PIANO: int = _make_instrument(6, 0)
 """
 Instrument constant for Chorused Electric Piano.
 
@@ -347,7 +352,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DETUNED_ELECTRIC_PIANO_2: int = make_instrument(6, 1)
+DETUNED_ELECTRIC_PIANO_2: int = _make_instrument(6, 1)
 """
 Instrument constant for Detuned Electric Piano 2.
 
@@ -356,7 +361,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ELECTRIC_PIANO_2_VARIATION: int = make_instrument(6, 2)
+ELECTRIC_PIANO_2_VARIATION: int = _make_instrument(6, 2)
 """
 Instrument constant for Electric Piano 2 Variation.
 
@@ -365,7 +370,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ELECTRIC_PIANO_LEGEND: int = make_instrument(6, 3)
+ELECTRIC_PIANO_LEGEND: int = _make_instrument(6, 3)
 """
 Instrument constant for Electric Piano Legend.
 
@@ -374,7 +379,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ELECTRIC_PIANO_PHASE: int = make_instrument(6, 4)
+ELECTRIC_PIANO_PHASE: int = _make_instrument(6, 4)
 """
 Instrument constant for Electric Piano Phase.
 
@@ -383,7 +388,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-HARPSICHORD: int = make_instrument(7, 0)
+HARPSICHORD: int = _make_instrument(7, 0)
 """
 Instrument constant for Harpsichord.
 
@@ -392,7 +397,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-COUPLED_HARPSICHORD: int = make_instrument(7, 1)
+COUPLED_HARPSICHORD: int = _make_instrument(7, 1)
 """
 Instrument constant for Coupled Harpsichord.
 
@@ -401,7 +406,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-WIDE_HARPSICHORD: int = make_instrument(7, 2)
+WIDE_HARPSICHORD: int = _make_instrument(7, 2)
 """
 Instrument constant for Wide Harpsichord.
 
@@ -410,7 +415,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-OPEN_HARPSICHORD: int = make_instrument(7, 3)
+OPEN_HARPSICHORD: int = _make_instrument(7, 3)
 """
 Instrument constant for Open Harpsichord.
 
@@ -419,7 +424,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CLAVINET: int = make_instrument(8, 0)
+CLAVINET: int = _make_instrument(8, 0)
 """
 Instrument constant for Clavinet.
 
@@ -428,7 +433,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-PULSE_CLAVINET: int = make_instrument(8, 1)
+PULSE_CLAVINET: int = _make_instrument(8, 1)
 """
 Instrument constant for Pulse Clavinet .
 
@@ -437,7 +442,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CELESTA: int = make_instrument(9, 0)
+CELESTA: int = _make_instrument(9, 0)
 """
 Instrument constant for Celesta.
 
@@ -446,7 +451,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-GLOCKENSPIEL: int = make_instrument(10, 0)
+GLOCKENSPIEL: int = _make_instrument(10, 0)
 """
 Instrument constant for Glockenspiel.
 
@@ -455,7 +460,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-MUSIC_BOX: int = make_instrument(11, 0)
+MUSIC_BOX: int = _make_instrument(11, 0)
 """
 Instrument constant for Music Box.
 
@@ -464,7 +469,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-VIBRAPHONE: int = make_instrument(12, 0)
+VIBRAPHONE: int = _make_instrument(12, 0)
 """
 Instrument constant for Vibraphone.
 
@@ -473,7 +478,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-WET_VIBRAPHONE: int = make_instrument(12, 1)
+WET_VIBRAPHONE: int = _make_instrument(12, 1)
 """
 Instrument constant for Wet Vibraphone.
 
@@ -482,7 +487,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-MARIMBA: int = make_instrument(13, 0)
+MARIMBA: int = _make_instrument(13, 0)
 """
 Instrument constant for Marimba.
 
@@ -491,7 +496,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-WIDE_MARIMBA: int = make_instrument(13, 1)
+WIDE_MARIMBA: int = _make_instrument(13, 1)
 """
 Instrument constant for Wide Marimba.
 
@@ -500,7 +505,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-XYLOPHONE: int = make_instrument(14, 0)
+XYLOPHONE: int = _make_instrument(14, 0)
 """
 Instrument constant for Xylophone.
 
@@ -509,7 +514,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-TUBULAR_BELL: int = make_instrument(15, 0)
+TUBULAR_BELL: int = _make_instrument(15, 0)
 """
 Instrument constant for Tubular Bell.
 
@@ -518,7 +523,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CHURCH_BELL: int = make_instrument(15, 1)
+CHURCH_BELL: int = _make_instrument(15, 1)
 """
 Instrument constant for Church Bell.
 
@@ -527,7 +532,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CARILLON: int = make_instrument(15, 2)
+CARILLON: int = _make_instrument(15, 2)
 """
 Instrument constant for Carillon.
 
@@ -536,7 +541,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DULCIMER: int = make_instrument(16, 0)
+DULCIMER: int = _make_instrument(16, 0)
 """
 Instrument constant for Dulcimer.
 
@@ -545,7 +550,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DRAWBAR_ORGAN: int = make_instrument(17, 0)
+DRAWBAR_ORGAN: int = _make_instrument(17, 0)
 """
 Instrument constant for Drawbar Organ.
 
@@ -554,7 +559,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DETUNED_ORGAN_1: int = make_instrument(17, 1)
+DETUNED_ORGAN_1: int = _make_instrument(17, 1)
 """
 Instrument constant for Detuned Organ 1.
 
@@ -563,7 +568,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ORGAN_1_60S: int = make_instrument(17, 2)
+ORGAN_1_60S: int = _make_instrument(17, 2)
 """
 Instrument constant for Organ 1 60's.
 
@@ -572,7 +577,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ORGAN_4: int = make_instrument(17, 3)
+ORGAN_4: int = _make_instrument(17, 3)
 """
 Instrument constant for Organ 4.
 
@@ -581,7 +586,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-PERCUSSIVE_B3_ORGAN: int = make_instrument(18, 0)
+PERCUSSIVE_B3_ORGAN: int = _make_instrument(18, 0)
 """
 Instrument constant for Percussive B3 Organ.
 
@@ -590,7 +595,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DETUNED_ORGAN_2: int = make_instrument(18, 1)
+DETUNED_ORGAN_2: int = _make_instrument(18, 1)
 """
 Instrument constant for Detuned Organ 2.
 
@@ -599,7 +604,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ORGAN_5: int = make_instrument(18, 2)
+ORGAN_5: int = _make_instrument(18, 2)
 """
 Instrument constant for Organ 5.
 
@@ -608,7 +613,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ROCK_ORGAN: int = make_instrument(19, 0)
+ROCK_ORGAN: int = _make_instrument(19, 0)
 """
 Instrument constant for Rock Organ.
 
@@ -617,7 +622,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CHURCH_ORGAN_1: int = make_instrument(20, 0)
+CHURCH_ORGAN_1: int = _make_instrument(20, 0)
 """
 Instrument constant for Church Organ 1.
 
@@ -626,7 +631,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CHURCH_ORGAN_2: int = make_instrument(20, 1)
+CHURCH_ORGAN_2: int = _make_instrument(20, 1)
 """
 Instrument constant for Church Organ 2.
 
@@ -635,7 +640,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CHURCH_ORGAN_3: int = make_instrument(20, 2)
+CHURCH_ORGAN_3: int = _make_instrument(20, 2)
 """
 Instrument constant for Church Organ 3.
 
@@ -644,7 +649,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-REED_ORGAN: int = make_instrument(21, 0)
+REED_ORGAN: int = _make_instrument(21, 0)
 """
 Instrument constant for Reed Organ.
 
@@ -653,7 +658,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-PUFF_ORGAN: int = make_instrument(21, 1)
+PUFF_ORGAN: int = _make_instrument(21, 1)
 """
 Instrument constant for Puff Organ.
 
@@ -662,7 +667,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-FRENCH_ACCORDION: int = make_instrument(22, 0)
+FRENCH_ACCORDION: int = _make_instrument(22, 0)
 """
 Instrument constant for French Accordion.
 
@@ -671,7 +676,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ITALIAN_ACCORDION: int = make_instrument(22, 1)
+ITALIAN_ACCORDION: int = _make_instrument(22, 1)
 """
 Instrument constant for Italian Accordion.
 
@@ -680,7 +685,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-HARMONICA: int = make_instrument(23, 0)
+HARMONICA: int = _make_instrument(23, 0)
 """
 Instrument constant for Harmonica.
 
@@ -689,7 +694,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BANDONEON: int = make_instrument(24, 0)
+BANDONEON: int = _make_instrument(24, 0)
 """
 Instrument constant for Bandoneon.
 
@@ -698,7 +703,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-NYLON_STRING_GUITAR: int = make_instrument(25, 0)
+NYLON_STRING_GUITAR: int = _make_instrument(25, 0)
 """
 Instrument constant for Nylon-String Guitar.
 
@@ -707,7 +712,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-UKULELE: int = make_instrument(25, 1)
+UKULELE: int = _make_instrument(25, 1)
 """
 Instrument constant for Ukulele.
 
@@ -716,7 +721,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-OPEN_NYLON_GUITAR: int = make_instrument(25, 2)
+OPEN_NYLON_GUITAR: int = _make_instrument(25, 2)
 """
 Instrument constant for Open Nylon Guitar.
 
@@ -725,7 +730,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-NYLON_GUITAR_2: int = make_instrument(25, 3)
+NYLON_GUITAR_2: int = _make_instrument(25, 3)
 """
 Instrument constant for Nylon Guitar 2.
 
@@ -734,7 +739,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-STEEL_STRING_GUITAR: int = make_instrument(26, 0)
+STEEL_STRING_GUITAR: int = _make_instrument(26, 0)
 """
 Instrument constant for Steel-String Guitar.
 
@@ -743,7 +748,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-GUITAR_12_STRING: int = make_instrument(26, 1)
+GUITAR_12_STRING: int = _make_instrument(26, 1)
 """
 Instrument constant for Guitar 12-String.
 
@@ -752,7 +757,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-MANDOLIN: int = make_instrument(26, 2)
+MANDOLIN: int = _make_instrument(26, 2)
 """
 Instrument constant for Mandolin.
 
@@ -761,7 +766,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-STEEL__BODY: int = make_instrument(26, 3)
+STEEL__BODY: int = _make_instrument(26, 3)
 """
 Instrument constant for Steel + Body.
 
@@ -770,7 +775,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-JAZZ_GUITAR: int = make_instrument(27, 0)
+JAZZ_GUITAR: int = _make_instrument(27, 0)
 """
 Instrument constant for Jazz Guitar.
 
@@ -779,7 +784,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-HAWAIIAN_GUITAR: int = make_instrument(27, 1)
+HAWAIIAN_GUITAR: int = _make_instrument(27, 1)
 """
 Instrument constant for Hawaiian Guitar.
 
@@ -788,7 +793,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CLEAN_ELECTRIC_GUITAR: int = make_instrument(28, 0)
+CLEAN_ELECTRIC_GUITAR: int = _make_instrument(28, 0)
 """
 Instrument constant for Clean Electric Guitar.
 
@@ -797,7 +802,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CHORUS_GUITAR: int = make_instrument(28, 1)
+CHORUS_GUITAR: int = _make_instrument(28, 1)
 """
 Instrument constant for Chorus Guitar.
 
@@ -806,7 +811,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-MID_TONE_GUITAR: int = make_instrument(28, 2)
+MID_TONE_GUITAR: int = _make_instrument(28, 2)
 """
 Instrument constant for Mid Tone Guitar.
 
@@ -815,7 +820,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-MUTED_ELECTRIC_GUITAR: int = make_instrument(29, 0)
+MUTED_ELECTRIC_GUITAR: int = _make_instrument(29, 0)
 """
 Instrument constant for Muted Electric Guitar.
 
@@ -824,7 +829,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-FUNK_GUITAR: int = make_instrument(29, 1)
+FUNK_GUITAR: int = _make_instrument(29, 1)
 """
 Instrument constant for Funk Guitar.
 
@@ -833,7 +838,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-FUNK_GUITAR_2: int = make_instrument(29, 2)
+FUNK_GUITAR_2: int = _make_instrument(29, 2)
 """
 Instrument constant for Funk Guitar 2.
 
@@ -842,7 +847,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-JAZZ_MAN: int = make_instrument(29, 3)
+JAZZ_MAN: int = _make_instrument(29, 3)
 """
 Instrument constant for Jazz Man.
 
@@ -851,7 +856,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-OVERDRIVEN_GUITAR: int = make_instrument(30, 0)
+OVERDRIVEN_GUITAR: int = _make_instrument(30, 0)
 """
 Instrument constant for Overdriven Guitar.
 
@@ -860,7 +865,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-GUITAR_PINCH: int = make_instrument(30, 1)
+GUITAR_PINCH: int = _make_instrument(30, 1)
 """
 Instrument constant for Guitar Pinch.
 
@@ -869,7 +874,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DISTORTION_GUITAR: int = make_instrument(31, 0)
+DISTORTION_GUITAR: int = _make_instrument(31, 0)
 """
 Instrument constant for Distortion Guitar.
 
@@ -878,7 +883,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-FEEDBACK_GUITAR: int = make_instrument(31, 1)
+FEEDBACK_GUITAR: int = _make_instrument(31, 1)
 """
 Instrument constant for Feedback Guitar.
 
@@ -887,7 +892,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DISTORTION_RTM_GUITAR: int = make_instrument(31, 2)
+DISTORTION_RTM_GUITAR: int = _make_instrument(31, 2)
 """
 Instrument constant for Distortion Rtm Guitar.
 
@@ -896,7 +901,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-GUITAR_HARMONICS: int = make_instrument(32, 0)
+GUITAR_HARMONICS: int = _make_instrument(32, 0)
 """
 Instrument constant for Guitar Harmonics.
 
@@ -905,7 +910,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-GUITAR_FEEDBACK: int = make_instrument(32, 1)
+GUITAR_FEEDBACK: int = _make_instrument(32, 1)
 """
 Instrument constant for Guitar Feedback.
 
@@ -914,7 +919,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ACOUSTIC_BASS: int = make_instrument(33, 0)
+ACOUSTIC_BASS: int = _make_instrument(33, 0)
 """
 Instrument constant for Acoustic Bass.
 
@@ -923,7 +928,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-FINGERED_BASS: int = make_instrument(34, 0)
+FINGERED_BASS: int = _make_instrument(34, 0)
 """
 Instrument constant for Fingered Bass.
 
@@ -932,7 +937,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-FINGER_SLAP: int = make_instrument(34, 1)
+FINGER_SLAP: int = _make_instrument(34, 1)
 """
 Instrument constant for Finger Slap.
 
@@ -941,7 +946,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-PICKED_BASS: int = make_instrument(35, 0)
+PICKED_BASS: int = _make_instrument(35, 0)
 """
 Instrument constant for Picked Bass.
 
@@ -950,7 +955,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-FRETLESS_BASS: int = make_instrument(36, 0)
+FRETLESS_BASS: int = _make_instrument(36, 0)
 """
 Instrument constant for Fretless Bass.
 
@@ -959,7 +964,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SLAP_BASS_1: int = make_instrument(37, 0)
+SLAP_BASS_1: int = _make_instrument(37, 0)
 """
 Instrument constant for Slap Bass 1.
 
@@ -968,7 +973,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SLAP_BASS_2: int = make_instrument(38, 0)
+SLAP_BASS_2: int = _make_instrument(38, 0)
 """
 Instrument constant for Slap Bass 2.
 
@@ -977,7 +982,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_BASS_1: int = make_instrument(39, 0)
+SYNTH_BASS_1: int = _make_instrument(39, 0)
 """
 Instrument constant for Synth Bass 1.
 
@@ -986,7 +991,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_BASS_101: int = make_instrument(39, 1)
+SYNTH_BASS_101: int = _make_instrument(39, 1)
 """
 Instrument constant for Synth Bass 101.
 
@@ -995,7 +1000,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_BASS_3: int = make_instrument(39, 2)
+SYNTH_BASS_3: int = _make_instrument(39, 2)
 """
 Instrument constant for Synth Bass 3.
 
@@ -1004,7 +1009,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CLAVI_BASS: int = make_instrument(39, 3)
+CLAVI_BASS: int = _make_instrument(39, 3)
 """
 Instrument constant for Clavi Bass.
 
@@ -1013,7 +1018,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-HAMMER: int = make_instrument(39, 4)
+HAMMER: int = _make_instrument(39, 4)
 """
 Instrument constant for Hammer.
 
@@ -1022,7 +1027,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_BASS_2: int = make_instrument(40, 0)
+SYNTH_BASS_2: int = _make_instrument(40, 0)
 """
 Instrument constant for Synth Bass 2.
 
@@ -1031,7 +1036,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_BASS_4: int = make_instrument(40, 1)
+SYNTH_BASS_4: int = _make_instrument(40, 1)
 """
 Instrument constant for Synth Bass 4.
 
@@ -1040,7 +1045,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-RUBBER_BASS: int = make_instrument(40, 2)
+RUBBER_BASS: int = _make_instrument(40, 2)
 """
 Instrument constant for Rubber Bass.
 
@@ -1049,7 +1054,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ATTACK_PULSE: int = make_instrument(40, 3)
+ATTACK_PULSE: int = _make_instrument(40, 3)
 """
 Instrument constant for Attack Pulse.
 
@@ -1058,7 +1063,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ACOUSTIC_BASS: int = make_instrument(33, 0)
+ACOUSTIC_BASS: int = _make_instrument(33, 0)
 """
 Instrument constant for Acoustic Bass.
 
@@ -1067,7 +1072,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-FINGERED_BASS: int = make_instrument(34, 0)
+FINGERED_BASS: int = _make_instrument(34, 0)
 """
 Instrument constant for Fingered Bass.
 
@@ -1076,7 +1081,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-FINGER_SLAP: int = make_instrument(34, 1)
+FINGER_SLAP: int = _make_instrument(34, 1)
 """
 Instrument constant for Finger Slap.
 
@@ -1085,7 +1090,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-PICKED_BASS: int = make_instrument(35, 0)
+PICKED_BASS: int = _make_instrument(35, 0)
 """
 Instrument constant for Picked Bass.
 
@@ -1094,7 +1099,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-FRETLESS_BASS: int = make_instrument(36, 0)
+FRETLESS_BASS: int = _make_instrument(36, 0)
 """
 Instrument constant for Fretless Bass.
 
@@ -1103,7 +1108,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SLAP_BASS_1: int = make_instrument(37, 0)
+SLAP_BASS_1: int = _make_instrument(37, 0)
 """
 Instrument constant for Slap Bass 1.
 
@@ -1112,7 +1117,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SLAP_BASS_2: int = make_instrument(38, 0)
+SLAP_BASS_2: int = _make_instrument(38, 0)
 """
 Instrument constant for Slap Bass 2.
 
@@ -1121,7 +1126,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_BASS_1: int = make_instrument(39, 0)
+SYNTH_BASS_1: int = _make_instrument(39, 0)
 """
 Instrument constant for Synth Bass 1.
 
@@ -1130,7 +1135,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_BASS_101: int = make_instrument(39, 1)
+SYNTH_BASS_101: int = _make_instrument(39, 1)
 """
 Instrument constant for Synth Bass 101.
 
@@ -1139,7 +1144,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_BASS_3: int = make_instrument(39, 2)
+SYNTH_BASS_3: int = _make_instrument(39, 2)
 """
 Instrument constant for Synth Bass 3.
 
@@ -1148,7 +1153,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CLAVI_BASS: int = make_instrument(39, 3)
+CLAVI_BASS: int = _make_instrument(39, 3)
 """
 Instrument constant for Clavi Bass.
 
@@ -1157,7 +1162,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-HAMMER: int = make_instrument(39, 4)
+HAMMER: int = _make_instrument(39, 4)
 """
 Instrument constant for Hammer.
 
@@ -1166,7 +1171,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_BASS_2: int = make_instrument(40, 0)
+SYNTH_BASS_2: int = _make_instrument(40, 0)
 """
 Instrument constant for Synth Bass 2.
 
@@ -1175,7 +1180,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_BASS_4: int = make_instrument(40, 1)
+SYNTH_BASS_4: int = _make_instrument(40, 1)
 """
 Instrument constant for Synth Bass 4.
 
@@ -1184,7 +1189,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-RUBBER_BASS: int = make_instrument(40, 2)
+RUBBER_BASS: int = _make_instrument(40, 2)
 """
 Instrument constant for Rubber Bass.
 
@@ -1193,7 +1198,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ATTACK_PULSE: int = make_instrument(40, 3)
+ATTACK_PULSE: int = _make_instrument(40, 3)
 """
 Instrument constant for Attack Pulse.
 
@@ -1202,7 +1207,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-STRING_ENSEMBLE: int = make_instrument(49, 0)
+STRING_ENSEMBLE: int = _make_instrument(49, 0)
 """
 Instrument constant for String Ensemble.
 
@@ -1211,7 +1216,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ORCHESTRA_STRINGS: int = make_instrument(49, 1)
+ORCHESTRA_STRINGS: int = _make_instrument(49, 1)
 """
 Instrument constant for Orchestra Strings.
 
@@ -1220,7 +1225,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-STRINGS_60S: int = make_instrument(49, 2)
+STRINGS_60S: int = _make_instrument(49, 2)
 """
 Instrument constant for Strings 60's.
 
@@ -1229,7 +1234,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SLOW_STRING_ENSEMBLE: int = make_instrument(50, 0)
+SLOW_STRING_ENSEMBLE: int = _make_instrument(50, 0)
 """
 Instrument constant for Slow String Ensemble.
 
@@ -1238,7 +1243,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_STRINGS_1: int = make_instrument(51, 0)
+SYNTH_STRINGS_1: int = _make_instrument(51, 0)
 """
 Instrument constant for Synth Strings 1.
 
@@ -1247,7 +1252,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_STRINGS_3: int = make_instrument(51, 1)
+SYNTH_STRINGS_3: int = _make_instrument(51, 1)
 """
 Instrument constant for Synth Strings 3.
 
@@ -1256,7 +1261,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_STRINGS_2: int = make_instrument(52, 0)
+SYNTH_STRINGS_2: int = _make_instrument(52, 0)
 """
 Instrument constant for Synth Strings 2.
 
@@ -1265,7 +1270,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CHOIR_AAHS: int = make_instrument(53, 0)
+CHOIR_AAHS: int = _make_instrument(53, 0)
 """
 Instrument constant for Choir Aahs.
 
@@ -1274,7 +1279,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CHOIR_AAHS_2: int = make_instrument(53, 1)
+CHOIR_AAHS_2: int = _make_instrument(53, 1)
 """
 Instrument constant for Choir Aahs 2.
 
@@ -1283,7 +1288,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-VOICE_OOHS: int = make_instrument(54, 0)
+VOICE_OOHS: int = _make_instrument(54, 0)
 """
 Instrument constant for Voice Oohs.
 
@@ -1292,7 +1297,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-HUMMING: int = make_instrument(54, 1)
+HUMMING: int = _make_instrument(54, 1)
 """
 Instrument constant for Humming.
 
@@ -1301,7 +1306,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_VOICE: int = make_instrument(55, 0)
+SYNTH_VOICE: int = _make_instrument(55, 0)
 """
 Instrument constant for Synth Voice.
 
@@ -1310,7 +1315,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ANALOG_VOICE: int = make_instrument(55, 1)
+ANALOG_VOICE: int = _make_instrument(55, 1)
 """
 Instrument constant for Analog Voice.
 
@@ -1319,7 +1324,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ORCHESTRA_HIT: int = make_instrument(56, 0)
+ORCHESTRA_HIT: int = _make_instrument(56, 0)
 """
 Instrument constant for Orchestra Hit.
 
@@ -1328,7 +1333,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BASS_HIT: int = make_instrument(56, 1)
+BASS_HIT: int = _make_instrument(56, 1)
 """
 Instrument constant for Bass Hit.
 
@@ -1337,7 +1342,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-HIT_6TH: int = make_instrument(56, 2)
+HIT_6TH: int = _make_instrument(56, 2)
 """
 Instrument constant for Hit 6th.
 
@@ -1346,7 +1351,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-EURO_HIT: int = make_instrument(56, 3)
+EURO_HIT: int = _make_instrument(56, 3)
 """
 Instrument constant for Euro Hit.
 
@@ -1355,7 +1360,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-TRUMPET: int = make_instrument(57, 0)
+TRUMPET: int = _make_instrument(57, 0)
 """
 Instrument constant for Trumpet.
 
@@ -1364,7 +1369,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DARK_TRUMPET: int = make_instrument(57, 1)
+DARK_TRUMPET: int = _make_instrument(57, 1)
 """
 Instrument constant for Dark Trumpet.
 
@@ -1373,7 +1378,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-TROMBONE: int = make_instrument(58, 0)
+TROMBONE: int = _make_instrument(58, 0)
 """
 Instrument constant for Trombone.
 
@@ -1382,7 +1387,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-TROMBONE_2: int = make_instrument(58, 1)
+TROMBONE_2: int = _make_instrument(58, 1)
 """
 Instrument constant for Trombone 2.
 
@@ -1391,7 +1396,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BRIGHT_TROMBONE: int = make_instrument(58, 2)
+BRIGHT_TROMBONE: int = _make_instrument(58, 2)
 """
 Instrument constant for Bright Trombone.
 
@@ -1400,7 +1405,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-TUBA: int = make_instrument(59, 0)
+TUBA: int = _make_instrument(59, 0)
 """
 Instrument constant for Tuba.
 
@@ -1409,7 +1414,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-MUTED_TRUMPET: int = make_instrument(60, 0)
+MUTED_TRUMPET: int = _make_instrument(60, 0)
 """
 Instrument constant for Muted Trumpet.
 
@@ -1418,7 +1423,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-MUTED_TRUMPET_2: int = make_instrument(60, 1)
+MUTED_TRUMPET_2: int = _make_instrument(60, 1)
 """
 Instrument constant for Muted Trumpet 2.
 
@@ -1427,7 +1432,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-FRENCH_HORNS: int = make_instrument(61, 0)
+FRENCH_HORNS: int = _make_instrument(61, 0)
 """
 Instrument constant for French Horns.
 
@@ -1436,7 +1441,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-FRENCH_HORN_2: int = make_instrument(61, 1)
+FRENCH_HORN_2: int = _make_instrument(61, 1)
 """
 Instrument constant for French Horn 2.
 
@@ -1445,7 +1450,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BRASS_SECTION_1: int = make_instrument(62, 0)
+BRASS_SECTION_1: int = _make_instrument(62, 0)
 """
 Instrument constant for Brass Section 1.
 
@@ -1454,7 +1459,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BRASS_SECTION_2: int = make_instrument(62, 1)
+BRASS_SECTION_2: int = _make_instrument(62, 1)
 """
 Instrument constant for Brass Section 2.
 
@@ -1463,7 +1468,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_BRASS_1: int = make_instrument(63, 0)
+SYNTH_BRASS_1: int = _make_instrument(63, 0)
 """
 Instrument constant for Synth Brass 1.
 
@@ -1472,7 +1477,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_BRASS_3: int = make_instrument(63, 1)
+SYNTH_BRASS_3: int = _make_instrument(63, 1)
 """
 Instrument constant for Synth Brass 3.
 
@@ -1481,7 +1486,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ANALOG_BRASS_1: int = make_instrument(63, 2)
+ANALOG_BRASS_1: int = _make_instrument(63, 2)
 """
 Instrument constant for Analog Brass 1.
 
@@ -1490,7 +1495,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-JUMP_BRASS: int = make_instrument(63, 3)
+JUMP_BRASS: int = _make_instrument(63, 3)
 """
 Instrument constant for Jump Brass.
 
@@ -1499,7 +1504,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_BRASS_2: int = make_instrument(64, 0)
+SYNTH_BRASS_2: int = _make_instrument(64, 0)
 """
 Instrument constant for Synth Brass 2.
 
@@ -1508,7 +1513,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_BRASS_4: int = make_instrument(64, 1)
+SYNTH_BRASS_4: int = _make_instrument(64, 1)
 """
 Instrument constant for Synth Brass 4.
 
@@ -1517,7 +1522,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ANALOG_BRASS_2: int = make_instrument(64, 2)
+ANALOG_BRASS_2: int = _make_instrument(64, 2)
 """
 Instrument constant for Analog Brass 2.
 
@@ -1526,7 +1531,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SOPRANO_SAX: int = make_instrument(65, 0)
+SOPRANO_SAX: int = _make_instrument(65, 0)
 """
 Instrument constant for Soprano Sax.
 
@@ -1535,7 +1540,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ALTO_SAX: int = make_instrument(66, 0)
+ALTO_SAX: int = _make_instrument(66, 0)
 """
 Instrument constant for Alto Sax.
 
@@ -1544,7 +1549,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-TENOR_SAX: int = make_instrument(67, 0)
+TENOR_SAX: int = _make_instrument(67, 0)
 """
 Instrument constant for Tenor Sax.
 
@@ -1553,7 +1558,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BARITONE_SAX: int = make_instrument(68, 0)
+BARITONE_SAX: int = _make_instrument(68, 0)
 """
 Instrument constant for Baritone Sax.
 
@@ -1562,7 +1567,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-OBOE: int = make_instrument(69, 0)
+OBOE: int = _make_instrument(69, 0)
 """
 Instrument constant for Oboe.
 
@@ -1571,7 +1576,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ENGLISH_HORN: int = make_instrument(70, 0)
+ENGLISH_HORN: int = _make_instrument(70, 0)
 """
 Instrument constant for English Horn.
 
@@ -1580,7 +1585,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BASSOON: int = make_instrument(71, 0)
+BASSOON: int = _make_instrument(71, 0)
 """
 Instrument constant for Bassoon.
 
@@ -1589,7 +1594,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CLARINET: int = make_instrument(72, 0)
+CLARINET: int = _make_instrument(72, 0)
 """
 Instrument constant for Clarinet.
 
@@ -1598,7 +1603,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-PICCOLO: int = make_instrument(73, 0)
+PICCOLO: int = _make_instrument(73, 0)
 """
 Instrument constant for Piccolo.
 
@@ -1607,7 +1612,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-FLUTE: int = make_instrument(74, 0)
+FLUTE: int = _make_instrument(74, 0)
 """
 Instrument constant for Flute.
 
@@ -1616,7 +1621,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-RECORDER: int = make_instrument(75, 0)
+RECORDER: int = _make_instrument(75, 0)
 """
 Instrument constant for Recorder.
 
@@ -1625,7 +1630,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-PAN_FLUTE: int = make_instrument(76, 0)
+PAN_FLUTE: int = _make_instrument(76, 0)
 """
 Instrument constant for Pan Flute.
 
@@ -1634,7 +1639,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BOTTLE_BLOW: int = make_instrument(77, 0)
+BOTTLE_BLOW: int = _make_instrument(77, 0)
 """
 Instrument constant for Bottle Blow.
 
@@ -1643,7 +1648,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SHAKUHACHI: int = make_instrument(78, 0)
+SHAKUHACHI: int = _make_instrument(78, 0)
 """
 Instrument constant for Shakuhachi.
 
@@ -1652,7 +1657,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-WHISTLE: int = make_instrument(79, 0)
+WHISTLE: int = _make_instrument(79, 0)
 """
 Instrument constant for Whistle.
 
@@ -1661,7 +1666,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-OCARINA: int = make_instrument(80, 0)
+OCARINA: int = _make_instrument(80, 0)
 """
 Instrument constant for Ocarina.
 
@@ -1670,7 +1675,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SQUARE_LEAD: int = make_instrument(81, 0)
+SQUARE_LEAD: int = _make_instrument(81, 0)
 """
 Instrument constant for Square Lead.
 
@@ -1679,7 +1684,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SQUARE_WAVE: int = make_instrument(81, 1)
+SQUARE_WAVE: int = _make_instrument(81, 1)
 """
 Instrument constant for Square Wave.
 
@@ -1688,7 +1693,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SINE_WAVE: int = make_instrument(81, 2)
+SINE_WAVE: int = _make_instrument(81, 2)
 """
 Instrument constant for Sine Wave.
 
@@ -1697,7 +1702,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SAW_LEAD: int = make_instrument(82, 0)
+SAW_LEAD: int = _make_instrument(82, 0)
 """
 Instrument constant for Saw Lead.
 
@@ -1706,7 +1711,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SAW_WAVE: int = make_instrument(82, 1)
+SAW_WAVE: int = _make_instrument(82, 1)
 """
 Instrument constant for Saw Wave.
 
@@ -1715,7 +1720,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DOCTOR_SOLO: int = make_instrument(82, 2)
+DOCTOR_SOLO: int = _make_instrument(82, 2)
 """
 Instrument constant for Doctor Solo.
 
@@ -1724,7 +1729,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-NATURAL_LEAD: int = make_instrument(82, 3)
+NATURAL_LEAD: int = _make_instrument(82, 3)
 """
 Instrument constant for Natural Lead.
 
@@ -1733,7 +1738,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SEQUENCED_SAW: int = make_instrument(82, 4)
+SEQUENCED_SAW: int = _make_instrument(82, 4)
 """
 Instrument constant for Sequenced Saw.
 
@@ -1742,7 +1747,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_CALLIOPE: int = make_instrument(83, 0)
+SYNTH_CALLIOPE: int = _make_instrument(83, 0)
 """
 Instrument constant for Synth Calliope.
 
@@ -1751,7 +1756,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CHIFFER_LEAD: int = make_instrument(84, 0)
+CHIFFER_LEAD: int = _make_instrument(84, 0)
 """
 Instrument constant for Chiffer Lead.
 
@@ -1760,7 +1765,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CHARANG: int = make_instrument(85, 0)
+CHARANG: int = _make_instrument(85, 0)
 """
 Instrument constant for Charang.
 
@@ -1769,7 +1774,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-WIRE_LEAD: int = make_instrument(85, 1)
+WIRE_LEAD: int = _make_instrument(85, 1)
 """
 Instrument constant for Wire Lead.
 
@@ -1778,7 +1783,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SOLO_SYNTH_VOX: int = make_instrument(86, 0)
+SOLO_SYNTH_VOX: int = _make_instrument(86, 0)
 """
 Instrument constant for Solo Synth Vox.
 
@@ -1787,7 +1792,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SAW_WAVE_5TH: int = make_instrument(87, 0)
+SAW_WAVE_5TH: int = _make_instrument(87, 0)
 """
 Instrument constant for Saw Wave 5th.
 
@@ -1796,7 +1801,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BASS__LEAD: int = make_instrument(88, 0)
+BASS__LEAD: int = _make_instrument(88, 0)
 """
 Instrument constant for Bass & Lead.
 
@@ -1805,7 +1810,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DELAYED_LEAD: int = make_instrument(88, 1)
+DELAYED_LEAD: int = _make_instrument(88, 1)
 """
 Instrument constant for Delayed Lead .
 
@@ -1814,7 +1819,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ICE_RAIN: int = make_instrument(97, 0)
+ICE_RAIN: int = _make_instrument(97, 0)
 """
 Instrument constant for Ice Rain.
 
@@ -1823,7 +1828,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SOUNDTRACK: int = make_instrument(98, 0)
+SOUNDTRACK: int = _make_instrument(98, 0)
 """
 Instrument constant for Soundtrack.
 
@@ -1832,7 +1837,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CRYSTAL: int = make_instrument(99, 0)
+CRYSTAL: int = _make_instrument(99, 0)
 """
 Instrument constant for Crystal.
 
@@ -1841,7 +1846,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_MALLET: int = make_instrument(99, 1)
+SYNTH_MALLET: int = _make_instrument(99, 1)
 """
 Instrument constant for Synth Mallet.
 
@@ -1850,7 +1855,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ATMOSPHERE: int = make_instrument(100, 0)
+ATMOSPHERE: int = _make_instrument(100, 0)
 """
 Instrument constant for Atmosphere.
 
@@ -1859,7 +1864,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BRIGHTNESS: int = make_instrument(101, 0)
+BRIGHTNESS: int = _make_instrument(101, 0)
 """
 Instrument constant for Brightness.
 
@@ -1868,7 +1873,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-GOBLIN: int = make_instrument(102, 0)
+GOBLIN: int = _make_instrument(102, 0)
 """
 Instrument constant for Goblin.
 
@@ -1877,7 +1882,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ECHO_DROPS: int = make_instrument(103, 0)
+ECHO_DROPS: int = _make_instrument(103, 0)
 """
 Instrument constant for Echo Drops.
 
@@ -1886,7 +1891,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ECHO_BELL: int = make_instrument(103, 1)
+ECHO_BELL: int = _make_instrument(103, 1)
 """
 Instrument constant for Echo Bell.
 
@@ -1895,7 +1900,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ECHO_PAN: int = make_instrument(103, 2)
+ECHO_PAN: int = _make_instrument(103, 2)
 """
 Instrument constant for Echo Pan.
 
@@ -1904,7 +1909,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-STAR_THEME: int = make_instrument(104, 0)
+STAR_THEME: int = _make_instrument(104, 0)
 """
 Instrument constant for Star Theme.
 
@@ -1913,7 +1918,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SITAR: int = make_instrument(105, 0)
+SITAR: int = _make_instrument(105, 0)
 """
 Instrument constant for Sitar.
 
@@ -1922,7 +1927,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SITAR_2: int = make_instrument(105, 1)
+SITAR_2: int = _make_instrument(105, 1)
 """
 Instrument constant for Sitar 2.
 
@@ -1931,7 +1936,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BANJO: int = make_instrument(106, 0)
+BANJO: int = _make_instrument(106, 0)
 """
 Instrument constant for Banjo.
 
@@ -1940,7 +1945,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SHAMISEN: int = make_instrument(107, 0)
+SHAMISEN: int = _make_instrument(107, 0)
 """
 Instrument constant for Shamisen.
 
@@ -1949,7 +1954,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-KOTO: int = make_instrument(108, 0)
+KOTO: int = _make_instrument(108, 0)
 """
 Instrument constant for Koto.
 
@@ -1958,7 +1963,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-TAISHO_KOTO: int = make_instrument(108, 1)
+TAISHO_KOTO: int = _make_instrument(108, 1)
 """
 Instrument constant for Taisho Koto.
 
@@ -1967,7 +1972,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-KALIMBA: int = make_instrument(109, 0)
+KALIMBA: int = _make_instrument(109, 0)
 """
 Instrument constant for Kalimba.
 
@@ -1976,7 +1981,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BAGPIPE: int = make_instrument(110, 0)
+BAGPIPE: int = _make_instrument(110, 0)
 """
 Instrument constant for Bagpipe.
 
@@ -1985,7 +1990,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-FIDDLE: int = make_instrument(111, 0)
+FIDDLE: int = _make_instrument(111, 0)
 """
 Instrument constant for Fiddle.
 
@@ -1994,7 +1999,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SHANAI: int = make_instrument(112, 0)
+SHANAI: int = _make_instrument(112, 0)
 """
 Instrument constant for Shanai.
 
@@ -2003,7 +2008,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-TINKLE_BELL: int = make_instrument(113, 0)
+TINKLE_BELL: int = _make_instrument(113, 0)
 """
 Instrument constant for Tinkle Bell.
 
@@ -2012,7 +2017,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-AGOGO: int = make_instrument(114, 0)
+AGOGO: int = _make_instrument(114, 0)
 """
 Instrument constant for Agogo.
 
@@ -2021,7 +2026,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-STEEL_DRUMS: int = make_instrument(115, 0)
+STEEL_DRUMS: int = _make_instrument(115, 0)
 """
 Instrument constant for Steel Drums.
 
@@ -2030,7 +2035,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-WOODBLOCK: int = make_instrument(116, 0)
+WOODBLOCK: int = _make_instrument(116, 0)
 """
 Instrument constant for Woodblock.
 
@@ -2039,7 +2044,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CASTANETS: int = make_instrument(116, 1)
+CASTANETS: int = _make_instrument(116, 1)
 """
 Instrument constant for Castanets.
 
@@ -2048,7 +2053,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-TAIKO: int = make_instrument(117, 0)
+TAIKO: int = _make_instrument(117, 0)
 """
 Instrument constant for Taiko.
 
@@ -2057,7 +2062,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CONCERT_BASS_DRUM: int = make_instrument(117, 1)
+CONCERT_BASS_DRUM: int = _make_instrument(117, 1)
 """
 Instrument constant for Concert Bass Drum.
 
@@ -2066,7 +2071,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-MELODIC_TOM_1: int = make_instrument(118, 0)
+MELODIC_TOM_1: int = _make_instrument(118, 0)
 """
 Instrument constant for Melodic Tom 1.
 
@@ -2075,7 +2080,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-MELODIC_TOM_2: int = make_instrument(118, 1)
+MELODIC_TOM_2: int = _make_instrument(118, 1)
 """
 Instrument constant for Melodic Tom 2.
 
@@ -2084,7 +2089,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SYNTH_DRUM: int = make_instrument(119, 0)
+SYNTH_DRUM: int = _make_instrument(119, 0)
 """
 Instrument constant for Synth Drum.
 
@@ -2093,7 +2098,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-TOM_808: int = make_instrument(119, 1)
+TOM_808: int = _make_instrument(119, 1)
 """
 Instrument constant for Tom 808.
 
@@ -2102,7 +2107,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ELECTRIC_PERCUSSION: int = make_instrument(119, 2)
+ELECTRIC_PERCUSSION: int = _make_instrument(119, 2)
 """
 Instrument constant for Electric Percussion.
 
@@ -2111,7 +2116,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-REVERSE_CYMBAL: int = make_instrument(120, 0)
+REVERSE_CYMBAL: int = _make_instrument(120, 0)
 """
 Instrument constant for Reverse Cymbal.
 
@@ -2120,7 +2125,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-GUITAR_FRET_NOISE: int = make_instrument(121, 0)
+GUITAR_FRET_NOISE: int = _make_instrument(121, 0)
 """
 Instrument constant for Guitar Fret Noise.
 
@@ -2129,7 +2134,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-GUITAR_CUT_NOISE: int = make_instrument(121, 1)
+GUITAR_CUT_NOISE: int = _make_instrument(121, 1)
 """
 Instrument constant for Guitar Cut Noise.
 
@@ -2138,7 +2143,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-STRING_SLAP: int = make_instrument(121, 2)
+STRING_SLAP: int = _make_instrument(121, 2)
 """
 Instrument constant for String Slap.
 
@@ -2147,7 +2152,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BREATH_NOISE: int = make_instrument(122, 0)
+BREATH_NOISE: int = _make_instrument(122, 0)
 """
 Instrument constant for Breath Noise.
 
@@ -2156,7 +2161,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-FLUTE_KEY_CLICK: int = make_instrument(122, 1)
+FLUTE_KEY_CLICK: int = _make_instrument(122, 1)
 """
 Instrument constant for Flute Key Click.
 
@@ -2165,7 +2170,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SEASHORE: int = make_instrument(123, 0)
+SEASHORE: int = _make_instrument(123, 0)
 """
 Instrument constant for Seashore.
 
@@ -2174,7 +2179,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-RAIN: int = make_instrument(123, 1)
+RAIN: int = _make_instrument(123, 1)
 """
 Instrument constant for Rain.
 
@@ -2183,7 +2188,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-THUNDER: int = make_instrument(123, 2)
+THUNDER: int = _make_instrument(123, 2)
 """
 Instrument constant for Thunder.
 
@@ -2192,7 +2197,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-WIND: int = make_instrument(123, 3)
+WIND: int = _make_instrument(123, 3)
 """
 Instrument constant for Wind.
 
@@ -2201,7 +2206,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-STREAM: int = make_instrument(123, 4)
+STREAM: int = _make_instrument(123, 4)
 """
 Instrument constant for Stream.
 
@@ -2210,7 +2215,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BUBBLE: int = make_instrument(123, 5)
+BUBBLE: int = _make_instrument(123, 5)
 """
 Instrument constant for Bubble.
 
@@ -2219,7 +2224,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BIRD: int = make_instrument(124, 0)
+BIRD: int = _make_instrument(124, 0)
 """
 Instrument constant for Bird.
 
@@ -2228,7 +2233,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DOG: int = make_instrument(124, 1)
+DOG: int = _make_instrument(124, 1)
 """
 Instrument constant for Dog.
 
@@ -2237,7 +2242,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-HORSE_GALLOP: int = make_instrument(124, 2)
+HORSE_GALLOP: int = _make_instrument(124, 2)
 """
 Instrument constant for Horse-Gallop.
 
@@ -2246,7 +2251,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BIRD_2: int = make_instrument(124, 3)
+BIRD_2: int = _make_instrument(124, 3)
 """
 Instrument constant for Bird 2.
 
@@ -2255,7 +2260,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-TELEPHONE_1: int = make_instrument(125, 0)
+TELEPHONE_1: int = _make_instrument(125, 0)
 """
 Instrument constant for Telephone 1.
 
@@ -2264,7 +2269,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-TELEPHONE_2: int = make_instrument(125, 1)
+TELEPHONE_2: int = _make_instrument(125, 1)
 """
 Instrument constant for Telephone 2.
 
@@ -2273,7 +2278,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DOOR_CREAKING: int = make_instrument(125, 2)
+DOOR_CREAKING: int = _make_instrument(125, 2)
 """
 Instrument constant for Door Creaking.
 
@@ -2282,7 +2287,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-DOOR_CLOSING: int = make_instrument(125, 3)
+DOOR_CLOSING: int = _make_instrument(125, 3)
 """
 Instrument constant for Door Closing.
 
@@ -2291,7 +2296,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SCRATCH: int = make_instrument(125, 4)
+SCRATCH: int = _make_instrument(125, 4)
 """
 Instrument constant for Scratch.
 
@@ -2300,7 +2305,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-WIND_CHIMES: int = make_instrument(125, 5)
+WIND_CHIMES: int = _make_instrument(125, 5)
 """
 Instrument constant for Wind Chimes.
 
@@ -2309,7 +2314,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-HELICOPTER: int = make_instrument(126, 0)
+HELICOPTER: int = _make_instrument(126, 0)
 """
 Instrument constant for Helicopter.
 
@@ -2318,7 +2323,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CAR_ENGINE: int = make_instrument(126, 1)
+CAR_ENGINE: int = _make_instrument(126, 1)
 """
 Instrument constant for Car-Engine.
 
@@ -2327,7 +2332,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CAR_STOP: int = make_instrument(126, 2)
+CAR_STOP: int = _make_instrument(126, 2)
 """
 Instrument constant for Car-Stop.
 
@@ -2336,7 +2341,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CAR_PASS: int = make_instrument(126, 3)
+CAR_PASS: int = _make_instrument(126, 3)
 """
 Instrument constant for Car-Pass.
 
@@ -2345,7 +2350,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-CAR_CRASH: int = make_instrument(126, 4)
+CAR_CRASH: int = _make_instrument(126, 4)
 """
 Instrument constant for Car-Crash.
 
@@ -2354,7 +2359,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SIREN: int = make_instrument(126, 5)
+SIREN: int = _make_instrument(126, 5)
 """
 Instrument constant for Siren.
 
@@ -2363,7 +2368,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-TRAIN: int = make_instrument(126, 6)
+TRAIN: int = _make_instrument(126, 6)
 """
 Instrument constant for Train.
 
@@ -2372,7 +2377,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-JETPLANE: int = make_instrument(126, 7)
+JETPLANE: int = _make_instrument(126, 7)
 """
 Instrument constant for Jetplane.
 
@@ -2381,7 +2386,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-STARSHIP: int = make_instrument(126, 8)
+STARSHIP: int = _make_instrument(126, 8)
 """
 Instrument constant for Starship.
 
@@ -2390,7 +2395,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-BURST_NOISE: int = make_instrument(126, 9)
+BURST_NOISE: int = _make_instrument(126, 9)
 """
 Instrument constant for Burst Noise.
 
@@ -2399,7 +2404,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-APPLAUSE: int = make_instrument(127, 0)
+APPLAUSE: int = _make_instrument(127, 0)
 """
 Instrument constant for Applause.
 
@@ -2408,7 +2413,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-LAUGHING: int = make_instrument(127, 1)
+LAUGHING: int = _make_instrument(127, 1)
 """
 Instrument constant for Laughing.
 
@@ -2417,7 +2422,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-SCREAMING: int = make_instrument(127, 2)
+SCREAMING: int = _make_instrument(127, 2)
 """
 Instrument constant for Screaming.
 
@@ -2426,7 +2431,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-PUNCH: int = make_instrument(127, 3)
+PUNCH: int = _make_instrument(127, 3)
 """
 Instrument constant for Punch.
 
@@ -2435,7 +2440,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-HEART_BEAT: int = make_instrument(127, 4)
+HEART_BEAT: int = _make_instrument(127, 4)
 """
 Instrument constant for Heart Beat.
 
@@ -2444,7 +2449,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-FOOTSTEPS: int = make_instrument(127, 5)
+FOOTSTEPS: int = _make_instrument(127, 5)
 """
 Instrument constant for Footsteps.
 
@@ -2453,7 +2458,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-GUN_SHOT: int = make_instrument(128, 0)
+GUN_SHOT: int = _make_instrument(128, 0)
 """
 Instrument constant for Gun Shot.
 
@@ -2462,7 +2467,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-MACHINE_GUN: int = make_instrument(128, 1)
+MACHINE_GUN: int = _make_instrument(128, 1)
 """
 Instrument constant for Machine Gun.
 
@@ -2471,7 +2476,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-LASERGUN: int = make_instrument(128, 2)
+LASERGUN: int = _make_instrument(128, 2)
 """
 Instrument constant for Lasergun.
 
@@ -2480,7 +2485,7 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-EXPLOSION: int = make_instrument(128, 3)
+EXPLOSION: int = _make_instrument(128, 3)
 """
 Instrument constant for Explosion.
 

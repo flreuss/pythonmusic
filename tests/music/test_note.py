@@ -1,6 +1,12 @@
 import unittest
 from pythonmusic.music import Note
 from pythonmusic.constants.pitches import REST
+from pythonmusic.constants.articulations import (
+    LEGATO,
+    STACCATO,
+    MARCATO,
+    PORTATO,
+)
 
 PITCH = 50
 DURATION = 1.0
@@ -18,6 +24,12 @@ class NoteTests(unittest.TestCase):
         self.assertEqual(note.pitch, PITCH)
         self.assertEqual(note.duration, DURATION)
         self.assertEqual(note.dynamic, DYNAMIC)
+
+        note = Note(PITCH, DURATION, DYNAMIC, [LEGATO, STACCATO])
+        self.assertTrue(note.has_articulation(LEGATO))
+        self.assertTrue(note.has_articulation(STACCATO))
+        self.assertTrue(note.has_articulation(PORTATO))
+        self.assertFalse(note.has_articulation(MARCATO))
 
     def test_range_check_pitch_above(self):
         """Tests Note initialiser with an above out of bounds pitch"""
@@ -80,3 +92,57 @@ class NoteTests(unittest.TestCase):
 
         self.assertEqual(rest.duration, DURATION)
         self.assertEqual(rest.dynamic, DYNAMIC)
+
+    def test_add_articulation(self):
+        """Tests Note add_articulation() method"""
+        note = Note(PITCH, DURATION, DYNAMIC, [LEGATO])
+        self.assertTrue(note.has_articulation(LEGATO))
+        self.assertFalse(note.has_articulation(PORTATO))
+
+    def test_remove_articulation(self):
+        """Tests Note remove_articulation() method"""
+        note = Note(PITCH, DURATION, DYNAMIC, [LEGATO, MARCATO])
+        self.assertTrue(note.has_articulation(LEGATO))
+        self.assertTrue(note.has_articulation(MARCATO))
+        self.assertFalse(note.has_articulation(PORTATO))
+
+        note.remove_articulation(MARCATO)
+
+        note = Note(PITCH, DURATION, DYNAMIC, [LEGATO])
+        self.assertTrue(note.has_articulation(LEGATO))
+        self.assertFalse(note.has_articulation(MARCATO))
+        self.assertFalse(note.has_articulation(PORTATO))
+
+    def test_has_articulation(self):
+        """Tests Note has_articulation() method"""
+        note = Note(PITCH, DURATION, DYNAMIC, [LEGATO, MARCATO])
+        self.assertTrue(note.has_articulation(LEGATO))
+        self.assertTrue(note.has_articulation(MARCATO))
+        self.assertFalse(note.has_articulation(PORTATO))
+
+    def test_portato_articulation(self):
+        """Tests that composite articulation portato works"""
+        note = Note(PITCH, DURATION, DYNAMIC, [LEGATO, MARCATO])
+        self.assertTrue(note.has_articulation(LEGATO))
+        self.assertFalse(note.has_articulation(STACCATO))
+        self.assertFalse(note.has_articulation(PORTATO))
+
+        note.add_articulation(STACCATO)
+        self.assertTrue(note.has_articulation(LEGATO))
+        self.assertTrue(note.has_articulation(STACCATO))
+        self.assertTrue(note.has_articulation(PORTATO))
+
+        note.remove_articulation(LEGATO)
+        self.assertFalse(note.has_articulation(LEGATO))
+        self.assertTrue(note.has_articulation(STACCATO))
+        self.assertFalse(note.has_articulation(PORTATO))
+
+        note.add_articulation(LEGATO)
+        self.assertTrue(note.has_articulation(LEGATO))
+        self.assertTrue(note.has_articulation(STACCATO))
+        self.assertTrue(note.has_articulation(PORTATO))
+
+        note.remove_articulation(PORTATO)
+        self.assertFalse(note.has_articulation(LEGATO))
+        self.assertFalse(note.has_articulation(STACCATO))
+        self.assertFalse(note.has_articulation(PORTATO))
