@@ -1,6 +1,7 @@
 from copy import copy as _copy
 import typing as _typing
 from pythonmusic.constants.articulations import LEGATO as _LEGATO
+from pythonmusic.constants.articulations import ACCENT as _ACCENT
 from pythonmusic.util.checks import assert_range as _assert_range
 from pythonmusic.constants.dynamics import MF as _MF
 from pythonmusic.constants.pitches import REST as _REST
@@ -99,6 +100,14 @@ class Note:
         """
         note = _copy(self)
         note.add_articulation(_LEGATO)
+        return note
+
+    def with_accent(self) -> _typing.Self:
+        """
+        Returns this note with added accent.
+        """
+        note = _copy(self)
+        note.add_articulation(_ACCENT)
         return note
 
     def is_rest(self) -> bool:
