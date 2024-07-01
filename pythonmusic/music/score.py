@@ -26,9 +26,11 @@ class Score:
 
     def duration(self) -> float:
         """Returns the unit length of the score."""
-        if len(self.parts) == 0:
-            return 0
-        return max(map(lambda part: part.duration(), self.parts))
+        return (
+            max(map(lambda part: part.duration(), self.parts))
+            if len(self.parts) != 0
+            else 0
+        )
 
     def has_part(self, part: Part) -> bool:
         """Returns `True` if the given part is in the score."""

@@ -92,14 +92,14 @@ class Phrase:
             )
 
         # create notes form SoA
-        notes = list(
-            map(
-                lambda i: Note(pitches[i], durations[i], dynamics[i]),
-                range(0, len(pitches)),
+        self.add_notes(
+            list(
+                map(
+                    lambda i: Note(pitches[i], durations[i], dynamics[i]),
+                    range(0, len(pitches)),
+                )
             )
         )
-
-        self.add_notes(notes)
 
     def remove_note(self, index: int) -> Note:
         """
@@ -123,18 +123,17 @@ class Phrase:
 
         :return: The smallest pitch in the phrase of `None` if empty
         """
-        if len(self.notes) == 0:
-            return None
-
-        # TODO: check if manually is faster
-        # This has potential for terrible time complexity, as this can be done
-        # in a single for-loop. Python may optimise this with generators, though.
-        # Kindly check at a later date.
-        return min(
-            map(
-                lambda note: note.pitch,
-                filter(lambda note: not note.is_rest(), self.notes),
+        INVALID_PITCH = 1000
+        return (
+            _reduce(
+                lambda current, next: (
+                    min(current, next.pitch) if not next.is_rest() else current
+                ),
+                self.notes,
+                INVALID_PITCH,
             )
+            if len(self.notes) != 0
+            else None
         )
 
     def max_pitch(self) -> int | None:
@@ -144,14 +143,16 @@ class Phrase:
 
         :return: The highest pitch in the phrase of `None` if empty
         """
-        if len(self.notes) == 0:
-            return None
-
-        return max(
-            map(
-                lambda note: note.pitch,
-                filter(lambda note: not note.is_rest(), self.notes),
+        return (
+            _reduce(
+                lambda current, next: (
+                    max(current, next.pitch) if not next.is_rest() else current
+                ),
+                self.notes,
+                0,
             )
+            if len(self.notes) != 0
+            else None
         )
 
     def min_duration(self) -> float | None:
@@ -160,10 +161,11 @@ class Phrase:
 
         :return: The smallest duration in the phrase of `None` if empty
         """
-        if len(self.notes) == 0:
-            return None
-
-        return min(map(lambda note: note.duration, self.notes))
+        return (
+            min(map(lambda note: note.duration, self.notes))
+            if len(self.notes) != 0
+            else None
+        )
 
     def max_duration(self) -> float | None:
         """
@@ -171,10 +173,11 @@ class Phrase:
 
         :return: The highest duration in the phrase of `None` if empty
         """
-        if len(self.notes) == 0:
-            return None
-
-        return max(map(lambda note: note.duration, self.notes))
+        return (
+            max(map(lambda note: note.duration, self.notes))
+            if len(self.notes) != 0
+            else None
+        )
 
     def min_dynamic(self) -> int | None:
         """
@@ -183,14 +186,19 @@ class Phrase:
 
         :return: The smallest dynamic in the phrase of `None` if empty
         """
-        if len(self.notes) == 0:
-            return None
-
-        return min(
-            map(
-                lambda note: note.dynamic,
-                filter(lambda note: not note.is_rest(), self.notes),
+        INVALID_DYNAMIC = 200  # a value above valid dynamic range
+        return (
+            _reduce(
+                lambda current, next: (
+                    min(current, next.dynamic)
+                    if not next.is_rest()
+                    else current
+                ),
+                self.notes,
+                INVALID_DYNAMIC,
             )
+            if len(self.notes) != 0
+            else None
         )
 
     def max_dynamic(self) -> int | None:
@@ -200,12 +208,16 @@ class Phrase:
 
         :return: The highest dynamic in the phrase of `None` if empty
         """
-        if len(self.notes) == 0:
-            return None
-
-        return max(
-            map(
-                lambda note: note.dynamic,
-                filter(lambda note: not note.is_rest(), self.notes),
+        return (
+            _reduce(
+                lambda current, next: (
+                    max(current, next.dynamic)
+                    if not next.is_rest()
+                    else current
+                ),
+                self.notes,
+                0,
             )
+            if len(self.notes) != 0
+            else None
         )
