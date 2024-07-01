@@ -1,3 +1,10 @@
+"""
+Prelude in C
+BWV 846
+J. S. Bach
+Das Wohltemperirte Clavier
+"""
+
 from pythonmusic import *
 
 
@@ -115,13 +122,107 @@ def right_part() -> Part:
     """
     Returns the right part of the prelude, i.e., what the right hand plays.
     """
-    part = Part("right", ACOUSTIC_GRAND_PIANO, channel=1)
 
     # the right part is a bit simpler in that there is only one note played at
     # the same time
 
-    # TODO: add legato, when implemented
+    # similar to the left part, the broken chords repeat twice
+    # another function it is, then
+    def broken_chord(a: int, b: int, c: int) -> list[Note]:
+        return (
+            [Note.rest(EN)]
+            + legato([Note(a, SN), Note(b, SN), Note(c, SN)] * 2)
+        ) * 2
 
+    phrase = Phrase()
+
+    phrase.add_notes(
+        broken_chord(G4, C5, E5)  # 1
+        + broken_chord(A4, D5, F5)  # 2
+        + broken_chord(G4, D5, F5)  # 3
+        + broken_chord(G4, C5, E5)  # 4
+        + broken_chord(A4, E5, C6)  # 5
+        + broken_chord(FS4, C5, E5)  # 6
+        + broken_chord(G4, D5, G5)  # 7
+        + broken_chord(E4, G4, C5)  # 8
+        + broken_chord(E4, G4, C5)  # 9
+        + broken_chord(D4, FS4, C4)  # 10
+        + broken_chord(D4, G4, B4)  # 11
+        + broken_chord(E4, G4, CS5)  # 12
+        + broken_chord(D4, A4, D5)  # 13
+        + broken_chord(D4, F4, B4)  # 14
+        + broken_chord(C4, G4, C5)  # 15
+        + broken_chord(A3, C4, F4)  # 16
+        + broken_chord(A3, C4, F4)  # 17
+        + broken_chord(G3, B3, F4)  # 18
+        + broken_chord(G3, C4, E4)  # 19
+        + broken_chord(BF3, C4, E4)  # 20
+        + broken_chord(A3, C4, E4)  # 21
+        + broken_chord(A3, C4, EF4)  # 22
+        + broken_chord(B3, C4, EF4)  # 23
+        + broken_chord(B3, C4, D4)  # 24
+        + broken_chord(G3, B3, D4)  # 25
+        + broken_chord(G3, C4, E3)  # 26
+        + broken_chord(G3, C4, F4)  # 27
+        + broken_chord(C3, B3, F4)  # 28
+        + broken_chord(A3, C4, FS4)  # 29
+        + broken_chord(G3, C4, G4)  # 30
+        + broken_chord(G3, C4, F4)  # 31
+        + broken_chord(G3, B3, F4)  # 32
+        + broken_chord(G3, BF3, E4)  # 33
+    )
+
+    # finally, the last three measures
+    phrase.add_note(Note.rest(EN))  # 34
+    phrase.add_notes(
+        legato(
+            [
+                Note(F3, SN),  #
+                Note(A3, SN),
+                Note(C4, SN),  #
+                Note(F4, SN),
+                Note(C4, SN),
+                Note(A3, SN),
+                Note(C4, SN),  #
+                Note(A3, SN),
+                Note(F3, SN),
+                Note(A3, SN),
+                Note(F3, SN),  #
+                Note(D3, SN),
+                Note(F3, SN),
+                Note(D3, SN),
+            ]
+        )
+    )
+    phrase.add_note(Note.rest(EN))  # 35
+    phrase.add_notes(
+        legato(
+            [
+                Note(G4, SN),  #
+                Note(B4, SN),
+                Note(D5, SN),  #
+                Note(F5, SN),
+                Note(D5, SN),
+                Note(B4, SN),
+                Note(D5, SN),  #
+                Note(B4, SN),
+                Note(G4, SN),
+                Note(B4, SN),
+                Note(D4, SN),  #
+                Note(F4, SN),
+                Note(E4, SN),
+                Note(D4, SN),
+            ]
+        )
+    )
+
+    # TODO: uncomment when implemented chords
+
+    # the last measure in the right hand consists of a chord
+    # chord = Chord([E4, G4, C5], WN)
+    # phrase.add_chrd(chord)
+
+    part = Part("right", ACOUSTIC_GRAND_PIANO, phrases=[phrase], channel=1)
     return part
 
 
