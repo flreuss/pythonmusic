@@ -237,11 +237,11 @@ def make_score() -> Score:
     return score
 
 
-def main():
+def play():
     score = make_score()
     # play_score(score)
     pass
 
 
 if __name__ == "__main__":
-    main()
+    play()
