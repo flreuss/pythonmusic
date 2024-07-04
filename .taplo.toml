@@ -1,0 +1,3 @@
+[schema]
+path = ".pyproject.json"
+enabled = true
