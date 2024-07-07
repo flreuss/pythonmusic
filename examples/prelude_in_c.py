@@ -219,8 +219,8 @@ def right_part() -> Part:
     # TODO: uncomment when implemented chords
 
     # the last measure in the right hand consists of a chord
-    # chord = Chord([E4, G4, C5], WN)
-    # phrase.add_chrd(chord)
+    chord = Chord([E4, G4, C5], WN)
+    phrase.add_chord(chord)
 
     part = Part("right", ACOUSTIC_GRAND_PIANO, phrases=[phrase], channel=1)
     return part
