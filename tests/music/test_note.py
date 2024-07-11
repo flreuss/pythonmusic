@@ -1,3 +1,4 @@
+from copy import deepcopy
 import unittest
 from pythonmusic.music import Note
 from pythonmusic.constants.pitches import REST
@@ -63,10 +64,15 @@ class NoteTests(unittest.TestCase):
             note = Note(PITCH, DURATION, DYNAMIC)
             note.dynamic = -20
 
-    def test_str(self):
-        """Tests Note __str__ dunder method"""
-        note = Note(30, 1.0, 40)
-        self.assertEqual(note.__str__(), "Note(30, 1.0, 40)")
+    def test_is_note(self):
+        """Tests Note is_note() method override from abc"""
+        note = Note(34, 5.0, 45)
+        self.assertTrue(note.is_note())
+
+    def test_is_chord(self):
+        """Tests Note is_chord() method override from abc"""
+        note = Note(34, 5.0, 45)
+        self.assertFalse(note.is_chord())
 
     def test_eq(self):
         """Tests Note __eq__ dunder method"""
@@ -74,6 +80,16 @@ class NoteTests(unittest.TestCase):
         note_b = Note(PITCH, DURATION, DYNAMIC)
 
         self.assertEqual(note_a, note_b)
+
+        notes_a = [Note(x, float(x * 2)) for x in range(100)]
+        notes_b = deepcopy(notes_a)
+
+        # asserts that identity is different
+        self.assertEqual(len(notes_a), len(notes_b))
+        for i in range(len(notes_a)):
+            self.assertIsNot(notes_a[i], notes_b[i])
+
+        self.assertEqual(notes_a, notes_b)
 
     def test_is_rest(self):
         """Tests Note is_rest() check"""

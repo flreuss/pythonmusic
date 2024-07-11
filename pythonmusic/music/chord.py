@@ -1,68 +1,57 @@
-from functools import reduce as _reduce
+from typing import cast as _cast, Any
+
 from .note import Note
+from .phrase_element import PhraseElement
+from .note_collection import NoteCollection
 from ..constants.dynamics import MF as _MF
 from ..constants.intervals import OCTAVE as _OCTAVE
 
 
-class Chord:
+class Chord(PhraseElement, NoteCollection):
     """A type that groups multiple notes together."""
 
-    __slots__ = "notes"
+    __slots__ = "_notes"
 
     def __init__(self, notes: list[Note] = []) -> None:
-        self.notes = []
-        self.add_notes(notes)
+        self._notes = []
+        self.add_notes(_cast(list[PhraseElement], notes))
 
-    def __len__(self) -> int:
-        return self.notes.__len__()
+    def __eq__(self, other: Any) -> bool:
+        if not isinstance(other, Chord):
+            return False
+
+        length = self.length()
+        if length != len(other.notes):
+            return False
+
+        for i in range(length):
+            if self.notes[i] != other.notes[i]:
+                return False
+
+        return True
 
     def length(self) -> int:
         """Returns the number of notes in the chord."""
         return len(self.notes)
 
+    @property
+    def notes(self) -> list[PhraseElement]:
+        return self._notes
+
+    @notes.setter
+    def notes(self, new_value: list[PhraseElement]):
+        self._notes = new_value
+
+    @property
     def duration(self) -> float:
         """Returns the duration of the chord."""
-        wev
+        return self.max_duration() or 0.0
 
-    def add_note(self, note: Note):
-        """Adds the given note to the chord."""
-        self.notes.append(note)
+    def is_note(self) -> bool:
+        return False
 
-    def add_notes(self, notes: list[Note]):
-        """Adds the given notes to the chord."""
-        self.notes += notes
-
-    def remove_note(self, index: int):
-        """Removes the note at the given index."""
-        self.notes.pop(index)
-
-    def clear(self):
-        """Removes all notes from the chord."""
-        self.notes = []
-
-    def min_pitch(self) -> int | None:
-        """Returns the lowest pitch in the chord or `None` if empty.
-
-        Assumes that no rests are in the chord.
-
-        :return: The lowest pitch in the chord or `None` if empty.
-        """
-        return (
-            _reduce(lambda current, next: min(current, next.pitch), self.notes)
-            if len(self.notes) != 0
-            else None
-        )
-
-    def max_pitch(self) -> int | None:
-        """Returns the highest pitch in the chord or `None` if empty.
-
-        :return:The highest pitch in the chord or `None` if empty.
-        """
-        return (
-            _reduce(lambda current, next: max(current, next.pitch), self.notes)
-            if len(self.notes) != 0
-            else None
-        )
+    def is_chord(self) -> bool:
+        return True
 
     @staticmethod
     def from_root(

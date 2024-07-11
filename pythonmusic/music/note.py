@@ -1,5 +1,6 @@
 from copy import copy as _copy
 import typing as _typing
+from .phrase_element import PhraseElement
 from pythonmusic.constants.articulations import LEGATO as _LEGATO
 from pythonmusic.constants.articulations import ACCENT as _ACCENT
 from pythonmusic.util.checks import assert_range as _assert_range
@@ -7,7 +8,7 @@ from pythonmusic.constants.dynamics import MF as _MF
 from pythonmusic.constants.pitches import REST as _REST
 
 
-class Note:
+class Note(PhraseElement):
     """
     Notes represent a single musical note event. They are defines by their pitch,
     duration and dynamic.
@@ -15,7 +16,7 @@ class Note:
 
     # Instructs python to store notes as a tuple. This can potentially reduce the
     # memory foot print of large scores.
-    __slots__ = ("_pitch", "_dynamic", "duration", "_articulation")
+    __slots__ = ("_pitch", "_dynamic", "_duration", "_articulation")
 
     def __init__(
         self,
@@ -32,23 +33,21 @@ class Note:
 
         self._pitch: int = pitch
         self._dynamic: int = dynamic
-        self.duration: float = duration
+        self._duration: float = duration
         self._articulation: int = 0x0
 
         for articulation in articulations:
             self.add_articulation(articulation)
 
-    def __str__(self) -> str:
-        return f"Note({self._pitch}, {self.duration}, {self._dynamic})"
-
-    def __eq__(self, other: object) -> bool:
-        if isinstance(other, Note):
-            return (
-                self._pitch == other._pitch
-                and self._dynamic == other._dynamic
-                and self.duration == other.duration
-            )
-        return False
+    def __eq__(self, other: _typing.Any) -> bool:
+        if not isinstance(other, Note):
+            return False
+        return (
+            self._pitch == other._pitch
+            and self._dynamic == other._dynamic
+            and self._duration == other._duration
+            and self._articulation == other._articulation
+        )
 
     # properties here assert that pitch and dynamic are never set to an invlaid
     # value
@@ -69,6 +68,20 @@ class Note:
     def dynamic(self, new_value: int):
         _assert_range(new_value, 0, 127)
         self._dynamic = new_value
+
+    @property
+    def duration(self) -> float:
+        return self._duration
+
+    @duration.setter
+    def duration(self, new_value: int):
+        self._duration = new_value
+
+    def is_note(self) -> bool:
+        return True
+
+    def is_chord(self) -> bool:
+        return False
 
     def add_articulation(self, articulation: int):
         """
