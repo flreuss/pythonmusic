@@ -13,8 +13,8 @@ class Part:
         self,
         title: str | None = None,
         instrument: int = _ACOUSTIC_GRAND_PIANO,
-        channel: int = 1,
         phrases: list[Phrase] = [],
+        channel: int = 1,
         panning: int = _PAN_CENTER,
     ) -> None:
         self.title: str | None = title
@@ -51,7 +51,7 @@ class Part:
         # duration of the phrase aka. When the last phrase ends
         return max(
             map(
-                lambda item: item[0] + item[1].duration(),
+                lambda item: item[0] + item[1].duration,
                 self.phrases,
             )
         )
@@ -138,7 +138,7 @@ class Part:
         start_time = self.duration()
         for phrase in non_st_elements:
             self.phrases.append((start_time, phrase))
-            start_time += phrase.duration()
+            start_time += phrase.duration
 
     def remove_phrase(self, phrase: Phrase):
         """

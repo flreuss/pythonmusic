@@ -52,6 +52,20 @@ class PhraseTests(unittest.TestCase):
         phrase = Phrase(NOTES)
         self.assertEqual(phrase.notes.__len__(), NOTES.__len__())
 
+    def test_eq(self):
+        """Tests Phrase eq"""
+        phrase = Phrase()
+        self.assertIsNot(phrase, Phrase())
+        self.assertEqual(phrase, Phrase())
+
+        phrase.add_notes(NOTES)
+        self.assertIsNot(phrase, Phrase(NOTES))
+        self.assertEqual(phrase, Phrase(NOTES))
+
+        phrase.add_note(Note(A3, QN))
+        self.assertIsNot(phrase, Phrase(NOTES))
+        self.assertNotEqual(phrase, Phrase(NOTES))
+
     def test_separation_input_array(self):
         """
         Tests that the list of notes given to the initialiser is (deep) copied.
@@ -72,13 +86,6 @@ class PhraseTests(unittest.TestCase):
         phrase.add_note(Note(0, 0))
         self.assertEqual(phrase.notes.__len__(), NOTES.__len__() + 1)
 
-    def test_str(self):
-        """Tests Phrase's string representation"""
-        phrase = Phrase([Note(0, 0, 0), Note(1, 1, 1)])
-        self.assertEqual(
-            phrase.__str__(), "Phrase(Note(0, 0, 0), Note(1, 1, 1))"
-        )
-
     def test_length(self):
         """Tests Phrase length() method"""
         phrase = Phrase(NOTES)
@@ -88,12 +95,12 @@ class PhraseTests(unittest.TestCase):
         self.assertEqual(phrase.length(), NOTES.__len__() + 1)
 
     def test_duration(self):
-        """Tests Phrase duration() method"""
+        """Tests Phrase duration property"""
         notes = [Note(0, 1.0), Note(30, 0.5), Note(15, 56.0)]
         expected_duration = 1.0 + 0.5 + 56.0
         phrase = Phrase(notes)
 
-        self.assertEqual(phrase.duration(), expected_duration)
+        self.assertEqual(phrase.duration, expected_duration)
 
         notes.append(Note(0, 100.0))
         expected_duration += 100.0
