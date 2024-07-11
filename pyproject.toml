@@ -21,9 +21,3 @@ keywords = []
 
 [projects.urls]
 Homepage = "https://gitup.uni-potsdam.de/music-with-pc/pythonmusic"
-
-[tool.setuptools]
-py-modules = ["pythonmusic"]
-
-[tool.setuptools.packages.find]
-where = ["."]
