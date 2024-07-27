@@ -10,3 +10,4 @@ from .percussion import *
 from .pitches import *
 from .scales import *
 from .tempo import *
+from .messages import *
