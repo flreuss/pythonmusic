@@ -4,7 +4,7 @@ Midi Messages
 A thin wrapper around mido' MIDI messages.
 """
 
-from mido.messages import Message as _MidoMessage
+from mido.messages import Message as MidiMessage
 
 
 # TODO: is this neccessary, or should this just expose mido directly
@@ -13,8 +13,15 @@ from mido.messages import Message as _MidoMessage
 # to simplyfy and reduce the exposed api.
 
 
-class MidiMessage:
-    def __init__(self, raw: _MidoMessage) -> None:
-        raw_dict = raw.dict()
-        self.type = raw_dict["type"]
-        ...
+# class MidiMessage:
+#     def __init__(self) -> None:
+#         self.raw: RawMessage | None = None
+#
+#     def __getitem__(self, key) -> Any:
+#
+#
+#     @staticmethod
+#     def from_raw(raw: RawMessage) -> "MidiMessage":
+#         new = MidiMessage()
+#         new.raw = raw
+#         return new

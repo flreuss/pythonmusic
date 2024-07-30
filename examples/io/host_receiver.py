@@ -17,4 +17,34 @@ Make sure that python packages `mido` and `python-rtmidi` are installed in your
 virtual environment.
 """
 
+from time import sleep
+
 from pythonmusic import MidiMessage, MidiReceiver
+from pythonmusic import NOTE_ON, NOTE_OFF
+
+
+def on_note_on(msg: MidiMessage):
+    assert msg.type == NOTE_ON
+    print(f"Note on  - pitch: {msg['pitch']}, velocity: {msg['velocity']}")
+
+
+def on_note_off(msg: MidiMessage):
+    assert msg.type == NOTE_OFF
+    print(f"Note off - pitch: {msg['pitch']}, velocity: {msg['velocity']}")
+
+
+if __name__ == "__main__":
+    # create a new midi receiver
+    receiver = MidiReceiver("ExampleMidiReceiver")
+    print(f"Creates midi receiver: {receiver.name}")
+
+    # add callbacks to midi events
+    receiver.add_callback(NOTE_ON, on_note_on)
+    receiver.add_callback(NOTE_OFF, on_note_off)
+
+    # receivers run in the background, so keep the main thread running
+    try:
+        while True:
+            sleep(1)
+    except KeyboardInterrupt:
+        print("Closed midi port")

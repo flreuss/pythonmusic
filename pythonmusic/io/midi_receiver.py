@@ -15,22 +15,21 @@ class MidiReceiver:
     def __init__(
         self,
         name: str,
-        print_messages: bool = False,
     ) -> None:
         self.name: str = name
         self.port: _Input = _open_input(
             self.name, virtual=True, callback=self._handle_message
         )
         self._callbacks: dict[str, Callable[[MidiMessage], None]] = {}
-        self.prints_messages_to_stdout: bool = print_messages
+        self.prints_messages: bool = False
 
     def __del__(self):
         self.port.close()
 
     def _handle_message(self, raw_message: _MidoMessage):
-        if self.prints_messages_to_stdout:
+        if self.prints_messages:
             print(f"Midi message: {raw_message.__str__()}")
-        msg = MidiMessage(raw=raw_message)
+        msg = MidiMessage.from_raw(raw_message)
 
     @property
     def callbacks(self) -> dict[str, Callable[[MidiMessage], None]]:
