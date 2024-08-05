@@ -2,7 +2,6 @@ from typing import Callable, Self, cast as _cast
 
 from mido.messages import Message as _MidoMessage
 from mido import open_input as _open_input  # type: ignore [reportAttributeAccessIssue]
-from mido import get_input_names as _get_input_names  # type: ignore [reportAttributeAccessIssue]s
 from mido.backends.rtmidi import Input as _Input
 
 from .midi_message import MidiMessage
@@ -21,7 +20,7 @@ class MidiReceiver:
         name: str,
         print_messages: bool = False,
     ) -> None:
-        self.name: str = name
+        self.name: str | None = name
         self.port: _Input = _open_input(
             self.name, virtual=True, callback=self._handle_message
         )
@@ -46,17 +45,10 @@ class MidiReceiver:
             raise ConnectionError(f'Cannot attach to given input "{input_name}"')
 
         new = cls.__new__(cls)
-        new.name = ""
+        new.name = None
         new.port = port
 
         return new
-
-    @staticmethod
-    def get_inputs() -> list[str]:
-        """
-        Returns a list of open input ports.
-        """
-        return _cast(list[str], _get_input_names())
 
     def _handle_message(self, raw_message: _MidoMessage):
         if self.prints_messages_to_stdout:

@@ -80,10 +80,7 @@ class Chord(PhraseElement, NoteCollection):
         # if intervals are given, but no limit is defined, do not repeat the
         # intervals, i.e., just a simple chord
         elif limit is None:
-            notes = [
-                Note(root + interval, duration, dynamic)
-                for interval in intervals
-            ]
+            notes = [Note(root + interval, duration, dynamic) for interval in intervals]
 
         # otherwise keep adding intervals until the limit is reached
         else:
