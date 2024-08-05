@@ -14,7 +14,7 @@ class MidiSender:
 
     def __init__(self, name: str) -> None:
         self.name: str | None = name
-        self.port: _Output = _open_output(name)
+        self.port: _Output = _open_output(name, virtual=True)
 
     def __del__(self):
         self.port.close()
@@ -27,7 +27,7 @@ class MidiSender:
         The `output_name` parameter must refer to a valid, open midi port.
         Use `MidiSender.get_outputs()` to retrieve a list of open ports.
         """
-        port = _open_output(output_name)
+        port = _open_output(output_name, virtual=False)
         if not port:
             raise ConnectionError(f'Cannot attach to given output "{output_name}"')
 

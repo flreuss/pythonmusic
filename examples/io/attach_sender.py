@@ -61,7 +61,7 @@ if __name__ == "__main__":
     # creating a host
     sender = MidiSender.attach(name)
 
-    # assuming that the sender connected successfully, we can not send messages
+    # assuming that the sender connected successfully, we can now send messages
     # to the reciever
     on = MidiMessage(NOTE_ON, note=60)
     off = MidiMessage(NOTE_OFF, note=60)

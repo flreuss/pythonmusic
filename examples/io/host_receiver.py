@@ -18,9 +18,15 @@ virtual environment.
 """
 
 from time import sleep
+from typing import NoReturn
 
 from pythonmusic import MidiMessage, MidiReceiver
 from pythonmusic import NOTE_ON, NOTE_OFF
+
+
+def wait() -> NoReturn:
+    while True:
+        sleep(1)
 
 
 def on_note_on(msg: MidiMessage):
@@ -44,8 +50,8 @@ if __name__ == "__main__":
     # `pythonmusic.io.get_midi_receivers()`
 
     # create a new midi receiver
-    print(f'Starting midi reciever as "{name}"')
     receiver = MidiReceiver(name)
+    print(f'Started midi reciever as "{name}"')
 
     # you can also enable debug printing by uncommenting the following line
     # receiver.prints_messages_to_stdout = True
@@ -56,7 +62,6 @@ if __name__ == "__main__":
 
     # receivers run in the background, so keep the main thread running
     try:
-        while True:
-            sleep(1)
+        wait()
     except KeyboardInterrupt:
         print("Closed midi port")
