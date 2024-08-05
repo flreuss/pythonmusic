@@ -25,18 +25,30 @@ from pythonmusic import NOTE_ON, NOTE_OFF
 
 def on_note_on(msg: MidiMessage):
     assert msg.type == NOTE_ON
-    print(f"Note on  - pitch: {msg['pitch']}, velocity: {msg['velocity']}")
+    print(f"Note on  - pitch: {msg['note']}, velocity: {msg['velocity']}")
 
 
 def on_note_off(msg: MidiMessage):
     assert msg.type == NOTE_OFF
-    print(f"Note off - pitch: {msg['pitch']}, velocity: {msg['velocity']}")
+    print(f"Note off - pitch: {msg['note']}, velocity: {msg['velocity']}")
 
 
 if __name__ == "__main__":
+    # define a name for the reciever
+    name = "ExampleMidiReceiver"
+
+    # Keep in mind that, depending on your platform, the receiver may not show
+    # up under its given name. On Linux, for example, the midi reciever below
+    # may be listed as "RtMidiIn Client:ExampleMidiReceiver 128:0". If so, you
+    # will have to retrieve the actual name from the system. See
+    # `pythonmusic.io.get_midi_receivers()`
+
     # create a new midi receiver
-    receiver = MidiReceiver("ExampleMidiReceiver")
-    print(f"Creates midi receiver: {receiver.name}")
+    print(f'Starting midi reciever as "{name}"')
+    receiver = MidiReceiver(name)
+
+    # you can also enable debug printing by uncommenting the following line
+    # receiver.prints_messages_to_stdout = True
 
     # add callbacks to midi events
     receiver.add_callback(NOTE_ON, on_note_on)

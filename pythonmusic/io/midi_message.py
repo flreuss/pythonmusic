@@ -24,6 +24,16 @@ class MidiMessage:
     def __str__(self):
         return self._raw.__str__()
 
+    def __getitem__(self, key: str) -> Any:
+        return self._raw.dict()[key]
+
+    def __setitem__(self, key: str, value: Any):
+        self._raw.dict()[key] = value
+
+    @property
+    def type(self) -> str:
+        return self._raw.dict()["type"]
+
     @classmethod
     def _init_unsafe(cls) -> Self:
         # SAFETY: all fields must be initialised by caller

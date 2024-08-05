@@ -6,7 +6,7 @@ from mido.backends.rtmidi import Input as _Input
 
 from .midi_message import MidiMessage
 
-_MATCH_ALL = "*"
+MATCH_ALL = "*"
 """A callback event that matches all events"""
 
 
@@ -56,7 +56,7 @@ class MidiReceiver:
 
         # retrieve callbacks for event
         event = raw_message.type  # type: ignore [reportAttributeAccessIssue]
-        star_callback = self._callbacks.get(_MATCH_ALL)
+        star_callback = self._callbacks.get(MATCH_ALL)
         spec_callback = self._callbacks.get(event)
 
         # if any callbacks exist wrap raw message and call callbacks
@@ -69,10 +69,10 @@ class MidiReceiver:
 
     @property
     def callbacks(self) -> dict[str, Callable[[MidiMessage], None]]:
-        return self.callbacks
+        return self._callbacks
 
     def has_callback(self, event: str) -> bool:
-        return self._callbacks[event] is not None
+        return self._callbacks.get(event) is not None
 
     def add_callback(
         self,
