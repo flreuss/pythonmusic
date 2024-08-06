@@ -34,7 +34,6 @@ class MidiReceiver:
 
     @classmethod
     def attach(cls, input_name: str, print_messages: bool = False) -> Self:
-        # FIXME: This does not work
         """
         Attaches to the given input.
 
@@ -48,8 +47,12 @@ class MidiReceiver:
         new = cls.__new__(cls)
         new.name = None
         new.port = port
-        new._callbacks: dict[str, Callable[[MidiMessage], None]] = {}
+        new._callbacks = {}
         new.prints_messages_to_stdout = print_messages
+
+        # callback is set here; adding this to the initialiser clashes with the
+        # `cls` property
+        new.port.callback = new._handle_message
 
         return new
 

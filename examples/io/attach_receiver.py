@@ -83,7 +83,7 @@ if __name__ == "__main__":
     print("Attached to port")
 
     # you can also enable debug printing by uncommenting the following line
-    receiver.prints_messages_to_stdout = True
+    # receiver.prints_messages_to_stdout = True
 
     # assuming that the receiver connected successfully, we can now add callbacks
     # that react to midi messages
@@ -93,7 +93,6 @@ if __name__ == "__main__":
 
     # receivers run in the background, so keep the main thread running
     try:
-        print(receiver._callbacks)
         wait()
     except KeyboardInterrupt:
         print("End")
