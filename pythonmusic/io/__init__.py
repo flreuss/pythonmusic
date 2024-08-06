@@ -4,8 +4,14 @@ from .midi_message import *
 
 # Module functions
 from typing import cast as _cast
+
 from mido import get_input_names as _get_input_names  # type: ignore [reportAttributeAccessIssue]
 from mido import get_output_names as _get_output_names  # type: ignore [reportAttributeAccessIssue]s
+
+
+# reg. tests:
+# these functions are not all tested directyl because they rely on connected midi
+# devices
 
 
 def get_midi_receivers() -> list[str]:
@@ -32,3 +38,47 @@ def get_midi_senders() -> list[str]:
     retrieve the valid name of your senders etc.
     """
     return _cast(list[str], _get_input_names())
+
+
+def _find_pattern(input: list[str], pattern: str) -> str | None:
+    # if list is empty, return None
+    if len(input) == 0:
+        return None
+
+    # iterate over the given inputs and check if string is contained
+    for s_string in input:
+        if pattern in s_string:
+            return s_string
+
+    # pattern not matched in list, return None
+    return None
+
+
+def find_midi_receiver(name: str) -> str | None:
+    """
+    Searches the output of `get_midi_receivers` for the first item that contains
+    or equals to the given string.
+
+    This function may be necessary to dynamically find the name of a midi
+    receiver on certain platforms. Not all platforms guarantee that the
+    receiver's given name is used on a system level.
+
+    :param name: A device name to search for
+    :return: The port name that contains the given name, or `None` if not found
+    """
+    return _find_pattern(get_midi_receivers(), name)
+
+
+def find_midi_sender(name: str) -> str | None:
+    """
+    Searches the output of `get_midi_senders` for the first item that contains or
+    equals to the given string.
+
+    This function may be necessary to dynamically find the name of a midi sender
+    on certain platforms. Not all platforms guarantee that the sender's given
+    name is used on a system level.
+
+    :param name: A device name to search for
+    :return: The port name that contains the given name, or `None` if not found
+    """
+    return _find_pattern(get_midi_senders(), name)
