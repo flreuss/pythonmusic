@@ -9,7 +9,7 @@ from mido.messages import Message as RawMessage
 from mido.messages.checks import Integral
 
 
-# TODO: is this neccessary, or should this just expose mido directly
+# TODO: is this neccessary, or should this just expose mido directly?
 
 # This class is a thin wrapper around mido's Message class. The idea is
 # to simplyfy and reduce the exposed api. This also allows type annotations.
@@ -26,9 +26,6 @@ class MidiMessage:
 
     def __getitem__(self, key: str) -> Any:
         return self._raw.dict()[key]
-
-    def __setitem__(self, key: str, value: Any):
-        self._raw.dict()[key] = value
 
     @property
     def type(self) -> str:
