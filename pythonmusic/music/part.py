@@ -8,13 +8,12 @@ from pythonmusic.constants.instruments import (
 class Part:
     """A part represents an instrument and consists of phrases."""
 
-    # TODO: Check if channel 1 should be default channel
     def __init__(
         self,
         title: str | None = None,
         instrument: int = _ACOUSTIC_GRAND_PIANO,
         phrases: list[Phrase] = [],
-        channel: int = 1,
+        channel: int = 0,
         panning: int = _PAN_CENTER,
     ) -> None:
         self.title: str | None = title
