@@ -27,6 +27,8 @@ MIDI message constant that defines a control_change message.
 PROGRAM_CHANGE: str = "program_change"
 """
 MIDI message constant that defines a program_change message.
+
+Usually this refers to an instrument change.
 """
 
 AFTERTOUCH: str = "aftertouch"
