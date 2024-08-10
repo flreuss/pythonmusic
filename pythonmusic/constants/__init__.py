@@ -2,7 +2,7 @@
 This module defines several MIDI constants.
 """
 
-from articulations import *
+from .articulations import *
 from .control_change import *
 from .durations import *
 from .dynamics import *
