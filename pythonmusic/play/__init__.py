@@ -1,1 +1,1 @@
-from .MidiPlayer import MidiPlayer
+from .midi_player import MidiPlayer
