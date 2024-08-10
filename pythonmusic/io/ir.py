@@ -1,11 +1,10 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import cast
 
 from pythonmusic.music import PhraseElement, Note, Chord, Phrase, Part, Score
 from pythonmusic.constants import CHANNEL_PAN
-from pythonmusic.util import instrument_get_patch_bank
+from pythonmusic.util import instrument_get_patch_bank, bpm_to_mspb
 
 # The idea behind adding an IR layer on top of midi messages is to make
 # conversion between this library's types and different output formats easier.
@@ -93,17 +92,19 @@ class IrNode:
 class IrChannel:
     """An element that represents a part or channel."""
 
-    __slots__ = ("channel", "nodes")
+    __slots__ = ("title", "channel", "nodes")
 
+    title: str | None
     channel: int
     nodes: list[IrNode]
 
 
 @dataclass
 class IrFile:
-    __slots__ = "tracks"
+    __slots__ = ("title", "tracks")
 
-    tracks = list[IrChannel]
+    title: str | None
+    channels: list[IrChannel]
 
 
 def pe_to_ir(pe: PhraseElement, start_time: float) -> list[IrNode]:
@@ -173,7 +174,7 @@ def part_to_ir(part: Part) -> IrChannel:
     for start_time, phrase in part.phrases:
         nodes += phrase_to_ir(phrase, start_time)
 
-    return IrChannel(part.channel, nodes)
+    return IrChannel(part.title, part.channel, nodes)
 
 
 def score_to_ir(score: Score) -> IrFile:
@@ -184,4 +185,15 @@ def score_to_ir(score: Score) -> IrFile:
     """
 
     def tempo_node(value: float) -> IrNode:
-       fix the function in util its the wrong way around 
+        payload = IrTempo(bpm_to_mspb(value))
+        return IrNode(0.0, payload)
+
+    channels: list[IrChannel] = list(map(lambda part: part_to_ir(part), score.parts))
+
+    tempo = tempo_node(score.tempo)
+    if len(channels) == 0:
+        channels = [IrChannel("Channel 0", 0, [tempo])]
+    else:
+        channels[0].nodes.insert(0, tempo)
+
+    return IrFile(score.title, channels)
