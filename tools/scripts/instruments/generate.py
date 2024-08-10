@@ -45,7 +45,7 @@ for patch, bank, name in data:
         .replace("'", "")
     )
     entry = f"""
-{constant_label}: int = make_instrument({patch}, {bank})
+{constant_label}: int = _make_instrument({patch}, {bank})
 {make_doc_string(patch, bank, name)}
 
 """
