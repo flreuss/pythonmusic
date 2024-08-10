@@ -1,5 +1,5 @@
 from functools import reduce as _reduce
-from typing import Any, cast as _cast
+from typing import Any
 
 from .chord import Chord
 from .note import Note
