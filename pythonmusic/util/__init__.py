@@ -1,4 +1,5 @@
 from pythonmusic.util.checks import assert_range
+from math import floor
 
 
 def make_instrument(patch: int, bank: int = 0) -> int:
@@ -42,4 +43,9 @@ def instrument_get_patch_bank(instrument: int) -> tuple[int, int]:
     return (patch, bank)
 
 
-# def triplet()
+def bpm_to_mpp(bpm: float) -> int:
+    """
+    Converts a float of beats per minute to an int of milliseconds per beat.
+    """
+    # maybe just use constant 16666.666666667
+    return floor(bpm * (1_000_000 / 60))
