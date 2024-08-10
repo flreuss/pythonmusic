@@ -43,9 +43,16 @@ def instrument_get_patch_bank(instrument: int) -> tuple[int, int]:
     return (patch, bank)
 
 
-def bpm_to_mpp(bpm: float) -> int:
+def bpm_to_mspb(bpm: float) -> int:
     """
-    Converts a float of beats per minute to an int of milliseconds per beat.
+    Converts beats per minute to milliseconds per beat.
     """
-    # maybe just use constant 16666.666666667
-    return floor(bpm * (1_000_000 / 60))
+    # (60 / bpm) * 1_000
+    return floor(60_000 / bpm)
+
+
+def mspb_to_bpm(mspb: int) -> float:
+    """
+    Converts milliseconds per beat to beats per minute.
+    """
+    return floor(60_000 / mspb)
