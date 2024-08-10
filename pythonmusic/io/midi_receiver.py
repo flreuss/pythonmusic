@@ -1,8 +1,8 @@
-from typing import Callable, Self, cast as _cast
+from typing import Callable, Self
 
 from mido.messages import Message as _MidoMessage
 from mido import open_input as _open_input  # type: ignore [reportAttributeAccessIssue]
-from mido.backends.rtmidi import Input as _Input
+from mido.backends.rtmidi import Input as RtInput
 
 from .midi_message import MidiMessage
 
@@ -21,7 +21,7 @@ class MidiReceiver:
         print_messages: bool = False,
     ) -> None:
         self.name: str | None = name
-        self.port: _Input = _open_input(
+        self._port: RtInput = _open_input(
             self.name, virtual=True, callback=self._handle_message
         )
         self._callbacks: dict[str, Callable[[MidiMessage], None]] = {}
@@ -31,6 +31,25 @@ class MidiReceiver:
         if self.prints_messages_to_stdout:
             print(f"Closing midi receiver {self.name}")
         self.port.close()
+
+    def _assert_open_port(self):
+        """
+        Panics if this receivers's port is not open.
+
+        The `port` property is public. Closing the input manually will trigger
+        a segfault if it's accessed later. This method should prevent that.
+        """
+        if self._port.closed:
+            raise IOError(f'Port for "{self.name}" is already closed')
+
+    @property
+    def callbacks(self) -> dict[str, Callable[[MidiMessage], None]]:
+        return self._callbacks
+
+    @property
+    def port(self) -> RtInput:
+        self._assert_open_port()
+        return self._port
 
     @classmethod
     def attach(cls, input_name: str, print_messages: bool = False) -> Self:
@@ -46,7 +65,7 @@ class MidiReceiver:
 
         new = cls.__new__(cls)
         new.name = None
-        new.port = port
+        new._port = port
         new._callbacks = {}
         new.prints_messages_to_stdout = print_messages
 
@@ -72,10 +91,6 @@ class MidiReceiver:
                 star_callback(msg)
             if spec_callback:
                 spec_callback(msg)
-
-    @property
-    def callbacks(self) -> dict[str, Callable[[MidiMessage], None]]:
-        return self._callbacks
 
     def has_callback(self, event: str) -> bool:
         return self._callbacks.get(event) is not None
