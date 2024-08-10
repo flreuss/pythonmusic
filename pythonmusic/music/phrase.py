@@ -1,7 +1,8 @@
 from functools import reduce as _reduce
-from typing import Any
+from typing import Any, cast as _cast
 
 from .chord import Chord
+from .note import Note
 from .note_collection import NoteCollection
 from .phrase_element import PhraseElement
 
@@ -62,10 +63,33 @@ class Phrase(NoteCollection):
 
         :return: The total duration of the phrase
         """
-        return _reduce(
-            lambda previous, note: previous + note.duration, self.notes, 0
-        )
+        return _reduce(lambda previous, note: previous + note.duration, self.notes, 0)
 
     def add_chord(self, chord: Chord):
         """Adds the given chord to the phrase."""
         self.notes.append(chord)
+
+    def linearise(self) -> list[Note]:
+        """
+        Returns a list of this phrase's notes, where chords are flattened.
+
+        Because chords are a vertical structure, the resulting total duration of
+        the returned notes will be higher than the original phrase. This will
+        also change the melody, because chords are replaced by their linearised
+        parts.
+        """
+
+        def _flatten(input: PhraseElement) -> list[Note]:
+            if isinstance(input, Note):
+                return [input]
+            elif isinstance(input, Chord):
+                output = []
+                for pe in input.notes:
+                    output += _flatten(pe)
+                return output
+            return []
+
+        output = []
+        for pe in self.notes:
+            output += _flatten(pe)
+        return output
