@@ -1,13 +1,16 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
+from math import floor
 
 from pythonmusic.music import PhraseElement, Note, Chord, Phrase, Part, Score
 from pythonmusic.constants import CHANNEL_PAN
 from pythonmusic.util import instrument_get_patch_bank, bpm_to_mspb
+from pythonmusic.constants.articulations import *
 
 # The idea behind adding an IR layer on top of midi messages is to make
 # conversion between this library's types and different output formats easier.
+# It also implements articulations on notes.
 
 
 class IrPayload(ABC):
@@ -58,7 +61,8 @@ class IrProgramChange(IrPayload):
     program: int
     # following the midi standard, bank is set as a control message
     # I group this with program change, because this library does not use bank
-    # otherwise. Note to self: be careful not to overwrite bank if none is set
+    # otherwise.
+    # NOTE: be careful not to overwrite bank if none is set
     bank: int
 
     def type(self) -> IrPayload.Type:
@@ -101,7 +105,7 @@ class IrChannel:
 
 @dataclass
 class IrFile:
-    __slots__ = ("title", "tracks")
+    __slots__ = ("title", "channels")
 
     title: str | None
     channels: list[IrChannel]
@@ -121,7 +125,33 @@ def pe_to_ir(pe: PhraseElement, start_time: float) -> list[IrNode]:
     """
 
     def _convert_note(note: Note, start_time: float) -> IrNode:
-        payload = IrNote(note.pitch, note.dynamic, note.duration)
+        # Duration
+        duration: float = note.duration
+        if note.has_articulation(TENUTO):
+            pass  # duration is unchanged, all else is ignored
+        elif note.has_articulation(PORTATO):
+            duration *= 0.95
+        elif note.has_articulation(STACCATISSIMO):
+            duration *= 0.25
+        elif note.has_articulation(STACCATO):
+            duration *= 0.5
+        elif note.has_articulation(LEGATO):
+            duration *= 1.05
+        else:
+            duration *= 0.90
+
+        # Velocity
+        velocity: int = note.dynamic
+        if note.has_articulation(MARCATO):
+            velocity = floor(velocity * 1.50)
+        elif note.has_articulation(ACCENT):
+            velocity = floor(velocity * 1.25)
+        else:
+            pass
+        # velocity is capped to 127
+        velocity = min(127, velocity)
+
+        payload = IrNote(note.pitch, velocity, duration)
         return IrNode(start_time, payload)
 
     def _convert_chord(chord: Chord, start_time: float) -> list[IrNode]:
