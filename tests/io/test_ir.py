@@ -10,7 +10,7 @@ from pythonmusic.io.ir import (
     IrNote,
     IrProgramChange,
     IrControlChange,
-    IrPayload,
+    IrNode,
     IrTempo,
 )
 from pythonmusic.music import Note, Chord, Phrase, Part, Score
@@ -183,7 +183,7 @@ class IrEncodeTests(unittest.TestCase):
         # notes
         for node in nodes:
             self.assertIsInstance(node.payload, IrNote)
-            self.assertEqual(node.payload.type(), IrPayload.Type.NOTE)
+            self.assertEqual(node.type, IrNode.Type.NOTE)
 
         notes = []
         for _, phrase in part.phrases:
