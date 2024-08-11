@@ -57,7 +57,7 @@ class IrProgramChange(IrPayload):
 @dataclass
 class IrTempo(IrPayload):
     __slots__ = "value"
-    value: int  # number of microseconds per beat
+    value: float  # still uses bpm
 
 
 # ==== Objects ====
@@ -202,7 +202,7 @@ def score_to_ir(score: Score) -> IrFile:
     """
 
     def tempo_node(value: float) -> IrNode:
-        payload = IrTempo(bpm_to_mspb(value))
+        payload = IrTempo(value)
         return IrNode(0.0, IrNode.Type.META, payload)
 
     channels: list[IrChannel] = list(map(lambda part: part_to_ir(part), score.parts))

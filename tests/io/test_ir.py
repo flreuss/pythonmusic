@@ -201,10 +201,9 @@ class IrEncodeTests(unittest.TestCase):
 
         self.assertEqual(len(file.channels), 1)
         self.assertIsInstance(file.channels[0].nodes[0].payload, IrTempo)
-        tempo_raw = cast(IrTempo, file.channels[0].nodes[0].payload)
-        tempo_bpm = mspb_to_bpm(tempo_raw.value)
+        tempo = cast(IrTempo, file.channels[0].nodes[0].payload)
 
-        self.assertEqual(score.tempo, tempo_bpm)
+        self.assertEqual(score.tempo, tempo.value)
 
         channel = file.channels[0]
         self.assertEqual(channel.title, "Channel 0")
@@ -253,10 +252,9 @@ class IrEncodeTests(unittest.TestCase):
 
         self.assertEqual(len(file.channels), 3)
         self.assertIsInstance(file.channels[0].nodes[0].payload, IrTempo)
-        tempo_raw = cast(IrTempo, file.channels[0].nodes.pop(0).payload)
-        tempo_bpm = mspb_to_bpm(tempo_raw.value)
+        tempo = cast(IrTempo, file.channels[0].nodes.pop(0).payload)
 
-        self.assertEqual(score.tempo, tempo_bpm)
+        self.assertEqual(score.tempo, tempo.value)
 
         for index, (instrument, title) in enumerate(
             zip(
