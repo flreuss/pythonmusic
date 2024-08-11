@@ -1,5 +1,6 @@
 from pythonmusic.io import MidiSender, MidiMessage
 from pythonmusic.music import Note, Phrase, Part, Score
+from pythonmusic.io.ir import pe_to_ir
 
 
 class MidiPlayer:
