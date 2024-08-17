@@ -3,7 +3,7 @@ import typing as _typing
 from .phrase_element import PhraseElement
 from pythonmusic.constants.articulations import LEGATO as _LEGATO
 from pythonmusic.constants.articulations import ACCENT as _ACCENT
-from pythonmusic.util.checks import assert_range as _assert_range
+from pythonmusic.util import assert_range as _assert_range
 from pythonmusic.constants.dynamics import MF as _MF
 from pythonmusic.constants.pitches import REST as _REST
 

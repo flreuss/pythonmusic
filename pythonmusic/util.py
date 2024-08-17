@@ -1,5 +1,20 @@
-from pythonmusic.util.checks import assert_range
 from math import floor
+from typing import TypeVar
+
+
+T = TypeVar("T", int, float)
+
+
+def assert_range(value: T, lower: T, upper: T):
+    """
+    Asserts that the given value is at least `lower` and at most `upper`.
+    The upper range is included.
+    """
+    if value < lower or value > upper:
+        raise ValueError(
+            f"given value {value} is outside allowed bounds of {lower} and {upper}"
+        )
+    return
 
 
 def make_instrument(patch: int, bank: int = 0) -> int:
