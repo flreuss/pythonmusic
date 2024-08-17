@@ -1,11 +1,12 @@
+from collections.abc import Sequence
 from math import floor
 from typing import TypeVar
 
 
-T = TypeVar("T", int, float)
+_RangeScalar = TypeVar("_RangeScalar", int, float)
 
 
-def assert_range(value: T, lower: T, upper: T):
+def assert_range(value: _RangeScalar, lower: _RangeScalar, upper: _RangeScalar):
     """
     Asserts that the given value is at least `lower` and at most `upper`.
     The upper range is included.
