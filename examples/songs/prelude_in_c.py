@@ -130,8 +130,7 @@ def right_part() -> Part:
     # another function it is, then
     def broken_chord(a: int, b: int, c: int) -> list[Note]:
         return (
-            [Note.rest(EN)]
-            + legato([Note(a, SN), Note(b, SN), Note(c, SN)] * 2)
+            [Note.rest(EN)] + legato([Note(a, SN), Note(b, SN), Note(c, SN)] * 2)
         ) * 2
 
     phrase = Phrase()
@@ -238,11 +237,11 @@ def make_score() -> Score:
     return score
 
 
-def play():
+def play_score():
     score = make_score()
     # play_score(score)
     pass
 
 
 if __name__ == "__main__":
-    play()
+    play_score()
