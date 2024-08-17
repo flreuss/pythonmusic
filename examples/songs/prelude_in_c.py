@@ -6,13 +6,14 @@ Das Wohltemperirte Clavier
 """
 
 from pythonmusic import *
+from pythonmusic.util.device_chooser import user_receiver_prompt
 
 
 def left_part() -> Part:
     """
     Returns the left part of the prelude, i.e., what the left hand plays.
     """
-    part = Part("left", ACOUSTIC_GRAND_PIANO, channel=2)
+    part = Part("left", ACOUSTIC_GRAND_PIANO, channel=1)
 
     # the prelude's left part consists of two held notes
     # we define this as two phrases
@@ -63,7 +64,7 @@ def left_part() -> Part:
     def upper_note(pitch: int) -> list[Note]:
         # the duration of the second note played in the left hand
         SND = DOTTED_EIGHTH_NOTE + QUARTER_NOTE
-        return [Note.rest(SN), Note(pitch, SND)]
+        return [Note.rest(SN), Note(pitch, SND)] * 2
 
     upper_notes = (
         upper_note(E4)  # 1
@@ -140,8 +141,8 @@ def right_part() -> Part:
         + broken_chord(A4, D5, F5)  # 2
         + broken_chord(G4, D5, F5)  # 3
         + broken_chord(G4, C5, E5)  # 4
-        + broken_chord(A4, E5, C6)  # 5
-        + broken_chord(FS4, C5, E5)  # 6
+        + broken_chord(A4, E5, A5)  # 5
+        + broken_chord(FS4, A4, D5)  # 6
         + broken_chord(G4, D5, G5)  # 7
         + broken_chord(E4, G4, C5)  # 8
         + broken_chord(E4, G4, C5)  # 9
@@ -215,14 +216,12 @@ def right_part() -> Part:
         )
     )
 
-    # TODO: uncomment when implemented chords
-
     # the last measure in the right hand consists of a chord
-    # chord = Chord([E4, G4, C5]
     chord = Chord([Note(E4, WN), Note(G4, WN), Note(C5, WN)])
     phrase.add_chord(chord)
 
-    part = Part("right", ACOUSTIC_GRAND_PIANO, phrases=[phrase], channel=1)
+    part = Part("right", ACOUSTIC_GRAND_PIANO, phrases=[], channel=0)
+    part.add_phrase(phrase, EN)
     return part
 
 
@@ -238,9 +237,19 @@ def make_score() -> Score:
 
 
 def play_score():
+    # retrieve an open midi receiver
+    device = user_receiver_prompt()
+    if device is None:
+        print("No open receiver found")
+        exit(1)
+
+    # create player
+    player = MidiPlayer(device)
+
     score = make_score()
-    # play_score(score)
-    pass
+    player.play_score(score)
+
+    # chord = Chord([E4, G4, C5]
 
 
 if __name__ == "__main__":
