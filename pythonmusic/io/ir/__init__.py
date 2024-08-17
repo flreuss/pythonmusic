@@ -1,11 +1,11 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import dataclass
 from enum import Enum
 from math import floor
 
 from pythonmusic.music import PhraseElement, Note, Chord, Phrase, Part, Score
 from pythonmusic.constants import CHANNEL_PAN
-from pythonmusic.util import instrument_get_patch_bank, bpm_to_mspb
+from pythonmusic.util import instrument_get_patch_bank
 from pythonmusic.constants.articulations import *
 
 # The idea behind adding an IR layer on top of midi messages is to make
@@ -29,6 +29,11 @@ class IrPayload(ABC):
 class IrNote(IrPayload):
     note: int
     velocity: int
+    duration: float
+
+
+@dataclass
+class IrRest(IrPayload):
     duration: float
 
 
@@ -66,6 +71,7 @@ class IrNode:
     """An element that represents any type of event."""
 
     class Type(Enum):
+        REST = 0
         NOTE = 1
         CC = 2
         PROGRAM = 3
@@ -112,6 +118,10 @@ def pe_to_ir(pe: PhraseElement, start_time: float) -> list[IrNode]:
     """
 
     def _convert_note(note: Note, start_time: float) -> IrNode:
+        if note.is_rest():
+            payload = IrRest(note.duration)
+            return IrNode(start_time, IrNode.Type.REST, payload)
+
         # Duration
         duration: float = note.duration
         if note.has_articulation(TENUTO):

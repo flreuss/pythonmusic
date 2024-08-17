@@ -8,6 +8,7 @@ from pythonmusic.io.ir import (
     IrNote,
     IrControlChange,
     IrProgramChange,
+    IrRest,
     IrTempo,
 )
 from pythonmusic.io.midi_message import MidiMessage
@@ -23,15 +24,22 @@ from pythonmusic.constants import (
 def irnodes_to_midi(
     nodes: list[IrNode], tempo: float, channel: int
 ) -> list[MidiMessage]:
-    output = []
     Ty = IrNode.Type
+    tempo_multiplyer = 60.0 / tempo
+    output = []
 
     for node in nodes:
         match node.type:
+            case Ty.REST:
+                pass
             case Ty.NOTE:
                 payload = cast(IrNote, node.payload)
-                start_time = node.time * tempo
-                end_time = start_time + (payload.duration * tempo)
+                start_time = node.time * tempo_multiplyer
+                end_time = start_time + (payload.duration * tempo_multiplyer)
+
+                assert channel in range(0, 128)
+                assert payload.note in range(0, 128)
+                assert payload.velocity in range(0, 128)
 
                 output += [
                     MidiMessage(

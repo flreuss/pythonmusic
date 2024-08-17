@@ -3,6 +3,7 @@ from typing import cast
 from math import floor
 
 from pythonmusic.io.ir import (
+    IrRest,
     pe_to_ir,
     phrase_to_ir,
     part_to_ir,
@@ -114,7 +115,7 @@ class IrEncodeTests(unittest.TestCase):
         self.assertEqual(len(nodes), 7)
         self.assertEqual(len(notes), 7)
 
-        for note, node in zip(notes, nodes):
+        for note, node in zip(notes[1:], nodes[1:]):
             self.assertIsInstance(node.payload, IrNote)
             payload = cast(IrNote, node.payload)
 

@@ -69,6 +69,10 @@ class Phrase(NoteCollection):
         """Adds the given chord to the phrase."""
         self.notes.append(chord)
 
+    def add_rest(self, duration: float):
+        """Adds a rest of the given duration to the phrase."""
+        self.notes.append(Note.rest(duration))
+
     def linearise(self) -> list[Note]:
         """
         Returns a list of this phrase's notes, where chords are flattened.
