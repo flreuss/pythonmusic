@@ -1,5 +1,5 @@
 from functools import reduce as _reduce
-from typing import Any
+from typing import Any, Sequence
 
 from .chord import Chord
 from .note import Note
@@ -12,7 +12,7 @@ class Phrase(NoteCollection):
 
     __slots__ = "_notes"
 
-    def __init__(self, notes: list[PhraseElement] = []) -> None:
+    def __init__(self, notes: Sequence[PhraseElement] = []) -> None:
         """
         Constructs a phrase from the given note list. Returns an empty phrase if
         no list of notes is given.
