@@ -1,4 +1,4 @@
-from .note import Note as _Note
+from pythonmusic.music import PhraseElement, Note
 
 
 # TODO: find shorter function name
@@ -25,6 +25,6 @@ def dotted(duration: float, dots: int = 1) -> float:
     return duration * (2 - (0.5**dots))
 
 
-def legato(notes: list[_Note]) -> list[_Note]:
+def legato(notes: list[Note]) -> list[Note]:
     """Adds legato to all given notes."""
     return list(map(lambda note: note.with_legato(), notes))

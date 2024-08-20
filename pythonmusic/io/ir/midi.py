@@ -8,7 +8,6 @@ from pythonmusic.io.ir import (
     IrNote,
     IrControlChange,
     IrProgramChange,
-    IrRest,
     IrTempo,
 )
 from pythonmusic.io.midi_message import MidiMessage
@@ -29,12 +28,13 @@ def irnodes_to_midi(
     output = []
 
     for node in nodes:
+        start_time = node.time * tempo_multiplyer
+
         match node.type:
             case Ty.REST:
                 pass
             case Ty.NOTE:
                 payload = cast(IrNote, node.payload)
-                start_time = node.time * tempo_multiplyer
                 end_time = start_time + (payload.duration * tempo_multiplyer)
 
                 assert channel in range(0, 128)
@@ -67,19 +67,24 @@ def irnodes_to_midi(
                         channel=channel,
                         control=payload.control,
                         value=payload.value,
+                        time=start_time,
                     )
                 )
             case Ty.PROGRAM:
                 payload = cast(IrProgramChange, node.payload)
                 output += [
                     MidiMessage(
-                        PROGRAM_CHANGE, channel=channel, program=payload.program
+                        PROGRAM_CHANGE,
+                        channel=channel,
+                        program=payload.program,
+                        time=start_time,
                     ),
                     MidiMessage(
                         CONTROL_CHANGE,
                         channel=channel,
                         control=BANK_CHANGE,
                         value=payload.bank,
+                        time=start_time,
                     ),
                 ]
             case Ty.META:
