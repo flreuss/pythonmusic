@@ -70,7 +70,7 @@ Accepts values in range from 0 to 127. Many controllers understand this value as
 a switch where a value ≤63 is treaded as off, and ≥64 as on.
 """
 
-RESET: int = 121
+RESET_CC: int = 121
 """
 MIDI CC constant for resetting all controllers to their defalt values.
 
