@@ -32,7 +32,7 @@ def left_part() -> Part:
         G3, G3, G3, G3,    # 11
         F3, F3, F3, F3,    # 13
         E3, E3, E3, E3,    # 15
-        D3, D3, G3, G3,    # 17
+        D3, D3, G2, G2,    # 17
         C3, C3, C3, C3,    # 19
         F2, F2, FS2, FS2,  # 21
         G2, G2, AF2, AF2,  # 23
@@ -130,9 +130,10 @@ def right_part() -> Part:
     # similar to the left part, the broken chords repeat twice
     # another function it is, then
     def broken_chord(a: int, b: int, c: int) -> list[Note]:
-        return (
-            [Note.rest(EN)] + legato([Note(a, SN), Note(b, SN), Note(c, SN)] * 2)
-        ) * 2
+        line = legato([Note(a, SN), Note(b, SN), Note(c, SN)])
+        notes: list[Note] = [Note.rest(EN)] + line + line
+
+        return notes + notes
 
     phrase = Phrase()
 
@@ -146,7 +147,7 @@ def right_part() -> Part:
         + broken_chord(G4, D5, G5)  # 7
         + broken_chord(E4, G4, C5)  # 8
         + broken_chord(E4, G4, C5)  # 9
-        + broken_chord(D4, FS4, C4)  # 10
+        + broken_chord(D4, FS4, C5)  # 10
         + broken_chord(D4, G4, B4)  # 11
         + broken_chord(E4, G4, CS5)  # 12
         + broken_chord(D4, A4, D5)  # 13
@@ -162,11 +163,11 @@ def right_part() -> Part:
         + broken_chord(B3, C4, EF4)  # 23
         + broken_chord(B3, C4, D4)  # 24
         + broken_chord(G3, B3, D4)  # 25
-        + broken_chord(G3, C4, E3)  # 26
+        + broken_chord(G3, C4, E4)  # 26
         + broken_chord(G3, C4, F4)  # 27
-        + broken_chord(C3, B3, F4)  # 28
-        + broken_chord(A3, C4, FS4)  # 29
-        + broken_chord(G3, C4, G4)  # 30
+        + broken_chord(G3, B3, F4)  # 28
+        + broken_chord(A3, C4, FS4)  # 29x
+        + broken_chord(G3, C4, G4)  # 30x
         + broken_chord(G3, C4, F4)  # 31
         + broken_chord(G3, B3, F4)  # 32
         + broken_chord(G3, BF3, E4)  # 33
@@ -210,7 +211,9 @@ def right_part() -> Part:
                 Note(B4, SN),
                 Note(D4, SN),  #
                 Note(F4, SN),
-                Note(E4, SN),
+                Note(E4, SN / 3),
+                Note(F4, SN / 3),
+                Note(E4, SN / 3),
                 Note(D4, SN),
             ]
         )
@@ -221,7 +224,7 @@ def right_part() -> Part:
     phrase.add_chord(chord)
 
     part = Part("right", ACOUSTIC_GRAND_PIANO, phrases=[], channel=0)
-    part.add_phrase(phrase, EN)
+    part.add_phrase(phrase)
     return part
 
 
@@ -246,10 +249,30 @@ def play_score():
     # create player
     player = MidiPlayer(device)
 
-    score = make_score()
-    player.play_score(score)
+    # play score allows for callbacks to be set
+    # before the playback starts, but all messages are prepared,
+    def on_start(messages: list[MidiMessage]):
+        print(f"Starting with {len(messages)} midi messages")
 
-    # chord = Chord([E4, G4, C5]
+    # on every message,
+    def on_message(_message: MidiMessage, _start_time: float):
+        print(_message.raw())
+
+    # and before the playback method ends
+    def on_end(_):
+        print("Done.")
+
+    # some applications require some time to pick up on our player
+    # this is optional
+    sleep(0.5)
+
+    # play_score allows to define a starting beat
+    # for instance, to start on measure 20, set this value to
+    # 20 * 4 (four beats per bar)
+    start_measure = 0 * 4
+
+    score = make_score()
+    player.play_score(score, start_measure, on_start, on_message, on_end)
 
 
 if __name__ == "__main__":
