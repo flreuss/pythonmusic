@@ -1,11 +1,10 @@
 import unittest
-from pythonmusic.music.note import Note
-from pythonmusic.music.phrase import Phrase
+from pythonmusic.music import Note, Chord, PhraseElement, Phrase
 from pythonmusic.constants.pitches import *
 from pythonmusic.constants.durations import *
 from pythonmusic.constants.dynamics import *
 
-NOTES = [
+NOTES: list[PhraseElement] = [
     Note(C3, QN, F),
     Note(E3, QN, PP),
     Note(G4, DEN, MF),
@@ -70,7 +69,7 @@ class PhraseTests(unittest.TestCase):
         """
         Tests that the list of notes given to the initialiser is (deep) copied.
         """
-        notes = [Note(1, 1, 1), Note(2, 2, 2)]
+        notes: list[PhraseElement] = [Note(1, 1, 1), Note(2, 2, 2)]
         phrase = Phrase(notes)
 
         self.assertIsNot(notes, phrase.notes)
@@ -96,7 +95,7 @@ class PhraseTests(unittest.TestCase):
 
     def test_duration(self):
         """Tests Phrase duration property"""
-        notes = [Note(0, 1.0), Note(30, 0.5), Note(15, 56.0)]
+        notes: list[PhraseElement] = [Note(0, 1.0), Note(30, 0.5), Note(15, 56.0)]
         expected_duration = 1.0 + 0.5 + 56.0
         phrase = Phrase(notes)
 
@@ -116,9 +115,7 @@ class PhraseTests(unittest.TestCase):
         self.assertEqual(len(phrase), 1)
         self.assertEqual(phrase.notes[0], note)
 
-        notes = list(
-            map(lambda i: Note(i % 127, float(i), i % 127), range(1000))
-        )
+        notes = list(map(lambda i: Note(i % 127, float(i), i % 127), range(1000)))
 
         phrase = Phrase()
         for note in notes:
@@ -128,7 +125,7 @@ class PhraseTests(unittest.TestCase):
 
     def test_notes(self):
         """Tests Note add_notes() method"""
-        notes = list(
+        notes: list[PhraseElement] = list(
             map(lambda i: Note(i % 127, float(i), i % 127), range(1000))
         )
 
@@ -241,3 +238,27 @@ class PhraseTests(unittest.TestCase):
 
         phrase = Phrase(NOTES)
         self.assertEqual(phrase.max_dynamic(), FF)
+
+    def test_linearise(self):
+        """Tests Phrase linearisation."""
+        phrase = Phrase(
+            [
+                Note(C4, QN),
+                Note(D4, QN),
+                Chord(
+                    [
+                        Note(C4, QN),
+                        Note(E4, QN),
+                    ]
+                ),
+            ]
+        )
+        self.assertEqual(
+            phrase.linearise(),
+            [
+                Note(C4, QN),
+                Note(D4, QN),
+                Note(C4, QN),
+                Note(E4, QN),
+            ],
+        )

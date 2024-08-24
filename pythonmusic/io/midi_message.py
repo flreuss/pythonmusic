@@ -31,6 +31,10 @@ class MidiMessage:
     def type(self) -> str:
         return self._raw.dict()["type"]
 
+    @property
+    def time(self) -> float:
+        return self._raw.time
+
     @classmethod
     def _init_unsafe(cls) -> Self:
         # SAFETY: all fields must be initialised by caller

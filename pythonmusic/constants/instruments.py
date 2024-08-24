@@ -1063,146 +1063,92 @@ See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) f
 """
 
 
-ACOUSTIC_BASS: int = _make_instrument(33, 0)
+VIOLIN: int = _make_instrument(41, 0)
 """
-Instrument constant for Acoustic Bass.
+Instrument constant for Violin.
 
-This constant corresponds to the General MIDI Level 2 patch 33, bank 0.
+This constant corresponds to the General MIDI Level 2 patch 41, bank 0.
 See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) for more information.
 """
 
 
-FINGERED_BASS: int = _make_instrument(34, 0)
+SLOW_VIOLIN: int = _make_instrument(41, 1)
 """
-Instrument constant for Fingered Bass.
+Instrument constant for Slow Violin.
 
-This constant corresponds to the General MIDI Level 2 patch 34, bank 0.
+This constant corresponds to the General MIDI Level 2 patch 41, bank 1.
 See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) for more information.
 """
 
 
-FINGER_SLAP: int = _make_instrument(34, 1)
+VIOLA: int = _make_instrument(42, 0)
 """
-Instrument constant for Finger Slap.
+Instrument constant for Viola.
 
-This constant corresponds to the General MIDI Level 2 patch 34, bank 1.
+This constant corresponds to the General MIDI Level 2 patch 42, bank 0.
 See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) for more information.
 """
 
 
-PICKED_BASS: int = _make_instrument(35, 0)
+CELLO: int = _make_instrument(43, 0)
 """
-Instrument constant for Picked Bass.
+Instrument constant for Cello.
 
-This constant corresponds to the General MIDI Level 2 patch 35, bank 0.
+This constant corresponds to the General MIDI Level 2 patch 43, bank 0.
 See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) for more information.
 """
 
 
-FRETLESS_BASS: int = _make_instrument(36, 0)
+CONTRABASS: int = _make_instrument(44, 0)
 """
-Instrument constant for Fretless Bass.
+Instrument constant for Contrabass.
 
-This constant corresponds to the General MIDI Level 2 patch 36, bank 0.
+This constant corresponds to the General MIDI Level 2 patch 44, bank 0.
 See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) for more information.
 """
 
 
-SLAP_BASS_1: int = _make_instrument(37, 0)
+TREMOLO_STRINGS: int = _make_instrument(45, 0)
 """
-Instrument constant for Slap Bass 1.
+Instrument constant for Tremolo Strings.
 
-This constant corresponds to the General MIDI Level 2 patch 37, bank 0.
+This constant corresponds to the General MIDI Level 2 patch 45, bank 0.
 See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) for more information.
 """
 
 
-SLAP_BASS_2: int = _make_instrument(38, 0)
+PIZZICATO_STRINGS: int = _make_instrument(46, 0)
 """
-Instrument constant for Slap Bass 2.
+Instrument constant for Pizzicato Strings.
 
-This constant corresponds to the General MIDI Level 2 patch 38, bank 0.
+This constant corresponds to the General MIDI Level 2 patch 46, bank 0.
 See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) for more information.
 """
 
 
-SYNTH_BASS_1: int = _make_instrument(39, 0)
+HARP: int = _make_instrument(47, 0)
 """
-Instrument constant for Synth Bass 1.
+Instrument constant for Harp.
 
-This constant corresponds to the General MIDI Level 2 patch 39, bank 0.
+This constant corresponds to the General MIDI Level 2 patch 47, bank 0.
 See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) for more information.
 """
 
 
-SYNTH_BASS_101: int = _make_instrument(39, 1)
+YANG_QIN: int = _make_instrument(47, 1)
 """
-Instrument constant for Synth Bass 101.
+Instrument constant for Yang Qin.
 
-This constant corresponds to the General MIDI Level 2 patch 39, bank 1.
+This constant corresponds to the General MIDI Level 2 patch 47, bank 1.
 See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) for more information.
 """
 
 
-SYNTH_BASS_3: int = _make_instrument(39, 2)
+TIMPANI: int = _make_instrument(48, 0)
 """
-Instrument constant for Synth Bass 3.
+Instrument constant for Timpani.
 
-This constant corresponds to the General MIDI Level 2 patch 39, bank 2.
-See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) for more information.
-"""
-
-
-CLAVI_BASS: int = _make_instrument(39, 3)
-"""
-Instrument constant for Clavi Bass.
-
-This constant corresponds to the General MIDI Level 2 patch 39, bank 3.
-See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) for more information.
-"""
-
-
-HAMMER: int = _make_instrument(39, 4)
-"""
-Instrument constant for Hammer.
-
-This constant corresponds to the General MIDI Level 2 patch 39, bank 4.
-See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) for more information.
-"""
-
-
-SYNTH_BASS_2: int = _make_instrument(40, 0)
-"""
-Instrument constant for Synth Bass 2.
-
-This constant corresponds to the General MIDI Level 2 patch 40, bank 0.
-See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) for more information.
-"""
-
-
-SYNTH_BASS_4: int = _make_instrument(40, 1)
-"""
-Instrument constant for Synth Bass 4.
-
-This constant corresponds to the General MIDI Level 2 patch 40, bank 1.
-See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) for more information.
-"""
-
-
-RUBBER_BASS: int = _make_instrument(40, 2)
-"""
-Instrument constant for Rubber Bass.
-
-This constant corresponds to the General MIDI Level 2 patch 40, bank 2.
-See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) for more information.
-"""
-
-
-ATTACK_PULSE: int = _make_instrument(40, 3)
-"""
-Instrument constant for Attack Pulse.
-
-This constant corresponds to the General MIDI Level 2 patch 40, bank 3.
+This constant corresponds to the General MIDI Level 2 patch 48, bank 0.
 See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) for more information.
 """
 

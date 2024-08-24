@@ -1,4 +1,21 @@
-from pythonmusic.util.checks import assert_range
+from collections.abc import Sequence
+from math import floor
+from typing import TypeVar
+
+
+_RangeScalar = TypeVar("_RangeScalar", int, float)
+
+
+def assert_range(value: _RangeScalar, lower: _RangeScalar, upper: _RangeScalar):
+    """
+    Asserts that the given value is at least `lower` and at most `upper`.
+    The upper range is included.
+    """
+    if value < lower or value > upper:
+        raise ValueError(
+            f"given value {value} is outside allowed bounds of {lower} and {upper}"
+        )
+    return
 
 
 def make_instrument(patch: int, bank: int = 0) -> int:
@@ -42,4 +59,16 @@ def instrument_get_patch_bank(instrument: int) -> tuple[int, int]:
     return (patch, bank)
 
 
-# def triplet()
+def bpm_to_mspb(bpm: float) -> int:
+    """
+    Converts beats per minute to milliseconds per beat.
+    """
+    # (60 / bpm) * 1_000
+    return floor(60_000 / bpm)
+
+
+def mspb_to_bpm(mspb: int) -> float:
+    """
+    Converts milliseconds per beat to beats per minute.
+    """
+    return floor(60_000 / mspb)

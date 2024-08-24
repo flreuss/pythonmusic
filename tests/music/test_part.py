@@ -16,7 +16,7 @@ class PartTests(unittest.TestCase):
         part = Part()
         self.assertEqual(part.title, None)
         self.assertEqual(part.instrument, ACOUSTIC_GRAND_PIANO)
-        self.assertEqual(part.channel, 1)
+        self.assertEqual(part.channel, 0)
         self.assertEqual(part.phrases, [])
         self.assertEqual(part.panning, PAN_CENTER)
 

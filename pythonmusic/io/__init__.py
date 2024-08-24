@@ -2,6 +2,8 @@ from .midi_receiver import *
 from .midi_sender import *
 from .midi_message import *
 
+# does not import ir
+
 # Module functions
 from typing import cast as _cast
 

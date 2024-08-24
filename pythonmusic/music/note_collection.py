@@ -4,7 +4,7 @@ from .note import Note
 from abc import ABC as _ABC
 from abc import abstractmethod as _abstractmethod
 from functools import reduce as _reduce
-from typing import cast as _cast
+from typing import Sequence, cast as _cast
 
 
 class NoteCollection(_ABC):
@@ -56,7 +56,7 @@ class NoteCollection(_ABC):
         """Adds the given note to the collection."""
         self.notes.append(note)
 
-    def add_notes(self, notes: list[PhraseElement]):
+    def add_notes(self, notes: Sequence[PhraseElement]):
         """Adds the given notes to the collection."""
         self.notes.extend(notes)
 

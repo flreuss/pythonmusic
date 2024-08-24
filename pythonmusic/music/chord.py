@@ -68,7 +68,7 @@ class Chord(PhraseElement, NoteCollection):
         :duration: The duration of the chord
         :dynamic: The chord's dynamic, defaults to `MF`
         :limit: Optional, the upper pitch limit until which the chord will be
-            constructed. If `None`, the given intervald will only be added once.
+            constructed. If `None`, the given intervals will only be added once.
 
         :return: The constructed chord.
         """
