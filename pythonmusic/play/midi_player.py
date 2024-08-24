@@ -16,7 +16,7 @@ class MidiPlayer:
     @staticmethod
     def _attach_to_sender(name: str) -> MidiSender:
         try:
-            return MidiSender(name)
+            return MidiSender.attach(name)
         except OSError as error:
             print("Unable to create sender. Is your port correct?")
             raise error
