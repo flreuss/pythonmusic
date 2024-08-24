@@ -111,7 +111,7 @@ def map_value(
     assert min_value <= max_value
     assert min_result <= max_result
 
-    delta_value = max_result - min_result
+    delta_value = max_value - min_value
     offset_value = value - min_value
     delta_result = max_result - min_result
 
