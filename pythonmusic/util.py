@@ -58,7 +58,7 @@ def instrument_get_patch_bank(instrument: int) -> tuple[int, int]:
             A tuple containing the instrument's patch and bank.
     """
     # TODO: add validation
-    BYTE = 0x11111111
+    BYTE = 0b11111111
     patch = instrument & BYTE
     bank = (instrument >> 8) & BYTE
     return (patch, bank)
