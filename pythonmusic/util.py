@@ -1,11 +1,17 @@
+# util.py
+#
+# Utility functionality. All functions here have no dependencies in the parent
+# library. Use `helpers` if you need to import
+
+from collections.abc import Callable
 from math import floor
-from typing import TypeVar
 
 
-_RangeScalar = TypeVar("_RangeScalar", int, float)
+Number = int | float
+"""A type that is either a float or an integer."""
 
 
-def assert_range(value: _RangeScalar, lower: _RangeScalar, upper: _RangeScalar):
+def assert_range(value: Number, lower: Number, upper: Number):
     """
     Asserts that the given value is at least `lower` and at most `upper`.
     The upper range is included.
@@ -71,3 +77,45 @@ def mspb_to_bpm(mspb: int) -> float:
     Converts milliseconds per beat to beats per minute.
     """
     return floor(60_000 / mspb)
+
+
+def map_value(
+    value: Number,
+    min_value: Number,
+    max_value: Number,
+    min_result: Number,
+    max_result: Number,
+    conversion_strategy: Callable[[float], int] = round,
+) -> Number:
+    """
+    Maps a given value from one range onto another.
+
+    The input parameters define two ranges and a value. The position of the given
+    value is mapped relative to the source mapping onto the target mapping.
+
+    If you map an `integer`, you may define a conversion strategy. Internally,
+    all values are converted into floats. If the output type is an `integer`, the
+    given `conversion_strategy` is used to convert the result. By default, this
+    uses Python's build-in `round()` function. You may also want to use
+    `floor()`.
+
+    :param value: A base value
+    :param min_value: Defines lower bound of input range
+    :param max_value: Defines upper bound of input range
+    :param min_result: Defines lower bound of result range
+    :param min_result: Defines upper bound of result range
+    :param conversion_strategy: A function that converts a float to an int
+    """
+    # assert that all given values are in bounds
+    assert_range(value, min_value, max_value)
+    assert min_value <= max_value
+    assert min_result <= max_result
+
+    delta_value = max_result - min_result
+    offset_value = value - min_value
+    delta_result = max_result - min_result
+
+    multiplyer = offset_value / delta_value
+    result = (delta_result * multiplyer) + min_result
+
+    return conversion_strategy(result) if type(value) == int else result
