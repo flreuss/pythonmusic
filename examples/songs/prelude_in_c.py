@@ -6,7 +6,6 @@ Das Wohltemperirte Clavier
 """
 
 from pythonmusic import *
-from pythonmusic.util.device_chooser import user_receiver_prompt
 
 
 def left_part() -> Part:

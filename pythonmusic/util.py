@@ -1,4 +1,3 @@
-from collections.abc import Sequence
 from math import floor
 from typing import TypeVar
 
