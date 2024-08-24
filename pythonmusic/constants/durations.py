@@ -58,13 +58,21 @@ SN: float = SIXTEENTH_NOTE
 SEMI_QUAVER: float = SIXTEENTH_NOTE
 """Defines length constant for a *sixteenth note* or *semiquaver*."""
 
-# Thirtysecond Note
+# Thirty-second Note
 THIRTYSECOND_NOTE: float = QUARTER_NOTE / 8
 """Defines length constant for a *thirtysecond note* or *demisemiquaver*."""
 TN: float = THIRTYSECOND_NOTE
 """Defines length constant for a *thirtysecond note* or *demisemiquaver*."""
 DEMISEMI_QUAVER: float = THIRTYSECOND_NOTE
 """Defines length constant for a *thirtysecond note* or *demisemiquaver*."""
+
+# Sixty-fourth Note
+SIXTYFOURTH_NOTE: float = QUARTER_NOTE / 16
+"""Defines length constant for a *sixtyfourth note* or *semidemisemiquaver*"""
+SFN: float = SIXTYFOURTH_NOTE
+"""Defines length constant for a *sixtyfourth note* or *semidemisemiquaver*"""
+SEMIDEMISEMI_QUAVER: float = SIXTYFOURTH_NOTE
+"""Defines length constant for a *sixtyfourth note* or *semidemisemiquaver*"""
 
 
 # Dotted Quarter Note
