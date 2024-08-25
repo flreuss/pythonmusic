@@ -5,7 +5,6 @@ Defines MIDI constants for GM Level 2 Instruments
 
 def _make_instrument(patch: int, bank: int = 0) -> int:
     assert patch in range(1, 128 + 1)
-    # TODO: Check if 9 really is the highest-used bank; consider just unlocking this
     assert bank in range(0, 9 + 1)
     return (bank << 8) | patch
 

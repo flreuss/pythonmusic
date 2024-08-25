@@ -9,8 +9,6 @@ from mido.messages import Message as RawMessage
 from mido.messages.checks import Integral
 
 
-# TODO: is this neccessary, or should this just expose mido directly?
-
 # This class is a thin wrapper around mido's Message class. The idea is
 # to simplyfy and reduce the exposed api. This also allows type annotations.
 

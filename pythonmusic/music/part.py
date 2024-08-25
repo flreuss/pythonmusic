@@ -111,15 +111,6 @@ class Part:
                     f"All lists must be equal in length: phrases[{len(phrases)}], start_times[{len(start_times)}]"
                 )
 
-        # elements = list(
-        #     map(
-        #         lambda index: (start_times[index], phrases[index]),
-        #         range(len(phrases)),
-        #     )
-        # )
-
-        # TODO: check how efficient this actually is; seems like a mess
-
         # packs elements in to tuples
         elements = list(zip(start_times, phrases))
         non_st_elements: list[Phrase] = []  # st: start_time

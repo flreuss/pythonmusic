@@ -40,13 +40,11 @@ def make_instrument(patch: int, bank: int = 0) -> int:
             variation bank in the upper byte.
     """
     assert_range(patch, 1, 128)
-    # TODO: Check if 9 really is the highest-used bank; consider just unlocking this
-    assert_range(bank, 0, 9)
+    assert_range(bank, 0, 128)
     return (bank << 8) | patch
 
 
 def instrument_get_patch_bank(instrument: int) -> tuple[int, int]:
-    # TODO: Add links to pydoc
     """
     Returns the patch and bank ids for the given instrument.
     The input is assumed to be valid.
@@ -57,10 +55,12 @@ def instrument_get_patch_bank(instrument: int) -> tuple[int, int]:
         Returns:
             A tuple containing the instrument's patch and bank.
     """
-    # TODO: add validation
     BYTE = 0b11111111
     patch = instrument & BYTE
     bank = (instrument >> 8) & BYTE
+
+    assert_range(patch, 1, 128)
+    assert_range(bank, 0, 128)
     return (patch, bank)
 
 

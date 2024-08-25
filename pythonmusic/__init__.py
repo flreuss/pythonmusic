@@ -1,9 +1,3 @@
-# TODO: switch all to sphinx
-# TODO: update classes.puml
-# TODO: add custom errors
-# TODO: add annotations to class properties
-
-
 from .constants import *
 from .helpers import *
 from .io import *
