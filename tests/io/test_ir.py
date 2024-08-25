@@ -3,7 +3,6 @@ from typing import cast
 from math import floor
 
 from pythonmusic.io.ir import (
-    IrRest,
     pe_to_ir,
     phrase_to_ir,
     part_to_ir,
@@ -16,7 +15,7 @@ from pythonmusic.io.ir import (
 )
 from pythonmusic.music import Note, Chord, Phrase, Part, Score
 from pythonmusic.constants import *
-from pythonmusic.util import instrument_get_patch_bank, mspb_to_bpm
+from pythonmusic.util import instrument_get_patch_bank
 
 
 class IrEncodeTests(unittest.TestCase):

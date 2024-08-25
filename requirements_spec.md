@@ -6,8 +6,8 @@ Der Nutzende kann unter Nutzung der Bibliothek...
 
 - [x] Musikdaten (Noten, Phrasen, Part, Scores) über eine DAW ohne größere Latenz wiedergeben. {5}
 - [ ] Musikdaten (Noten, Phrasen, Part, Scores) über einen integrierten MIDI-Synthesizer ohne größere Latenz wiedergeben. {5}
-- [ ] Werte von einem Bereich auf einen anderen Bereich mappen _(s. mapValue). {5}_
-- [ ] Tonhöhenwerte von einer Skala auf eine andere übertragen (s. mapScale) und dabei übliche Skalen als Konstanten angeben. {5}
+- [x] Werte von einem Bereich auf einen anderen Bereich mappen _(s. mapValue). {5}_
+- [x] Tonhöhenwerte von einer Skala auf eine andere übertragen (s. mapScale) und dabei übliche Skalen als Konstanten angeben. {5}
 - [x] Tonhöhe (nur wohltemperiert, s. MIDI), Tondauer (min. bis 64tel genau) und Lautstärke (als Zahl oder Konstanten à la ff, pp) auf Ebene jeder einzelnen Note festlegen, verändern und abfragen. {5}
 - [x] Noten oder Akkorde zu Tonfolgen (Phrasen) gruppieren. {5}
 - [x] Phrasen zu Stimmen gruppieren. {5}

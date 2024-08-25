@@ -1,4 +1,3 @@
-from copyreg import constructor
 import unittest
 
 from pythonmusic.util import *
@@ -63,4 +62,5 @@ class UtilTests(unittest.TestCase):
         self.assertEqual(result, 80)
 
     def test_map_scale(self):
+        # NOTE: very difficult to test
         pass
