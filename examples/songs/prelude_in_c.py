@@ -6,6 +6,7 @@ Das Wohltemperirte Clavier
 """
 
 from pythonmusic import *
+from time import sleep
 
 
 def left_part() -> Part:
@@ -245,9 +246,6 @@ def play_score():
         print("No open receiver found")
         exit(1)
 
-    # create player
-    player = MidiPlayer(device)
-
     # play score allows for callbacks to be set
     # before the playback starts, but all messages are prepared,
     def on_start(messages: list[MidiMessage]):
@@ -255,6 +253,7 @@ def play_score():
 
     # on every message,
     def on_message(_message: MidiMessage, _start_time: float):
+        _ = _start_time
         print(_message.raw())
 
     # and before the playback method ends
@@ -271,6 +270,9 @@ def play_score():
     start_measure = 0 * 4
 
     score = make_score()
+
+    # create player
+    player = MidiPlayer(device)
     player.play_score(score, start_measure, on_start, on_message, on_end)
 
 

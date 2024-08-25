@@ -31,7 +31,7 @@ class MidiMessage:
 
     @property
     def time(self) -> float:
-        return self._raw.time
+        return self._raw.time  # type: ignore [reportAttributeAccessIssue]
 
     @classmethod
     def _init_unsafe(cls) -> Self:
