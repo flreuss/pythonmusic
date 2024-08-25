@@ -5,7 +5,8 @@ from math import floor
 
 from pythonmusic.music import PhraseElement, Note, Chord, Phrase, Part, Score
 from pythonmusic.constants import CHANNEL_PAN
-from pythonmusic.util import instrument_get_patch_bank
+
+# from pythonmusic.util import instrument_get_patch_bank
 from pythonmusic.constants.articulations import *
 
 # The idea behind adding an IR layer on top of midi messages is to make
@@ -187,8 +188,13 @@ def part_to_ir(part: Part) -> IrChannel:
     """
 
     def instrument_node(value: int) -> IrNode:
-        # TEST: No idea if this works
-        patch, bank = instrument_get_patch_bank(value)
+        # inline from instrument_get_path_bank
+        # if I dont inline this this doesnt work... I have no clue why
+        BYTE = 0b11111111
+        patch = value & BYTE
+        bank = (value >> 8) & BYTE
+        # inline end
+
         payload = IrProgramChange(patch, bank)
         return IrNode(0.0, IrNode.Type.PROGRAM, payload)
 
