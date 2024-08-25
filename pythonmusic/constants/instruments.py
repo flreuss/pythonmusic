@@ -2,11 +2,7 @@
 Defines MIDI constants for GM Level 2 Instruments
 """
 
-
-def _make_instrument(patch: int, bank: int = 0) -> int:
-    assert patch in range(1, 128 + 1)
-    assert bank in range(0, 9 + 1)
-    return (bank << 8) | patch
+from pythonmusic.util import make_instrument as _make_instrument
 
 
 ACOUSTIC_GRAND_PIANO: int = _make_instrument(1, 0)
