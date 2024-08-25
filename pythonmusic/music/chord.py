@@ -1,4 +1,4 @@
-from typing import cast as _cast, Any
+from typing import cast as _cast, Any, Self
 
 from .note import Note
 from .phrase_element import PhraseElement
@@ -33,6 +33,18 @@ class Chord(PhraseElement, NoteCollection):
     def length(self) -> int:
         """Returns the number of notes in the chord."""
         return len(self.notes)
+
+    @classmethod
+    def from_lists(
+        cls,
+        pitches: list[int],
+        durations: list[float],
+        dynamics: list[int],
+    ) -> "Chord":
+        chord = Chord()
+        chord.add_notes_by_lists(pitches, durations, dynamics)
+
+        return chord
 
     @property
     def notes(self) -> list[PhraseElement]:

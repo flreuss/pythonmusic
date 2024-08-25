@@ -33,6 +33,24 @@ class ChordTests(unittest.TestCase):
         chord = Chord.from_root(C4, MAJOR, QN)
         self.assertEqual(chord.notes, Chord(notes).notes)
 
+    def test_from_lists(self):
+        pitches = [45, 65, 7]
+        durations = [3.4, 2.0, 34.0]
+        dynamics = [54, 23, 67]
+
+        check = Chord()
+        check.add_notes(
+            list(
+                map(
+                    lambda i: Note(pitches[i], durations[i], dynamics[i]),
+                    range(len(pitches)),
+                )
+            )
+        )
+
+        chord = Chord.from_lists(pitches, durations, dynamics)
+        self.assertEqual(check, chord)
+
     def test_eq(self):
         chord_a = Chord(NOTES)
         chord_b = deepcopy(chord_a)

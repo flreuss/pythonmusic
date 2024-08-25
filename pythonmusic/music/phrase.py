@@ -69,6 +69,30 @@ class Phrase(NoteCollection):
         """Adds the given chord to the phrase."""
         self.notes.append(chord)
 
+    def add_chord_by_lists(
+        self, pitches: list[int], durations: list[float], dynamics: list[int]
+    ):
+        """Adds a chord constructed by the given lists."""
+        self.add_chord(Chord.from_lists(pitches, durations, dynamics))
+
+    def add_chords_by_lists(
+        self,
+        pitches: list[list[int]],
+        durations: list[list[float]],
+        dynamics: list[list[int]],
+    ):
+        len_pitches = len(pitches)
+        if len_pitches != len(durations) or len_pitches != len(dynamics):
+            raise ValueError(
+                f"All lists must be equal in length: pitches[{len_pitches}],\
+                durations[{len(durations)}], dynamics[{len(durations)}]"
+            )
+
+        for index in range(len_pitches):
+            self.add_note(
+                Chord.from_lists(pitches[index], durations[index], dynamics[index])
+            )
+
     def add_rest(self, duration: float):
         """Adds a rest of the given duration to the phrase."""
         self.notes.append(Note.rest(duration))

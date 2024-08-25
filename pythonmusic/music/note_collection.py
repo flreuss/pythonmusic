@@ -52,7 +52,7 @@ class NoteCollection(_ABC):
     def duration(self) -> float:
         pass
 
-    def add_note(self, note: Note):
+    def add_note(self, note: PhraseElement):
         """Adds the given note to the collection."""
         self.notes.append(note)
 
@@ -67,7 +67,7 @@ class NoteCollection(_ABC):
         dynamics: list[int],
     ) -> None:
         """
-        Adds notes defined by their parts to the phrase.
+        Adds notes defined by their parts.
 
         Provide lists of pitches, durations, and dynamics that describe the notes
         to add.

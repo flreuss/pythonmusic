@@ -183,6 +183,37 @@ class PhraseTests(unittest.TestCase):
         with self.assertRaises(IndexError):
             phrase.remove_note(INVALID_INDEX)
 
+    def test_add_chord(self):
+        phrase = Phrase()
+        chord = Chord([Note(60, 1.0), Note(64, 1.0)])
+        phrase.add_chord(chord)
+        self.assertEqual(phrase.notes, [chord])
+
+    def test_add_chord_by_lists(self):
+        phrase = Phrase()
+        pitches = [60, 64]
+        durations = [1.0, 1.0]
+        dynamics = [23, 23]
+        phrase.add_chord_by_lists(pitches, durations, dynamics)
+
+        self.assertEqual(phrase.notes, [Chord([Note(60, 1.0, 23), Note(64, 1.0, 23)])])
+
+    def test_add_chords_by_lists(self):
+        phrase = Phrase()
+
+        pitches = [[1, 2, 3, 4], [2, 4, 6, 8], [4, 8, 12, 16]]
+        durations = [[1.0, 2.0, 3.0, 4.0], [2.0, 4.0, 6.0, 8.0], [4.0, 8.0, 12.0, 16.0]]
+        dynamics = [[1, 2, 3, 4], [2, 4, 6, 8], [4, 8, 12, 16]]
+        chords = list(
+            map(
+                lambda i: Chord.from_lists(pitches[i], durations[i], dynamics[i]),
+                range(len(pitches)),
+            )
+        )
+
+        phrase.add_chords_by_lists(pitches, durations, dynamics)
+        self.assertEqual(chords, phrase.notes)
+
     def test_clear(self):
         """Tests Note clear() method"""
         phrase = Phrase(NOTES)
