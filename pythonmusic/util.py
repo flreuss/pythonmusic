@@ -3,8 +3,9 @@
 # Utility functionality. All functions here have no dependencies in the parent
 # library. Use `helpers` if you need to import
 
+from typing import TypeVar
 
-Number = int | float
+Number = TypeVar("Number", int, float)
 """A type that is either a float or an integer."""
 
 
