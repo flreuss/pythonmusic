@@ -24,14 +24,14 @@ Der Nutzende kann unter Nutzung der Bibliothek...
 
 Das System sollte...
 
-- [ ] Musikdaten (Noten, Phrasen, Part, Scores) als Audiodateien exportieren
+- [ ] [PlayCode](https://jythonmusic.me/play-code/\] {5}
+- [ ] [AudioSample](https://jythonmusic.me/api/audiosample/) {4}
+- [ ] [MidiSequence](https://jythonmusic.me/api/midisequence/) {4}
+- [ ] [ModFunctions](https://jythonmusic.me/api/music-library-functions/mod-functions/) ist nicht das meiste davon recht simpel, funktional selbst zu implementieren? {3}
+    - check functions for useful material that is not easily implemented
 - [ ] mit OSC-fähigen Geräten kommunizieren _(siehe OSCIn/Out). {2}_
-- [ ] Scheduling: planen, nach wie viel Millisekunden Verzögerung und wie oft bestimmte Aufgaben (z. B. Aufruf einer Funktion) ausgeführt werden sollen (vgl. Timer-Bibliothek). {2}
 - [ ] MIDI-Datei als Score importieren. {1}
-- [ ] \[https://jythonmusic.me/metronome/\]
-- [ ] \[https://jythonmusic.me/api/midisequence/\]
-- [ ] \[https://jythonmusic.me/play-code/\]
-- [ ] \[https://jythonmusic.me/api/music-library-functions/mod-functions/ - ist nicht das meiste davon recht simpel, funktional selbst zu implementieren?\]
+- [ ] [Metronome](https://jythonmusic.me/metronome/) {1}
 
 # Nichtfunktionale Anforderungen
 
