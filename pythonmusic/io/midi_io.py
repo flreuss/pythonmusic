@@ -20,7 +20,7 @@ def export_score(score: Score, path: str):
     path = _abspath(path)
 
     # create mido objects
-    file = _MidiFile()
+    file = _MidiFile(type=1)
 
     # mido uses only uses the lower component for calculating midi ticks
     # setting this to `4` will ensure this align with this library
@@ -47,11 +47,16 @@ def export_score(score: Score, path: str):
         # convert part to nodes and then midi messages
         nodes = _part_to_ir(part)
         messages = _irchannel_to_midi(nodes, score.tempo)
+        messages.sort(key=lambda message: message.time, reverse=False)
 
         # add messages to track
+        last_tick = 0
         for message in messages:
             tick = _second2tick(message.time, file.ticks_per_beat, tempo)
-            raw_message = message.raw().copy(time=100 * (index + 1))
+            delta_tick = tick - last_tick
+            last_tick = tick
+
+            raw_message = message.raw().copy(time=delta_tick)
             track.append(raw_message)
 
         track.append(_MetaMessage("end_of_track"))
