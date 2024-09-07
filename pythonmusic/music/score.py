@@ -11,9 +11,9 @@ class Score:
         parts: list[Part] = [],
         tempo: float = _MODERATO,
     ) -> None:
-        self.title = title
-        self.parts = []
-        self.tempo = tempo
+        self.title: str | None = title
+        self.parts: list[Part] = []
+        self.tempo: float = tempo
 
         self.add_parts(parts)
 

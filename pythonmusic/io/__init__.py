@@ -1,6 +1,7 @@
 from .midi_receiver import *
 from .midi_sender import *
 from .midi_message import *
+from .midi_io import *
 
 # does not import ir
 

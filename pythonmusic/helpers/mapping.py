@@ -1,7 +1,10 @@
-from typing import Callable
+from typing import Callable, TypeVar
 from math import floor
 
-from pythonmusic.util import Number, assert_range
+from pythonmusic.util import assert_range
+
+Number = int | float
+"""A type that is either a float or an integer."""
 
 
 def map_value(

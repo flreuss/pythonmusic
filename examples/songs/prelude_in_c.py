@@ -273,6 +273,9 @@ def play_score():
 
     # create player
     player = MidiPlayer(device)
+    # alternatively, you can also create a `SynthPlayer`
+    # player = SynthPlayer("path to sound font 2 file")
+
     player.play_score(score, start_measure, on_start, on_message, on_end)
 
 

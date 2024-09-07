@@ -1,4 +1,5 @@
 from typing import override
+from os.path import abspath as _abspath
 
 from fluidsynth import Synth as _Synth
 
@@ -18,13 +19,14 @@ from pythonmusic.constants.messages import (
 
 class Synth:
     def __init__(self, sound_font: str):
+        path = _abspath(sound_font)
         synth = _Synth()
         synth.start()
-        font_id = synth.sfload(sound_font)
+        font_id = synth.sfload(path)
 
         self._synth = synth
         self._font_id = font_id
-        self._font_path = sound_font
+        self._font_path = path
 
     def __del__(self):
         self._synth.sfunload(self._font_id)
