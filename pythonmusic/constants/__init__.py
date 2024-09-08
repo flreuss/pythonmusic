@@ -1,5 +1,5 @@
 """
-This module defines several MIDI constants.
+This module defines several MIDI and music constants.
 """
 
 from .articulations import *

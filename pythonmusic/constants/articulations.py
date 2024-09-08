@@ -2,6 +2,16 @@
 Defines articulations constants for notes.
 """
 
+__all__ = [
+    "STACCATO",
+    "STACCATISSIMO",
+    "MARCATO",
+    "ACCENT",
+    "TENUTO",
+    "LEGATO",
+    "PORTATO",
+]
+
 
 def _articulation(offset: int) -> int:
     """Returns the articulation mask for the given offset."""

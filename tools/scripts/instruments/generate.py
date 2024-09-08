@@ -28,11 +28,11 @@ def make_doc_string(patch: int, bank: int, name: str) -> str:
 Instrument constant for {name}.
 
 This constant corresponds to the General MIDI Level 2 patch {patch}, bank {bank}.
-See [General MIDI Level 2](https://en.wikipedia.org/wiki/General_MIDI_Level_2) for more information.
 """'''
 
 
 instruments: str = ""
+constants: list[str] = []
 
 for patch, bank, name in data:
     constant_label: str = (
@@ -45,12 +45,32 @@ for patch, bank, name in data:
         .replace("'", "")
     )
     entry = f"""
-{constant_label}: int = _make_instrument({patch}, {bank})
+{constant_label}: int = make_instrument({patch}, {bank})
 {make_doc_string(patch, bank, name)}
 
 """
     instruments += entry
+    constants.append(constant_label)
 
+
+all_content = "__all__ = [\n"
+for constant in constants:
+    all_content += f'    "{constant}",\n'
+all_content += "]"
+
+header = (
+    f'''
+"""
+Defines MIDI constants for GM Level 1 and 2 Instruments.
+"""
+
+from pythonmusic.util import make_instrument
+
+'''
+    + all_content
+    + "\n\n"
+)
 
 with open("instruments.py", "w+") as file:
+    file.write(header)
     file.write(instruments)
