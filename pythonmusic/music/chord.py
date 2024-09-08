@@ -1,10 +1,12 @@
-from typing import cast as _cast, Any, Self
+from typing import cast, Any
 
 from .note import Note
 from .phrase_element import PhraseElement
 from .note_collection import NoteCollection
-from ..constants.dynamics import MF as _MF
-from ..constants.intervals import OCTAVE as _OCTAVE
+from ..constants.dynamics import MF
+from ..constants.intervals import OCTAVE
+
+__all__ = ["Chord"]
 
 
 class Chord(PhraseElement, NoteCollection):
@@ -14,7 +16,7 @@ class Chord(PhraseElement, NoteCollection):
 
     def __init__(self, notes: list[Note] = []) -> None:
         self._notes = []
-        self.add_notes(_cast(list[PhraseElement], notes))
+        self.add_notes(cast(list[PhraseElement], notes))
 
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, Chord):
@@ -70,7 +72,7 @@ class Chord(PhraseElement, NoteCollection):
         root: int,
         intervals: list[int],
         duration: float,
-        dynamic: int = _MF,
+        dynamic: int = MF,
         limit: int | None = None,
     ) -> "Chord":
         """Creates a chord from given intervals over a root note.
@@ -104,7 +106,7 @@ class Chord(PhraseElement, NoteCollection):
                 pitch = (
                     root
                     + intervals[current_interval_index]
-                    + (current_octave_offset * _OCTAVE)
+                    + (current_octave_offset * OCTAVE)
                 )
 
                 # if we are above the inclusive limit, break out of loop

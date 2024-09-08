@@ -1,8 +1,8 @@
 from .phrase import Phrase
-from pythonmusic.constants.panning import PAN_CENTER as _PAN_CENTER
-from pythonmusic.constants.instruments import (
-    ACOUSTIC_GRAND_PIANO as _ACOUSTIC_GRAND_PIANO,
-)
+from pythonmusic.constants.panning import PAN_CENTER
+from pythonmusic.constants.instruments import ACOUSTIC_GRAND_PIANO
+
+__all__ = ["Part"]
 
 
 class Part:
@@ -11,10 +11,10 @@ class Part:
     def __init__(
         self,
         title: str | None = None,
-        instrument: int = _ACOUSTIC_GRAND_PIANO,
+        instrument: int = ACOUSTIC_GRAND_PIANO,
         phrases: list[Phrase] = [],
         channel: int = 0,
-        panning: int = _PAN_CENTER,
+        panning: int = PAN_CENTER,
     ) -> None:
         self.title: str | None = title
         self.instrument: int = instrument

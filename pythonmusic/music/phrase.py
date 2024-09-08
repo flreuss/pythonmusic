@@ -1,10 +1,12 @@
-from functools import reduce as _reduce
+from functools import reduce
 from typing import Any, Sequence
 
 from .chord import Chord
 from .note import Note
 from .note_collection import NoteCollection
 from .phrase_element import PhraseElement
+
+__all__ = ["Phrase"]
 
 
 class Phrase(NoteCollection):
@@ -63,7 +65,7 @@ class Phrase(NoteCollection):
 
         :return: The total duration of the phrase
         """
-        return _reduce(lambda previous, note: previous + note.duration, self.notes, 0)
+        return reduce(lambda previous, note: previous + note.duration, self.notes, 0)
 
     def add_chord(self, chord: Chord):
         """Adds the given chord to the phrase."""

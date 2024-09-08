@@ -1,10 +1,25 @@
-from .note import *
-from .chord import *
-from .phrase import *
-from .part import *
-from .score import *
-from .note_collection import *
-from .phrase_element import *
+from .note_collection import NoteCollection
+from .phrase_element import PhraseElement
+from .note import Note
+from .chord import Chord
+from .phrase import Phrase
+from .part import Part
+from .score import Score
+
+__all__ = [
+    "NoteCollection",
+    "PhraseElement",
+    "Note",
+    "Chord",
+    "Phrase",
+    "Part",
+    "Score",
+    # functions
+    "sharp",
+    "flat",
+    "dotted",
+    "legato",
+]
 
 
 # TODO: find shorter function name

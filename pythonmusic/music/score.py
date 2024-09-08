@@ -1,5 +1,7 @@
-from ..constants.tempo import MODERATO as _MODERATO
-from .part import Part
+from pythonmusic.constants.tempo import MODERATO
+from pythonmusic.music.part import Part
+
+__all__ = ["Score"]
 
 
 class Score:
@@ -9,7 +11,7 @@ class Score:
         self,
         title: str | None,
         parts: list[Part] = [],
-        tempo: float = _MODERATO,
+        tempo: float = MODERATO,
     ) -> None:
         self.title: str | None = title
         self.parts: list[Part] = []

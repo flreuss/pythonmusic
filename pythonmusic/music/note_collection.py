@@ -1,20 +1,22 @@
 from .phrase_element import PhraseElement
 from .note import Note
 
-from abc import ABC as _ABC
-from abc import abstractmethod as _abstractmethod
-from functools import reduce as _reduce
-from typing import Sequence, cast as _cast
+from abc import ABC
+from abc import abstractmethod
+from functools import reduce
+from typing import Sequence, cast
+
+__all__ = ["NoteCollection"]
 
 
-class NoteCollection(_ABC):
+class NoteCollection(ABC):
     @property
-    @_abstractmethod
+    @abstractmethod
     def notes(self) -> list[PhraseElement]:
         pass
 
     @notes.setter
-    @_abstractmethod
+    @abstractmethod
     def notes(self, new_value: list[PhraseElement]):
         pass
 
@@ -40,15 +42,15 @@ class NoteCollection(_ABC):
 
             return output
 
-        return _cast(list[Note], inner(elements))
+        return cast(list[Note], inner(elements))
 
     def __len__(self) -> int:
-        """Returns the number of notes in this colleciton."""
+        """Returns the number of notes in this collection."""
         return self.notes.__len__()
 
     # due to chord needing to conform both to NoteColelction
     @property
-    @_abstractmethod
+    @abstractmethod
     def duration(self) -> float:
         pass
 
@@ -133,7 +135,7 @@ class NoteCollection(_ABC):
 
         INVALID_PITCH = 1000
         notes = self._flatten(self.notes)
-        return _reduce(
+        return reduce(
             lambda current, next: (
                 min(current, next.pitch) if not next.is_rest() else current
             ),
@@ -151,7 +153,7 @@ class NoteCollection(_ABC):
         if len(self.notes) == 0:
             return None
         notes = self._flatten(self.notes)
-        return _reduce(
+        return reduce(
             lambda current, next: (
                 max(current, next.pitch) if not next.is_rest() else current
             ),
@@ -195,7 +197,7 @@ class NoteCollection(_ABC):
 
         INVALID_DYNAMIC = 200  # a value above valid dynamic range
         notes = self._flatten(self.notes)
-        return _reduce(
+        return reduce(
             lambda current, next: (
                 min(current, next.dynamic) if not next.is_rest() else current
             ),
@@ -214,7 +216,7 @@ class NoteCollection(_ABC):
             return None
 
         notes = self._flatten(self.notes)
-        return _reduce(
+        return reduce(
             lambda current, next: (
                 max(current, next.dynamic) if not next.is_rest() else current
             ),
