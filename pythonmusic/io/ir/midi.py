@@ -19,10 +19,24 @@ from pythonmusic.constants import (
     BANK_CHANGE,
 )
 
+__all__ = ["irnodes_to_midi", "irchannel_to_midi", "irfile_to_midi"]
+
 
 def irnodes_to_midi(
     nodes: list[IrNode], tempo: float, channel: int
 ) -> list[MidiMessage]:
+    """
+    Converts a list of ir nodes to midi messages.
+
+    Args:
+        nodes (list[IrNode]): A list of ir nodes
+        tempo (float): A tempo in bpm that will be used to create the midi
+            midi message offsets
+        channel (int): The midi channel on which to play the notes on
+
+    Returns:
+        list[MidiMessage]: A list of midi messages
+    """
     Ty = IrNode.Type
     tempo_multiplyer = 60.0 / tempo
     output = []
@@ -91,17 +105,35 @@ def irnodes_to_midi(
                 # NOTE: if other METAs are supported, change here
                 # TODO: Add support for meta messages
                 pass
-            case _:
-                raise TypeError("Unknown node type")
 
     return output
 
 
 def irchannel_to_midi(channel: IrChannel, tempo: float) -> list[MidiMessage]:
+    """
+    Converts an ir channel to a list of midi messages.
+
+    Args:
+        channel (IrChannel): An ir channel to convert
+        tempo (float): A tempo in bpm that will be used to calculate the midi
+            message timing offsets
+
+    Returns:
+        list[MidiMessage]: A list of midi messages
+    """
     return irnodes_to_midi(channel.nodes, tempo, channel.channel)
 
 
 def irfile_to_midi(file: IrFile) -> list[MidiMessage]:
+    """
+    Converts an ir file to a list of midi messages.
+
+    Args:
+        file (IrFile): An ir file
+
+    Returns:
+        list[MidiMessage]: A list of midi messages
+    """
     payload = file.channels[0].nodes[0].payload
     assert type(payload) == IrTempo
     tempo = cast(IrTempo, payload)

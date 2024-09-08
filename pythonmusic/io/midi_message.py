@@ -1,22 +1,31 @@
-"""
-Midi Messages
-
-A thin wrapper around mido' MIDI messages.
-"""
-
-from typing import Self, Any, cast as _cast
+from typing import Self, Any, cast
 from mido.messages import Message as RawMessage
 from mido.messages.checks import Integral
 
+__all__ = ["MidiMessage", "RawMessage"]
 
 # This class is a thin wrapper around mido's Message class. The idea is
-# to simplyfy and reduce the exposed api. This also allows type annotations.
+# to simplify and reduce the exposed api. This also allows type annotations.
 
 
 class MidiMessage:
+    """
+    An object that represents a midi message.
+    """
+
     __slots__ = "_raw"
 
     def __init__(self, type: str, **args) -> None:
+        """
+        Creates a new midi message.
+
+        Args:
+            type (str): The type of the midi message. See
+                :mod:`pythonmusic.constants.messages` for more information.
+
+
+                Continue here
+        """
         self._raw = RawMessage(type, **args)
 
     def __str__(self):
@@ -46,7 +55,7 @@ class MidiMessage:
 
     @classmethod
     def from_bytes(cls, data: list[Integral], time: float | int = 0.0) -> Self:
-        return cls.from_raw(RawMessage.from_bytes(data, _cast(Any, time)))
+        return cls.from_raw(RawMessage.from_bytes(data, cast(Any, time)))
 
     def raw(self) -> RawMessage:
         """

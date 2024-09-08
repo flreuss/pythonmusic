@@ -9,6 +9,22 @@ from pythonmusic.constants import CHANNEL_PAN
 # from pythonmusic.util import instrument_get_patch_bank
 from pythonmusic.constants.articulations import *
 
+__all__ = [
+    "IrPayload",
+    "IrNote",
+    "IrRest",
+    "IrControlChange",
+    "IrProgramChange",
+    "IrTempo",
+    "IrNode",
+    "IrChannel",
+    "IrFile",
+    "pe_to_ir",
+    "phrase_to_ir",
+    "part_to_ir",
+    "score_to_ir",
+]
+
 # The idea behind adding an IR layer on top of midi messages is to make
 # conversion between this library's types and different output formats easier.
 # It also implements articulations on notes.
@@ -28,6 +44,10 @@ class IrPayload(ABC):
 
 @dataclass
 class IrNote(IrPayload):
+    """
+    A payload that holds values for notes.
+    """
+
     note: int
     velocity: int
     duration: float
@@ -35,11 +55,19 @@ class IrNote(IrPayload):
 
 @dataclass
 class IrRest(IrPayload):
+    """
+    A payload that holds the duration of a rest.
+    """
+
     duration: float
 
 
 @dataclass
 class IrControlChange(IrPayload):
+    """
+    A payload that holds values for midi control change messages.
+    """
+
     __slots__ = ("control", "value")
     control: int
     value: int
@@ -47,6 +75,10 @@ class IrControlChange(IrPayload):
 
 @dataclass
 class IrProgramChange(IrPayload):
+    """
+    A payload that holds values for a midi program change.
+    """
+
     __slots__ = ("program", "bank")
 
     program: int
@@ -62,6 +94,10 @@ class IrProgramChange(IrPayload):
 # See https://www.recordingblogs.com/wiki/midi-meta-messages
 @dataclass
 class IrTempo(IrPayload):
+    """
+    A payload that holds data for a tempo change
+    """
+
     __slots__ = "value"
     value: float  # still uses bpm
 
@@ -69,7 +105,9 @@ class IrTempo(IrPayload):
 # ==== Objects ====
 @dataclass
 class IrNode:
-    """An element that represents any type of event."""
+    """
+    An object that represents an ir event.
+    """
 
     class Type(Enum):
         REST = 0
@@ -87,7 +125,7 @@ class IrNode:
 
 @dataclass
 class IrChannel:
-    """An element that represents a part or channel."""
+    """An object that represents a part or channel."""
 
     __slots__ = ("title", "channel", "nodes")
 
@@ -98,6 +136,8 @@ class IrChannel:
 
 @dataclass
 class IrFile:
+    """An object that represents all messages of a midi file."""
+
     __slots__ = ("title", "channels")
 
     title: str | None
@@ -116,6 +156,13 @@ def pe_to_ir(pe: PhraseElement, start_time: float) -> list[IrNode]:
     :param pe PhraseElement: A phrase element
     :param start_time float: The start time of the phrase element
     :return: A list of nodes
+
+    Args:
+        pe (PhraseElement): A phrase element
+        start_time (float): The start time of the phrase element
+
+    Returns:
+        list[IrNode]: A list of ir nodes
     """
 
     def _convert_note(note: Note, start_time: float) -> IrNode:
@@ -168,6 +215,13 @@ def pe_to_ir(pe: PhraseElement, start_time: float) -> list[IrNode]:
 def phrase_to_ir(phrase: Phrase, start_time: float) -> list[IrNode]:
     """
     Converts a `Phrase` to IR.
+
+    Args:
+        phrase (Phrase): A phrase to be converted
+        start_time (float): The start time of the phrase
+
+    Returns:
+        list[IrNode]: A list of ir nodes
     """
     output: list[IrNode] = []
     time_accumulator = start_time
@@ -185,6 +239,12 @@ def part_to_ir(part: Part) -> IrChannel:
 
     This also adds all associated CC values as CC nodes in the beginning of the
     return list.
+
+    Args:
+        part (Part): A part to be converted
+
+    Returns:
+        IrChannel: An ir channel object
     """
 
     def instrument_node(value: int) -> IrNode:
@@ -215,6 +275,12 @@ def score_to_ir(score: Score) -> IrFile:
     Converts a `Score` to IR.
 
     This also adds all associated CC values as CC nodes in the beginning of the
+
+    Args:
+        score (Score): A score to be converted
+
+    Returns:
+        IrFile: An ir file object
     """
 
     def tempo_node(value: float) -> IrNode:

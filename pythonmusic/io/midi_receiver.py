@@ -1,10 +1,12 @@
 from typing import Callable, Self
 
-from mido.messages import Message as _MidoMessage
-from mido import open_input as _open_input  # type: ignore [reportAttributeAccessIssue]
+from mido.messages import Message as MidoMessage
+from mido import open_input as open_input  # type: ignore [reportAttributeAccessIssue]
 from mido.backends.rtmidi import Input as RtInput
 
 from .midi_message import MidiMessage
+
+__all__ = ["MidiReceiver"]
 
 MATCH_ALL = "*"
 """A callback event that matches all events"""
@@ -21,7 +23,7 @@ class MidiReceiver:
         print_messages: bool = False,
     ) -> None:
         self.name: str | None = name
-        self._port: RtInput = _open_input(
+        self._port: RtInput = open_input(
             self.name, virtual=True, callback=self._handle_message
         )
         self._callbacks: dict[str, Callable[[MidiMessage], None]] = {}
@@ -59,7 +61,7 @@ class MidiReceiver:
         The `input_name` parameter must refer to a valid, open midi port.
         Use `MidiReceiver.get_inputs()` to retrieve a list of open ports.
         """
-        port = _open_input(input_name)
+        port = open_input(input_name)
         if not port:
             raise ConnectionError(f'Cannot attach to given input "{input_name}"')
 
@@ -75,7 +77,7 @@ class MidiReceiver:
 
         return new
 
-    def _handle_message(self, raw_message: _MidoMessage):
+    def _handle_message(self, raw_message: MidoMessage):
         if self.prints_messages_to_stdout:
             print(f"Midi message: {raw_message.__str__()}")
 
