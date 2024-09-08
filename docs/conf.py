@@ -7,27 +7,29 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "PythonMusic"
-copyright = "2024, Darius Löschner"
-author = "Darius Löschner"
+copyright = "2024, University of Potsdam"
+author = "University of Potsdam"
 release = "0.1"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = [
-    "sphinx.ext.duration",
-    "sphinx.ext.autodoc",
-    "sphinx.ext.autosummary",
-    "myst_parser",
-]
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.viewcode", "sphinx.ext.napoleon"]
 
 templates_path = ["_templates"]
-exclude_patterns = []
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+
+
+# -- Autodoc configuration ---------------------------------------------------
+autodoc_default_options = {
+    "members": True,
+    "imported-members": True,
+    "undoc-members": True,
+}
 
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-# html_theme = "alabaster"
 html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
