@@ -3,6 +3,9 @@ from math import floor
 
 from pythonmusic.util import assert_range
 
+__all__ = ["map_value", "map_scale"]
+
+
 Number = int | float
 """A type that is either a float or an integer."""
 
@@ -25,14 +28,18 @@ def map_value(
     all values are converted into floats. If the output type is an `integer`, the
     given `conversion_strategy` is used to convert the result. By default, this
     uses Python's build-in `round()` function. You may also want to use
-    `floor()`.
+    `floor()`. This is optional.
 
-    :param value: A base value
-    :param min_value: Defines lower bound of input range
-    :param max_value: Defines upper bound of input range
-    :param min_result: Defines lower bound of result range
-    :param min_result: Defines upper bound of result range
-    :param conversion_strategy: A function that converts a float to an int
+    Args:
+        value (Number): A base value
+        min_value (Number): Defines lower bound of input range
+        max_value (Number): Defines upper bound of input range
+        min_result (Number): Defines lower bound of result range
+        min_result (Number): Defines upper bound of result range
+        conversion_strategy (Callable[[float], int]): A function that converts a float to an int
+
+    Returns:
+        Number: The mapped value
     """
     # assert that all given values are in bounds
     assert_range(value, min_value, max_value)
@@ -57,7 +64,7 @@ def map_scale(
     min_result: int,
     max_result: int,
     scale: list[int],
-    base: int | None = None,
+    root: int | None = None,
 ) -> int:
     """
     Maps a given value from on range to another on the given scale.
@@ -66,13 +73,19 @@ def map_scale(
     `map_value`, this function is intended to be used with note pitches and will
     always return an integer.
 
-    :param value: A base value
-    :param min_value: Defines lower bound of input range
-    :param max_value: Defines upper bound of input range
-    :param min_result: Defines lower bound of result range
-    :param min_result: Defines upper bound of result range
-    :param scale: A list of integers that represent interval offsets from a root
-    :param base: A base pitch that represents offset `0`. Defaults to `min_value`
+    Args:
+        value (Number): A base value
+        min_value (Number): Defines lower bound of input range
+        max_value (Number): Defines upper bound of input range
+        min_result (int): Defines lower bound of result range
+        min_result (int): Defines upper bound of result range
+        scale (list[int]): A list of integers that represent interval offsets
+            from a root
+        root (int | None): A base pitch that represent the base offset. Defaults
+            to `min_value`
+
+    Returns:
+        Number: The mapped value
     """
     assert_range(value, min_value, max_value)
     assert min_value <= max_value
@@ -85,7 +98,7 @@ def map_scale(
         raise ValueError("Given scale must contain at least one value")
 
     # if base is not given, default to `min_result`
-    base = base or min_result
+    root = root or min_result
 
     # length of scale, not all scales have 11 notes
     scale_len = len(scale)
@@ -93,7 +106,7 @@ def map_scale(
     # map input onto target range
     mapped = map_value(float(value), min_value, max_value, min_result, max_result)
     # align with scale (no offset/key)
-    aligned = mapped - base
+    aligned = mapped - root
 
     # normalise range
     normalised = aligned * scale_len / 12
@@ -105,4 +118,4 @@ def map_scale(
 
     # finally assemble result
     # all parts are integers, but scale and base may not be; convert
-    return int((octave * 12) + scale[index] + base)
+    return int((octave * 12) + scale[index] + root)

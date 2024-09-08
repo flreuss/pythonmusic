@@ -1,10 +1,23 @@
-from typing import TypeVar
+from typing import Any
 from pythonmusic.io import get_midi_senders, get_midi_receivers
 
-_PromptElement = TypeVar("_PromptElement")
+__all__ = ["user_list_prompt", "user_receiver_prompt", "user_sender_propt"]
 
 
-def user_list_prompt(choices: list[_PromptElement]) -> _PromptElement | None:
+def user_list_prompt(choices: list[Any]) -> Any | None:
+    """
+    Prompts the user to choose an option from a given number of choices.
+
+    Does not ask the user for input if the number of choices is smaller than
+    `1`.
+
+    Args:
+        choices (list[Any]): A number of options for the user to choose from.
+
+    Returns:
+        The user's choice, `choices[0]` if `len(choices) == 1`, or `None` if
+        empty
+    """
     # if the input is empty, return None
     if len(choices) == 0:
         return None
@@ -13,7 +26,7 @@ def user_list_prompt(choices: list[_PromptElement]) -> _PromptElement | None:
         return choices[0]
 
     # repeat user prompt until choice is made
-    choice: _PromptElement | None = None
+    choice: Any | None = None
     while choice is None:
         # This leverages Python's principle of asking for forgiveness instead of
         # permission. Instead of checking if user input is valid, we try to
@@ -50,7 +63,8 @@ def user_receiver_prompt() -> str | None:
     Retrieves open midi receivers and asks user to choose one if more than one
     option is available.
 
-    Returns `None` if no ports are available.
+    Returns:
+        The user's choice of receiver. `None` if no ports are available.
     """
 
     receivers = get_midi_receivers()
@@ -63,7 +77,8 @@ def user_sender_propt() -> str | None:
     Retrieves open midi senders and asks user to choose one if more than one
     option is available.
 
-    Returns `None` if no ports are available.
+    Returns:
+        The user's choice of sender. `None` if no ports are available.
     """
 
     senders = get_midi_senders()
