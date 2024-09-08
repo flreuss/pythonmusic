@@ -1,4 +1,5 @@
 import unittest
+from math import floor
 
 from pythonmusic.helpers import *
 
