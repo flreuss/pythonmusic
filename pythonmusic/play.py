@@ -1,12 +1,15 @@
 from collections.abc import Callable
 from abc import ABC, abstractmethod
 from time import sleep
+from typing import override
 
 from pythonmusic.music import Note, Chord, Phrase, Part, Score, PhraseElement
 from pythonmusic.constants import ADAGIO as _ADAGIO
-from pythonmusic.io import MidiMessage
+from pythonmusic.io import MidiMessage, MidiSender
 from pythonmusic.io.ir import pe_to_ir, phrase_to_ir, part_to_ir, score_to_ir
 from pythonmusic.io.ir.midi import irnodes_to_midi, irchannel_to_midi, irfile_to_midi
+
+__all__ = ["Player", "MidiPlayer"]
 
 
 class Player(ABC):
@@ -160,3 +163,30 @@ class Player(ABC):
         except KeyboardInterrupt:
             if on_end:
                 on_end(False)
+
+
+class MidiPlayer(Player):
+    """
+    An implementation of a player that attaches to a midi receiver and plays
+    Note, Chords, Phrases etc.
+
+    Args:
+        target (str): The output port to attach to
+    """
+
+    def __init__(self, target: str) -> None:
+        super().__init__()
+        self.target: str = target
+        self.sender: MidiSender = MidiPlayer._attach_to_receiver(target)
+
+    @staticmethod
+    def _attach_to_receiver(name: str) -> MidiSender:
+        try:
+            return MidiSender.attach(name)
+        except OSError as error:
+            print("Unable to create sender. Is your port correct?")
+            raise error
+
+    @override
+    def _play_message(self, message: MidiMessage):
+        self.sender.send_message(message)

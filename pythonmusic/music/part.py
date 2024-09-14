@@ -6,7 +6,17 @@ __all__ = ["Part"]
 
 
 class Part:
-    """A part represents an instrument and consists of phrases."""
+    """
+    A part represents an instrument and consists of phrases.
+
+    Args:
+        title (str | None): A title for the part. Defaults to `None`
+        instrument (int): An instrument for the part
+        phrases (list[Phrase]): A list of phrases to add to the part. Phrases
+            can be added later
+        channel (int): A zero-indexed channel
+        panning (int): Panning in range from 0 to 127. Defaults to centre, 64
+    """
 
     def __init__(
         self,
@@ -38,7 +48,8 @@ class Part:
         The returned value is equal to the end time of the last phrase to be
         played. Returns `0` if no phrases are added to the part.
 
-        :return: The total duration of this phrase
+        Returns:
+            The total duration of this phrase
         """
 
         # default to 0, if empty. Will also prevent exception below for max(None)
@@ -63,8 +74,11 @@ class Part:
         begin. If none if provided, the phrase will be appended to the end of
         the part.
 
-        :param Phrase phrase: The phrase to add
-        :param float | None: The new phrase's start_time
+        Args:
+            phrase (Phrase): A phrase to add
+            start_time (float | None): Time at which the phrase should start.
+                Defaults to the end of the part, so the phrase is appended to
+                the end and played after the last phrase ends
         """
 
         # calculate start time, if none was given / append to end
@@ -84,18 +98,17 @@ class Part:
         add. However, to explicitly not assign a start time to a phrase, set its
         index in `start_times` to `None`.
 
-        ```python
-        phrases = [phrase_a, phrase_b, phrase_c]
-        start_times = [3.5, None, 5.5]
-        my_part.add_phrases(phrases, start_times)
-        ```
+        Example:
+            In the example below, `phrase_b` will be appended to the end the part.
+              Phrases with an explicit start time are added first, so `phrase_b`
+              will sound after `phrase_a` and `phrase_c`.
+                >>> phrases = [phrase_a, phrase_b, phrase_c]
+                >>> start_times = [3.5, None, 5.5]
+                >>> my_part.add_phrases(phrases, start_times)
 
-        In the above example, `phrase_b` will be appended to the end the part.
-        Phrases with an explicit start time are added first, so `phrase_b` will
-        sound after `phrase_a` and `phrase_c`.
-
-        :param list[Phrase] phrases: The phrases to add
-        :param list[float] | None: The phrases' start times
+        Args:
+            phrases (list[Phrase]): The phrases to add
+            start_time (list[float | None]): The phrases' start times
         """
 
         # check if start_times was provided
@@ -137,8 +150,11 @@ class Part:
         The phrase to be removed is compared by identity, not contents, so to
         remove a phrase that same object must be provided here.
 
-        :param Phrase phrase: The phrase to be removed
-        :raises ValueError: If the given phrase does not exist in the part
+        Raises:
+            ValueError: If the given phrase does not exist in the part
+
+        Args:
+            phrase (Phrases): The phrase to remove
         """
 
         for index, element in enumerate(self.phrases):

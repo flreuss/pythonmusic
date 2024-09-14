@@ -16,6 +16,11 @@ __all__ = [
     "get_midi_senders",
     "find_midi_receiver",
     "find_midi_sender",
+    "export_score",
+    "MidiMessage",
+    "RawMessage",
+    "MidiReceiver",
+    "MidiSender",
 ]
 
 # reg. tests:

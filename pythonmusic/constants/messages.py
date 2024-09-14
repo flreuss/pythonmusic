@@ -4,6 +4,27 @@ Defines midi message type constants.
 The values follow [mido's format](https://mido.readthedocs.io/en/latest/message_types.html)
 """
 
+__all__ = [
+    "NOTE_OFF",
+    "NOTE_ON",
+    "POLYTOUCH",
+    "CONTROL_CHANGE",
+    "PROGRAM_CHANGE",
+    "AFTERTOUCH",
+    "PITCHWHEEL",
+    "SYSEX",
+    "QUARTER_FRAME",
+    "SONGPOS",
+    "SONG_SELECT",
+    "TUNE_REQUEST",
+    "CLOCK",
+    "START",
+    "CONTINUE",
+    "STOP",
+    "ACTIVE_SENSING",
+    "RESET",
+]
+
 NOTE_OFF: str = "note_off"
 """
 MIDI message constant that defines a note_off message.

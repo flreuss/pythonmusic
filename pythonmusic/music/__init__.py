@@ -24,12 +24,25 @@ __all__ = [
 
 # TODO: find shorter function name
 def sharp(pitch: int) -> int:
-    """Returns the given pitch raised by one. This is equivalent to `pitch + 1`."""
+    """
+    Returns the given pitch raised by one.
+
+    .. note:: This is equivalent to ``pitch + 1``.
+
+    Args:
+        pitch (int): The base pitch
+
+    Returns:
+        int: Increased pitch
+    """
     return pitch + 1
 
 
 def flat(pitch: int) -> int:
-    """Returns the given pitch lowered by one. This is equivalent to `pitch - 1`."""
+    """
+    Returns the given pitch lowered by one.
+
+    .. note:: This is equivalent to `pitch - 1`."""
     return pitch - 1
 
 

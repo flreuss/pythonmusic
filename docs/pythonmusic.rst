@@ -8,14 +8,27 @@ Subpackages
    :maxdepth: 4
 
    pythonmusic.constants
-   pythonmusic.helpers
    pythonmusic.io
    pythonmusic.music
-   pythonmusic.osc
-   pythonmusic.play
 
 Submodules
 ----------
+
+pythonmusic.helpers module
+--------------------------
+
+.. automodule:: pythonmusic.helpers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pythonmusic.play module
+-----------------------
+
+.. automodule:: pythonmusic.play
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 pythonmusic.synth module
 ------------------------

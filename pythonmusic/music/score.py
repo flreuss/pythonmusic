@@ -5,7 +5,13 @@ __all__ = ["Score"]
 
 
 class Score:
-    """A score represents a music piece."""
+    """
+    A score represents a music piece.
+
+    Args:
+        title (str | None): The title of the score. Defaults `None`
+        parts (list[Part]): A list of parts. Can be added later
+    """
 
     def __init__(
         self,
@@ -23,11 +29,11 @@ class Score:
         return self.parts.__len__()
 
     def length(self) -> int:
-        """Returns the number of of parts in the score."""
+        """The number of of parts in the score."""
         return len(self)
 
     def duration(self) -> float:
-        """Returns the unit length of the score."""
+        """The unit length of the score."""
         return (
             max(map(lambda part: part.duration(), self.parts))
             if len(self.parts) != 0
@@ -35,7 +41,15 @@ class Score:
         )
 
     def has_part(self, part: Part) -> bool:
-        """Returns `True` if the given part is in the score."""
+        """
+        Returns `True` if the given part is in the score.
+
+        Args:
+            part (Part): The part to search for
+
+        Returns:
+            bool: `True` if the part was found, otherwise `False`
+        """
         for part_in in self.parts:
             if part == part_in:
                 return True
@@ -47,8 +61,11 @@ class Score:
 
         Unlike phrases and notes, parts may only be added once to a score.
 
-        :param Part part: The part to add
-        :raises ValueError: If the part to add is already present in the score
+        Args:
+            part (Part): The part to add
+
+        Raises:
+            ValueError: If part already exists in the score
         """
 
         if self.has_part(part):
@@ -61,8 +78,12 @@ class Score:
 
         Unlike phrases and notes, parts may only be added once to a score.
 
-        :param list[Part] parts: The part to add
-        :raises ValueError: If any part to add is already present in the score
+        Args:
+            parts (list[Part]): The parts to add
+
+        Raises:
+            ValueError: If any of the parts are duplicates or already present in
+                the score
         """
 
         for part in parts:
@@ -73,8 +94,11 @@ class Score:
         """
         Removes the given part from the score.
 
-        :param Part part: The part to be removed
-        :raises ValueError: If the given part is not in the score
+        Args:
+            part (Part): The part to be removed
+
+        Raises:
+            ValueError: If given part does not exist in the score
         """
         for index, part_in in enumerate(self.parts):
             if part_in is part:
@@ -86,8 +110,14 @@ class Score:
         """
         Removes the part at the given index. Returns the removed part.
 
-        :param int index: The index of the part to remove
-        :raises IndexError: If the given index in invalid
+        Raises:
+            IndexError: If the given index is invalid
+
+        Args:
+            index (int): The index of the part to remove
+
+        Returns:
+            Part: The removed Part
         """
 
         return self.parts.pop(index)

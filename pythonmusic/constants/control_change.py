@@ -8,6 +8,19 @@ These are not message types. See `messages.py` for that.
 See [Wikipedia](https://en.wikipedia.org/wiki/General_MIDI)
 """
 
+__all__ = [
+    "BANK_CHANGE",
+    "MOD_WHEEL",
+    "CHANNEL_VOLUME",
+    "CHANNEL_PAN",
+    "EXPRESSION",
+    "SUSTAIN_PEDAL",
+    "SOSTENUTO_PEDAL",
+    "SOFT_PEDAL",
+    "RESET_CC",
+    "ALL_NOTES_OFF",
+]
+
 BANK_CHANGE: int = 0
 """
 MIDI CC constant for bank changes.

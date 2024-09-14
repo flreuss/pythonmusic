@@ -2,6 +2,16 @@
 Defines constants that approximate the corresponding musical tempo.
 """
 
+__all__ = [
+    "LARGO",
+    "LARGHETTO",
+    "ADAGIO",
+    "ANDANTE",
+    "MODERATO",
+    "ALLEGRO",
+    "PRESTO",
+]
+
 LARGO: float = 50.0
 """Defines the tempo constant for *largo*."""
 LARGHETTO: float = 60.0
@@ -13,6 +23,6 @@ ANDANTE: float = 90.0
 MODERATO: float = 110.0
 """Defines the tempo constant for *moderato*."""
 ALLEGRO: float = 150.0
-"""Defines the tempo constant for *allegro."""
+"""Defines the tempo constant for *allegro*."""
 PRESTO: float = 200.0
 """Defines the tempo constant for *presto*."""

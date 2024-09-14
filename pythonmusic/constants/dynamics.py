@@ -2,7 +2,10 @@
 Defines MIDI constants for music notation dynamics.
 """
 
+__all__ = ["FFF", "FF", "F", "MF", "MP", "P", "PP", "PPP", "MUTE"]
+
 # FFF is *not* 127, so even FFF can still be accented
+
 
 FFF: int = 114
 """Defines dynamic constant for *forte fortissimo*."""

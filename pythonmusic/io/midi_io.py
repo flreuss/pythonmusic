@@ -1,4 +1,4 @@
-from os.path import abspath
+from os.path import abspath, expanduser
 
 from mido import (
     MidiFile,
@@ -17,14 +17,23 @@ __all__ = ["export_score"]
 
 def export_score(score: Score, path: str):
     """
-    Exports a score to a midi file on the given path.
+    Exports the given score to a midi file.
 
-    The path given must contain the target file and should end on `.mid`, though
-    other extensions are possible.
+    The given path must end on a file. The file extension should conventionally
+    be `.mid`, but this is not required.
+
+    Example:
+        Creating a simple score and exporting it to a midi file.
+            >>> from pythonmusic import Score, export_score
+            >>> score = Score("Some Title", [], 120.0)
+            >>> export_score(score, "~/Music/my_score.mid")
+
+    Args:
+        score (Score): A score
+        path (str): Path to the export midi file
     """
-    # FIXME: doesn't expand ~ to (on linux) /home/{user}/
-
     # convert path to absolute
+    path = expanduser(path)
     path = abspath(path)
 
     # create mido objects
