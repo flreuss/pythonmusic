@@ -18,7 +18,7 @@ Der Nutzende kann unter Nutzung der Bibliothek...
 - [x] beliebige MIDI-Nachrichten (z. B. noteOn, noteOff) an MIDI-Geräte (auch den integrierten MIDI-Synthesizer!) senden und empfangen _(siehe MidiIn/Out). {4}_
 - [x] Mithilfe von „parallelen“ Listen Noten zu Phrasen hinzufügen. {4}
 - [x] Mithilfe von verschachtelten Listen Akkorde zu Phrasen hinzufügen. {4}
-- [ ] Musikdaten (Noten, Phrasen, Part, Scores) als MIDI-Dateien exportieren. {3}
+- [x] Musikdaten (Noten, Phrasen, Part, Scores) als MIDI-Dateien exportieren. {3}
 
 ## Niedrige Priorität (optional)
 
