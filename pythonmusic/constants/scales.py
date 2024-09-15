@@ -1,7 +1,3 @@
-"""
-Defines common scales by their offset from a root note.
-"""
-
 __all__ = [
     "MAJOR_SCALE",
     "MINOR_SCALE",

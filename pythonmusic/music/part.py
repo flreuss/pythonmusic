@@ -102,6 +102,7 @@ class Part:
             In the example below, `phrase_b` will be appended to the end the part.
               Phrases with an explicit start time are added first, so `phrase_b`
               will sound after `phrase_a` and `phrase_c`.
+
                 >>> phrases = [phrase_a, phrase_b, phrase_c]
                 >>> start_times = [3.5, None, 5.5]
                 >>> my_part.add_phrases(phrases, start_times)

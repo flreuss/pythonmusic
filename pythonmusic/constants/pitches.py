@@ -1,11 +1,3 @@
-"""
-Defines MIDI constants for note pitches.
-
-All constants defined here are valid in GM, except `REST`.
-With a value of `-1`, this is not compatible with plain MIDI, and is handles 
-internally, instead.
-"""
-
 __all__ = [
     "REST",
     "C_1",

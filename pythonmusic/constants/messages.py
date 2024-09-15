@@ -1,9 +1,3 @@
-"""
-Defines midi message type constants.
-
-The values follow [mido's format](https://mido.readthedocs.io/en/latest/message_types.html)
-"""
-
 __all__ = [
     "NOTE_OFF",
     "NOTE_ON",

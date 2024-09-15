@@ -1,7 +1,3 @@
-"""
-Defines articulations constants for notes.
-"""
-
 __all__ = [
     "STACCATO",
     "STACCATISSIMO",

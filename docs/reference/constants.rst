@@ -1,10 +1,9 @@
-pythonmusic.constants package
+Constants
 =============================
 
-Submodules
-----------
+The ``constants`` module defines musical constants.
 
-pythonmusic.constants.articulations module
+Articulations
 ------------------------------------------
 
 .. automodule:: pythonmusic.constants.articulations
@@ -12,7 +11,7 @@ pythonmusic.constants.articulations module
    :undoc-members:
    :show-inheritance:
 
-pythonmusic.constants.chords module
+Chords
 -----------------------------------
 
 .. automodule:: pythonmusic.constants.chords
@@ -20,7 +19,7 @@ pythonmusic.constants.chords module
    :undoc-members:
    :show-inheritance:
 
-pythonmusic.constants.control\_change module
+Control Changes
 --------------------------------------------
 
 .. automodule:: pythonmusic.constants.control_change
@@ -28,7 +27,7 @@ pythonmusic.constants.control\_change module
    :undoc-members:
    :show-inheritance:
 
-pythonmusic.constants.durations module
+Durations
 --------------------------------------
 
 .. automodule:: pythonmusic.constants.durations
@@ -36,7 +35,7 @@ pythonmusic.constants.durations module
    :undoc-members:
    :show-inheritance:
 
-pythonmusic.constants.dynamics module
+Dynamics
 -------------------------------------
 
 .. automodule:: pythonmusic.constants.dynamics
@@ -44,7 +43,7 @@ pythonmusic.constants.dynamics module
    :undoc-members:
    :show-inheritance:
 
-pythonmusic.constants.instruments module
+Instruments
 ----------------------------------------
 
 .. automodule:: pythonmusic.constants.instruments
@@ -52,7 +51,7 @@ pythonmusic.constants.instruments module
    :undoc-members:
    :show-inheritance:
 
-pythonmusic.constants.intervals module
+Intervals
 --------------------------------------
 
 .. automodule:: pythonmusic.constants.intervals
@@ -60,7 +59,7 @@ pythonmusic.constants.intervals module
    :undoc-members:
    :show-inheritance:
 
-pythonmusic.constants.messages module
+Messages
 -------------------------------------
 
 .. automodule:: pythonmusic.constants.messages
@@ -68,7 +67,7 @@ pythonmusic.constants.messages module
    :undoc-members:
    :show-inheritance:
 
-pythonmusic.constants.panning module
+Panning
 ------------------------------------
 
 .. automodule:: pythonmusic.constants.panning
@@ -76,7 +75,7 @@ pythonmusic.constants.panning module
    :undoc-members:
    :show-inheritance:
 
-pythonmusic.constants.percussion module
+Percussion
 ---------------------------------------
 
 .. automodule:: pythonmusic.constants.percussion
@@ -84,7 +83,7 @@ pythonmusic.constants.percussion module
    :undoc-members:
    :show-inheritance:
 
-pythonmusic.constants.pitches module
+Pitches
 ------------------------------------
 
 .. automodule:: pythonmusic.constants.pitches
@@ -92,7 +91,7 @@ pythonmusic.constants.pitches module
    :undoc-members:
    :show-inheritance:
 
-pythonmusic.constants.scales module
+Scales
 -----------------------------------
 
 .. automodule:: pythonmusic.constants.scales
@@ -100,18 +99,10 @@ pythonmusic.constants.scales module
    :undoc-members:
    :show-inheritance:
 
-pythonmusic.constants.tempo module
+Tempo
 ----------------------------------
 
 .. automodule:: pythonmusic.constants.tempo
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: pythonmusic.constants
    :members:
    :undoc-members:
    :show-inheritance:

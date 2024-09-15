@@ -1,7 +1,3 @@
-"""
-Defines MIDI Constants for percussion pitches.
-"""
-
 __all__ = [
     "ACOUSTIC_BASS_DRUM",
     "BASS_DRUM_1",

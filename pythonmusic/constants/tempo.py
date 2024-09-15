@@ -1,7 +1,3 @@
-"""
-Defines constants that approximate the corresponding musical tempo.
-"""
-
 __all__ = [
     "LARGO",
     "LARGHETTO",

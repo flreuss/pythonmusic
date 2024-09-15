@@ -1,7 +1,3 @@
-"""
-Defines pitch interval offsets.
-"""
-
 __all__ = [
     "UNISON",
     "MINOR_SECOND",

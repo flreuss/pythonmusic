@@ -1,7 +1,3 @@
-"""
-Defines MIDI constants for panning.
-"""
-
 __all__ = ["PAN_LEFT", "PAN_CENTER", "PAN_RIGHT"]
 
 PAN_LEFT: int = 0

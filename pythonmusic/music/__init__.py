@@ -42,6 +42,12 @@ def flat(pitch: int) -> int:
     """
     Returns the given pitch lowered by one.
 
+    Args:
+        pitch (int): The base pitch
+
+    Returns:
+        int: Decreased pitch
+
     .. note:: This is equivalent to `pitch - 1`."""
     return pitch - 1
 

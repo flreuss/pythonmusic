@@ -1,7 +1,3 @@
-"""
-Defines MIDI constants for GM Level 1 and 2 Instruments.
-"""
-
 from pythonmusic.util import make_instrument
 
 __all__ = [

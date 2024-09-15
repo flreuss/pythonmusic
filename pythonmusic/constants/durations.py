@@ -1,7 +1,3 @@
-"""
-Defines MIDI constants for note and rest durations.
-"""
-
 __all__ = [
     "QUARTER_NOTE",
     "QN",

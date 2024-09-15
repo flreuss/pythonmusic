@@ -1,7 +1,3 @@
-"""
-Defines pitch offset constants for chotds.
-"""
-
 from .intervals import *
 
 __all__ = [
