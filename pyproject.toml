@@ -19,5 +19,5 @@ classifiers = [
 ]
 keywords = []
 
-[projects.urls]
+[project.urls]
 Homepage = "https://gitup.uni-potsdam.de/music-with-pc/pythonmusic"
