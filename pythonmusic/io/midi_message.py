@@ -16,7 +16,7 @@ class MidiMessage:
         type (str): The type of the midi message. See
             :mod:`pythonmusic.constants.messages` for more information.
         **kwargs: Parameters needed to construct specific midi messages. See
-            :doc:`Midi Messages <../appendix/midi_messages>`.
+            :doc:`Midi Messages <../appendix/midi>`.
     """
 
     __slots__ = "_raw"

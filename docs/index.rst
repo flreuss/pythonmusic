@@ -106,7 +106,7 @@ Source code is available on this project's `repository <https://gitup.uni-potsda
    :maxdepth: 4
    :hidden:
 
-   appendix/midi_messages
+   appendix/midi
    appendix/licenses
    appendix/build_doc
    appendix/class_diagram

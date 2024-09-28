@@ -155,7 +155,7 @@ class MidiReceiver:
 
         Args:
             event (str): The event to react to. See
-                :mod:`../appendix/midi_messages` for more information
+                :mod:`../appendix/midi` for more information
             callback (Callable[[MidiMessage], None]): A callback function
             overwrite (bool): `True` if existing callbacks should be overwritten
                 on conflict. Defaults to `False`
