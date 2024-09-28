@@ -4,10 +4,7 @@ Installation
 Requirements
 ------------
 
-This library requires a Python version ``>=3.11``. If Python is not present on the system, refer to the official `Python download page <https://www.python.org/downloads/>`_, or install Python with your operating system's package manager.
-
-.. note:: If you are using an IDE with PythonMusic, such as `PyCharm <https://www.jetbrains.com/pycharm/>`_, the steps for checking the
-   Python version may not apply to you. Refer to your IDE's documentation on how to install Python. 
+This library requires a Python version ``>=3.11`` to be installed on your system. To install Python, refer to the official `Python download page <https://www.python.org/downloads/>`_, or install using your operating system's package manager.
 
 To check the installed Python version on your system, open a terminal or command prompt and use the command below:
 
@@ -15,79 +12,40 @@ To check the installed Python version on your system, open a terminal or command
 
    $ python3 --version
 
-Your Python installation should have also installed the Pip package manager which is required for some dependencies. If Pip is present, 
-the command below should print the installed version:
+Installing this library and its dependencies also requires Python's Pip package installer. A normal Python installation should install 
+this automatically.
 
-.. code-block:: bash
-
-   $ pip3 --version
+.. note:: If you are using an IDE, the steps to install the correct Python version may vary. Consult your IDE's documentation on how to install Python.
 
 
 Additional Windows Dependencies
 ...............................
 
-Some required dependencies may be missing from your Windows installation. Before installing PythonMusic, download the 
-`Visual C++ Redistributable for Visual Studio 2015 <https://www.microsoft.com/en-us/download/details.aspx?id=48145>`_ from the official
-websites. Install the 32-bit version and restart your PC.
+.. important:: This step must be completed **before** installing PythonMusic. Your installation may break without it.
 
-.. note::
-   This aims to prevent a "DLL not found error" when importing RtMidi, a dependency for Pythonmusic. If you still encounter this issue
-   after installing the Visual C++ Redistributable, try installing the 64-bit version as well. It is important to install this *before*
-   installing PythonMusic, as the installation may break without the Redistributable. In that case, you may need to remove PythonMusic
-   from your virtual environment or system and, reinstall.
+PythonMusic requires certain `DLLs <https://en.wikipedia.org/wiki/Dynamic-link_library>`_ to be present during the installation process
+which are not installed by default. Download and install the `Visual C++ Redistributable for Visual Studio 2015 <https://www.microsoft.com/en-us/download/details.aspx?id=48145>`_ (32-bit) *before* continuing this guide. Restart your system.
 
-
-Creating a Project
-------------------
-
-.. warning::
-   Because this repository is not public, installing via pip as described below may not work. See the REAMDE 
-
-
-
-Terminal
-........
-
-Create a new directory and initialise a virtual environment inside. Activate the environment and install the PythonMusic module.
+If you installed PythonMusic first, you may need to remove the ``python-rtmidi`` package and reinstall PythonMusic afterwards. 
 
 .. code-block:: bash
 
-   $ mkdir my_project
-   $ cd my_project
-   $ python3 -m venv venv
-   $ source venv/bin/activate
-   $ pip install git+https://gitup.uni-potsdam.de/music-with-pc/pythonmusic
+   pip uninstall python-rtmidi
 
-See :doc:`Getting Started <./getting_started>` to start making music.
+If you use an IDE, remove the ``python-rtmidi`` package. If this is not listed, remove the ``pythonmusic`` package instead, and reinstall.
 
-IDE
-...
-
-If you are using an IDE, such as `PyCharm <https://www.jetbrains.com/pycharm/>`_, consult its documentation on how to create a new project.
-Make sure to use a Python version ``>=3.11``. This may not be the option selected by default.
-
-To add PythonMusic to your project, find the built-in package manager of your IDE. You want to supply a URL to the module, as PythonMusic 
-is not available on `PyPi <https://pypi.org/>`_.
-
-.. hint:: In PyCharm, head to the "Python Packages" in lower left corner, click "Add Packages" and then "From Version Control".
-   Insert "https://gitup.uni-potsdam.de/music-with-pc/pythonmusic.git" into the text field and click on "OK".
-
-See :doc:`Getting Started <./getting_started>` to start making music.
+Should you still encounter the "DLL not found" error, try installing the 64-bit version of the Redistributable as well. Repeat the 
+reinstallation of ``python-rtmidi``.
 
 
 Synth
 -----
 
-Optionally, this library supports on-device playback through `FluidSynth <https://www.fluidsynth.org/>`_ and a compatible SoundFont2
-library. These can be easily found online. For a good starting point, have a look at a 
-`Default Windows MIDI Soundfont <https://musical-artifacts.com/artifacts/713>`_.
+Optionally, this library supports on-device playback through `FluidSynth <https://www.fluidsynth.org/>`_ and a GM (General MIDI)
+compatible SoundFont2 library.
 
-.. note::
-  When searching online, make sure that the sound font is General Midi (GM) compatible. Otherwise, some instruments may not function
-  properly.
+SF2 libraries can be found online. For a good starting point, have a look at a  `Default Windows MIDI Soundfont <https://musical-artifacts.com/artifacts/713>`_.
 
-
-Installing FluidSynth differs depending on you operating system. 
 
 Linux / macOS
 .............
@@ -97,11 +55,11 @@ Use your favourite package manager to install FluidSynth. macOS doesn't ship wit
 
 .. code-block:: bash
 
-   # Debian-based / Ubuntu
-   sudo apt install fluidsynth
-
    # Arch-based
    sudo pacman -S fluidsynth
+
+   # Debian-based / Ubuntu
+   sudo apt install fluidsynth
 
    # macOS with Homebrew
    brew install fluidsynth
@@ -112,11 +70,48 @@ For more information, see FluidSynth's `download page <https://github.com/FluidS
 Windows
 .......
 
-.. todo:: this is bad, find a better solution
+.. todo:: This is bad, clunky, and dangerous. Find a better solution. Python (RtMidi, really) doesn't see FS installed via Chocolatey,
+    even though it should. Passing the path to FS (Chocolatey) manyally to the C library loader, actually works. To fix this, however
+    we would need to fork RtMidi or the python C loader. Not going to do that.
 
-Download the latest Windows (10) release of FluidSynth from the 
-`official download page <https://github.com/FluidSynth/fluidsynth/releases>`_. Extract the files from the zip, and drag and drop the 
-contents of the ``bin\`` folder to ``C:\Windows\System32``. This may require administrator privileges.
+Download the latest Windows 10 release of FluidSynth from the  `official download page <https://github.com/FluidSynth/fluidsynth/releases>`_.
+Extract the files from the zip, you will only need the contents of the ``bin\`` directory.
+Drag and drop all files from the ``bin\`` directory to ``C:\Windows\System32``. This may require admin privileges.
 
 .. note:: Windows does not ship with a built-in package manager. Alternatives such as `Chocolatey <https://chocolatey.org/>`_ exist, but 
    installing FluidSynth this way did not work during testing.
+
+To uninstall FluidSynth, remove the DLLs you moved to ``System32``. Be careful not to remove other DLLs. This may break your system.
+
+
+Creating a Project
+------------------
+
+.. warning::
+   TODO: remove.
+   Because this repository is not public, installing via pip as described below may not work. See the REAMDE on `gitup <https://gitup.uni-potsdam.de/music-with-pc/pythonmusic>`_.
+
+
+Terminal
+........
+
+Create a new directory and initialise a virtual environment inside. Activate the environment and install the PythonMusic package.
+
+.. code-block:: bash
+
+   $ mkdir my_project
+   $ cd my_project
+   $ python3 -m venv venv
+   $ source venv/bin/activate
+   $ pip install git+https://gitup.uni-potsdam.de/music-with-pc/pythonmusic
+
+IDE
+...
+
+When creating a new project, make sure to select a Python version ``>=3.11``. This may not be the default option.
+
+Consult your IDE's documentation on how to install python packages. The repository can be found at ``git+https://gitup.uni-potsdam.de/music-with-pc/pythonmusic``.
+
+
+See :doc:`Getting Started <./getting_started>` to start making music.
+
