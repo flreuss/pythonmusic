@@ -21,29 +21,31 @@ PythonMusic
 Overview
 --------
 
-PythonMusic is a MIDI library written in pure Python that enables you to write music in code.
+PythonMusic is a music library written in pure Python that enables you to write music in code.
 
 .. code-block:: python
 
    from pythonmusic import *
 
-   phrase = Phrase([Note(C4, EN), Note(E4, EN), Note(G4, QN)])
+   phrase = Phrase([
+       Note(C4, EN),
+       Note(E4, EN),
+       Note(G4, QN)
+   ])
    part = Part("Piano", ACOUSTIC_GRAND_PIANO)
    score = Score("MyScore", [part], ADAGIO)
 
 
-Your scores can be exported to file, or send to a midi device.
+Export your scores to midi files, or send them to a midi-capable device.
 
 .. code-block:: python
 
-   ...
    export_score(score, "output/my_score.mid")
-
    player = MidiPlayer("SomeKeyboard")
    player.play_score(score)
 
 
-Optionally, use `FluidSynth <https://www.fluidsynth.org/>`_ and a `SoundFont2 <https://en.wikipedia.org/wiki/SoundFont>`_ compatible library to play your music on device.
+Use a :obj:`SynthPlayer <pythonmusic.synth.SynthPlayer>` and a `SoundFont2 <https://en.wikipedia.org/wiki/SoundFont>`_ compatible library to playback a score on your device.
 
 .. code-block:: python
 
@@ -52,8 +54,13 @@ Optionally, use `FluidSynth <https://www.fluidsynth.org/>`_ and a `SoundFont2 <h
    player.play_score(score)
 
 
-For more information, see the :doc:`Installation <intro/installation>` and :doc:`Getting Started <intro/getting_started>` sections of this document.
+To get started, see the :doc:`Installation <intro/installation>` and :doc:`Getting Started <intro/getting_started>` sections of this document.
 
+
+Requirements
+------------
+
+Requires Python ``>=3.11``. See :doc:`Installation <intro/installation>` for more information.
 
 Source Code
 -----------
@@ -67,6 +74,7 @@ Source code is available on this project's `repository <https://gitup.uni-potsda
 
    intro/installation
    intro/getting_started
+   intro/examples
 
 .. toctree::
    :caption: Objects
