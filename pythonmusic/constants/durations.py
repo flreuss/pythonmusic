@@ -140,9 +140,9 @@ DOTTED_CROTCHET: float = DOTTED_QUARTER_NOTE
 DOUBLE_DOTTED_QUARTER_NOTE: float = _dotted(QUARTER_NOTE, 2)
 """Defines the length constant for a double dotted *quarter note* or *crotchet*."""
 DDQN: float = DOUBLE_DOTTED_QUARTER_NOTE
-"""Defines the length constant for a dotted *quarter note* or *crotchet*."""
+"""Defines the length constant for a double dotted *quarter note* or *crotchet*."""
 DOUBLE_DOTTED_CROTCHET: float = DOUBLE_DOTTED_QUARTER_NOTE
-"""Defines the length constant for a dotted *quarter note* or *crotchet*."""
+"""Defines the length constant for a double dotted *quarter note* or *crotchet*."""
 
 # Dotted Half Note
 DOTTED_HALF_NOTE: float = _dotted(HALF_NOTE, 1)
