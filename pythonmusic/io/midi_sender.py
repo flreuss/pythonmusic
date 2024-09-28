@@ -67,7 +67,7 @@ class MidiSender:
         Args:
             output_name (str): A valid system registered midi port (receiver)
         """
-        port = _open_output(output_name, virtual=False)
+        port = open_output(output_name, virtual=False)
         if not port:
             raise ConnectionError(f'Cannot attach to given output "{output_name}"')
 
