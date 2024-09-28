@@ -20,7 +20,7 @@ The parameters that need to be passed to the initialiser of a :obj:`MidiMessage 
 on the type of message that you create. The table below lists the required parameters for each message type.
 
 ==============  =========================================================================
-Constant        Midi Message
+Message Type    Midi Message
 ==============  =========================================================================
 NOTE_OFF        ``MidiMessage("NOTE_OFF", channel: int, note: int, velocity: int)``
 NOTE_ON         ``MidiMessage("NOTE_ON", channel: int, note: int, velocity: int)``
@@ -44,20 +44,22 @@ RESET           ``MidiMessage("RESET")``
 
 The values of the parameters above need to be in bounds for their respective type.
 
-===========  ======================  ================
-Name         Valid Range             Default Value
-===========  ======================  ================
-channel      0..15                   0
-frame_type   0..7                    0
-frame_value  0..15                   0
-control      0..127                  0
-note         0..127                  0
-program      0..127                  0
-song         0..127                  0
-value        0..127                  0
-velocity     0..127                  64
-data         (0..127, 0..127, ...)   () (empty tuple)
-pitch        -8192..8191             0
-pos          0..16383                0
-time         any integer or float    0
-===========  ======================  ================
+===========  ======================
+Parameter    Range           
+===========  ======================
+channel      0..15                 
+frame_type   0..7                  
+frame_value  0..15                 
+control      0..127                
+note         0..127                
+program      0..127                
+song         0..127                
+value        0..127                
+velocity     0..127                
+data         (0..127, 0..127, ...) 
+pitch        -8192..8191           
+pos          0..16383              
+time         any integer or float  
+===========  ======================
+
+.. note:: Channel values are 0-indexed and thus range from 0 to 15. The channel 1 is represented by 0 and the channel 16 by 15.
