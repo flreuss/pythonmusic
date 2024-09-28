@@ -3,6 +3,8 @@ from pythonmusic.music.part import Part
 
 __all__ = ["Score"]
 
+# TODO: Add tempo units / define the beat (so far, only quarters)
+
 
 class Score:
     """
