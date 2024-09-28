@@ -4,6 +4,12 @@ Phrase Elements
 :obj:`Phrase elements <pythonmusic.music.PhraseElement>` are :obj:`notes <pythonmusic.music.Note>` and 
 :obj:`chords <pythonmusic.music.Chord>`. They can be added to :obj:`phrases <pythonmusic.music.Phrase>` to create melodies and rhythms.
 
+.. autoclass:: pythonmusic.music.PhraseElement
+   :no-index:
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Note 
 ----
 :obj:`Notes <pythonmusic.music.Note>` are the basic building blocks of PythonMusic. Use them to construct 
@@ -19,5 +25,41 @@ Notes are constructed from a :mod:`pitch <pythonmusic.constants.pitches>`, :mod:
 to alter the length or velocity of the note.
 
 
+.. autoclass:: pythonmusic.music.Note
+   :no-index:
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
 Chord
 -----
+
+While :obj:`phrases <pythonmusic.music.phrase>` store phrase elements horizontally, chords are used to store them vertically. Use a 
+:obj:`chord <pythonmusic.music.Chord>` to create groups of notes that are played at the same time.
+
+Chords are constructed similarly to phrases in that you pass a list of notes to the constructor.
+
+.. code-block:: python
+
+   >>> from pythonmusic import *
+   >>> chord = Chord([Note(C4, EN), Note(G5, EN), ...])
+
+A chord can also be constructed from a base note and intervals, or lists defining the chord's notes by their parts.
+
+.. code-block:: python
+
+   >>> from pythonmusic import *
+   >>> chord_a = Chord.from_root(C4, MAJOR, QN, MF)
+   >>> chord_b = Chord.from_lists([C4, E4, G4], [QN, QN, QN], [MF, MF, MF])
+   >>> assert chord_a == chord_b  # both chords are identical
+
+
+.. autoclass:: pythonmusic.music.Chord
+   :no-index:
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+For more information, see the :doc:`Music reference page <../reference/music>`.
