@@ -49,6 +49,9 @@ def irnodes_to_midi(
                 pass
             case Ty.NOTE:
                 payload = cast(IrNote, node.payload)
+                # adding a small offset to all notes fixes an issue where
+                # messages such as instrument changes do not precede notes
+                start_time = start_time + 0.000001
                 end_time = start_time + (payload.duration * tempo_multiplyer)
 
                 assert channel in range(0, 128)
