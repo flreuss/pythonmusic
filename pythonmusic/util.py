@@ -46,8 +46,8 @@ def make_instrument(patch: int, bank: int = 0) -> int:
     `General MIDI Level 2 <https://en.m.wikipedia.org/wiki/General_MIDI_Level_2>`.
 
     Args:
-        patch (int): The instrument base id in range 1..=127.
-        bank (int): TJkhe instruments variation bank in range 0..=9.
+        patch (int): The instrument base id in range from 1 to 128.
+        bank (int): The instruments variation bank in range from 0 to 128.
 
     Returns:
         int: A composite integer containing the patch in the lower and the
