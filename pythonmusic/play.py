@@ -13,6 +13,10 @@ __all__ = ["Player", "MidiPlayer"]
 
 
 class Player(ABC):
+    """
+    An abstract class that is used to implement player objects.
+    """
+
     def __init__(self) -> None:
         pass
 
@@ -27,17 +31,37 @@ class Player(ABC):
         on_message: Callable[[MidiMessage, float], None] | None = None,
         on_end: Callable[[bool], None] | None = None,
     ):
-        """Plays a single note on the attached midi target."""
+        """
+        Plays a single note on the attached midi target.
+
+        Args:
+            note (Note): A note
+            on_start (Callable[[list[MidiMessage]], None] | None): A callback that is called before playback starts
+            on_message (Callable[[MidiMessage, float], None] | None): A callback that is called for every message, before it plays
+            on_end (Callable[[bool], None] | None): A callback that is called after the last note played.
+                If the playback finishes normally, the passed bool will be ``True``. If the playback loop receives a ``KeyboardInterrupt``
+                before then, the passed boolean is ``False``.
+        """
         self._play_pe(note, _ADAGIO, 0, on_start, on_message, on_end)
 
-    def play_chard(
+    def play_chord(
         self,
         chord: Chord,
         on_start: Callable[[list[MidiMessage]], None] | None = None,
         on_message: Callable[[MidiMessage, float], None] | None = None,
         on_end: Callable[[bool], None] | None = None,
     ):
-        """Plays a chord on the attached midi target."""
+        """
+        Plays a chord on the attached midi target.
+
+        Args:
+            chord (Chord): A chord
+            on_start (Callable[[list[MidiMessage]], None] | None): A callback that is called before playback starts
+            on_message (Callable[[MidiMessage, float], None] | None): A callback that is called for every message, before it plays
+            on_end (Callable[[bool], None] | None): A callback that is called after the last note played.
+                If the playback finishes normally, the passed bool will be ``True``. If the playback loop receives a ``KeyboardInterrupt``
+                before then, the passed boolean is ``False``.
+        """
         self._play_pe(chord, _ADAGIO, 0, on_start, on_message, on_end)
 
     def play_phrase(
@@ -49,7 +73,19 @@ class Player(ABC):
         on_message: Callable[[MidiMessage, float], None] | None = None,
         on_end: Callable[[bool], None] | None = None,
     ):
-        """Plays a phrase on the attached midi target."""
+        """
+        Plays a phrase on the attached midi target.
+
+        Args:
+            phrase (Phrase): A phrase
+            tempo (float): The playback tempo in bpm
+            channel (int): The channel to play on
+            on_start (Callable[[list[MidiMessage]], None] | None): A callback that is called before playback starts
+            on_message (Callable[[MidiMessage, float], None] | None): A callback that is called for every message, before it plays
+            on_end (Callable[[bool], None] | None): A callback that is called after the last note played.
+                If the playback finishes normally, the passed bool will be ``True``. If the playback loop receives a ``KeyboardInterrupt``
+                before then, the passed boolean is ``False``.
+        """
         ir = phrase_to_ir(phrase, start_time=0.0)
         messages = irnodes_to_midi(ir, tempo, channel)
         self._play_messages(messages, 0.0, on_start, on_message, on_end)
@@ -63,7 +99,18 @@ class Player(ABC):
         on_message: Callable[[MidiMessage, float], None] | None = None,
         on_end: Callable[[bool], None] | None = None,
     ):
-        """Plays a part on the attached midi target."""
+        """
+        Plays a part on the attached midi target.
+
+        Args:
+            part (Part): A part
+            tempo (float): The playback tempo in bpm
+            on_start (Callable[[list[MidiMessage]], None] | None): A callback that is called before playback starts
+            on_message (Callable[[MidiMessage, float], None] | None): A callback that is called for every message, before it plays
+            on_end (Callable[[bool], None] | None): A callback that is called after the last note played.
+                If the playback finishes normally, the passed bool will be ``True``. If the playback loop receives a ``KeyboardInterrupt``
+                before then, the passed boolean is ``False``.
+        """
         ir = part_to_ir(part)
         messages = irchannel_to_midi(ir, tempo)
         self._play_messages(
@@ -82,7 +129,17 @@ class Player(ABC):
         on_message: Callable[[MidiMessage, float], None] | None = None,
         on_end: Callable[[bool], None] | None = None,
     ):
-        """Plays a score on the attached midi target."""
+        """
+        Plays a score on the attached midi target.
+
+        Args:
+            score (Score): A score
+            on_start (Callable[[list[MidiMessage]], None] | None): A callback that is called before playback starts
+            on_message (Callable[[MidiMessage, float], None] | None): A callback that is called for every message, before it plays
+            on_end (Callable[[bool], None] | None): A callback that is called after the last note played.
+                If the playback finishes normally, the passed bool will be ``True``. If the playback loop receives a ``KeyboardInterrupt``
+                before then, the passed boolean is ``False``.
+        """
         ir = score_to_ir(score)
         messages = irfile_to_midi(ir)
         self._play_messages(
@@ -189,4 +246,10 @@ class MidiPlayer(Player):
 
     @override
     def play_message(self, message: MidiMessage):
+        """
+        Plays the given midi message.
+
+        Args:
+            message (MidiMessage): A MidiMessage
+        """
         self.sender.send_message(message)

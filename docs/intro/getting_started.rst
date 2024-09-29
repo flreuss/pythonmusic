@@ -15,15 +15,21 @@ A small Melody
 --------------
 
 Below we create a small melody and play it back though a :obj:`SynthPlayer <pythonmusic.synth.SynthPlayer>`.
+As an alternative, this example also shows how to use the :obj:`MidiPlayer <pythonmusic.play.MidiPlayer>`
+below, if you don't want to use the synth.
 
 First, we import the ``pythonmusic`` module. We also define a path constant to a SoundFont2 library, which
-we will need later.
+we will need later. 
 
 .. code-block:: python
 
     from pythonmusic import *
 
     SF2_PATH = "./resources/gm.sf2"
+
+SoundFont2 libraries can be found online. For a good start, have a look at a
+`Default Windows MIDI SoundFont <https://musical-artifacts.com/artifacts/713>`_. For more information on
+the synth player, see the :doc:`Players <../objects/players>` page. 
 
 Now we can define a list of notes that make up our melody. In their basic form, notes are defined by their
 pitch, the first parameter, and their duration, the second parameter. Various constants are provided for

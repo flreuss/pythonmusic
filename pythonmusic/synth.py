@@ -210,6 +210,12 @@ class SynthPlayer(Player):
 
     @override
     def play_message(self, message: MidiMessage):
+        """
+        Plays the given midi message.
+
+        Args:
+            message (MidiMessage): A MidiMessage
+        """
         # TODO: add own message type
 
         message_type = message.type

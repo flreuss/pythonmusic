@@ -58,3 +58,24 @@ Send messages to a midi receiver.
     except KeyboardInterrupt:
         # stopps playing notes
         sender.force_notes_off()
+
+
+Players
+-------
+
+Implement a custom player that can playback scores and other musical objects.
+
+.. code-block:: python
+
+    from typing import override
+    from pythonmusic import *
+
+
+    class MyPlayer(Player):
+        @override
+        def play_message(self, message: MidiMessage):
+            print(f"Received MIDI Message: {message}")
+
+
+    player = MyPlayer()
+    player.play_phrase(Phrase([Note(C4, EN), Note(E4, QN)]), ADAGIO)
