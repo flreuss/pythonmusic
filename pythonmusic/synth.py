@@ -209,7 +209,7 @@ class SynthPlayer(Player):
         self._synth.set_pitchbend(channel, pitch)
 
     @override
-    def _play_message(self, message: MidiMessage):
+    def play_message(self, message: MidiMessage):
         # TODO: add own message type
 
         message_type = message.type

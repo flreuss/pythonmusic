@@ -107,7 +107,7 @@ class Player(ABC):
         self._play_messages(messages, 0.0, on_start, on_message, on_end)
 
     @abstractmethod
-    def _play_message(self, message: MidiMessage): ...
+    def play_message(self, message: MidiMessage): ...
 
     def _play_messages(
         self,
@@ -146,7 +146,7 @@ class Player(ABC):
                 if on_message:
                     on_message(current, start_time)
 
-                self._play_message(current)
+                self.play_message(current)
 
                 if len(messages) > 0:
                     next = messages.pop()
@@ -188,5 +188,5 @@ class MidiPlayer(Player):
             raise error
 
     @override
-    def _play_message(self, message: MidiMessage):
+    def play_message(self, message: MidiMessage):
         self.sender.send_message(message)
