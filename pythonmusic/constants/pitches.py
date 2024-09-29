@@ -229,8 +229,11 @@ REST: int = -1
 """
 Rest pitch constant.
 
-This value does not correspont to a valid MIDI value, but is handles internally
-as a rest.
+This value does not correspont to a valid MIDI value. Rests are handled
+internally during conversion.
+
+.. important:: Sending this value to a midi device could result in undefined
+    behaviour.
 """
 
 C_1: int = 0
