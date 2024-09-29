@@ -3,7 +3,7 @@ from os.path import abspath, expanduser
 
 from fluidsynth import Synth as FSynth
 
-from pythonmusic.util import assert_range
+from pythonmusic.util import assert_range, instrument_get_patch_bank
 from pythonmusic.io import MidiMessage
 from pythonmusic.play import Player
 from pythonmusic.constants.messages import (
@@ -20,6 +20,9 @@ __all__ = ["Synth", "SynthPlayer"]
 class Synth:
     """
     A synth object that can load and play SoundFont2 libraries.
+
+    Keep in mind that no instrument is selected by default. You need to set an
+    instrument for each individual channel manually.
 
     .. note:: On Linux using ALSA, you may encounter various error messages reporting that
         some playback devices have not been found. This is normal as ALSA checks for
@@ -179,6 +182,13 @@ class SynthPlayer(Player):
         super().__init__()
         self._synth = Synth(sound_font)
 
+    @property
+    def synth(self) -> Synth:
+        """
+        Accesses to the internal synth.
+        """
+        return self._synth
+
     def _note_on(self, message: MidiMessage):
         channel = message["channel"]
         pitch = message["note"]
@@ -229,3 +239,14 @@ class SynthPlayer(Player):
             self._program_change(message)
         elif message_type == PITCHWHEEL:
             self._pitchwheel(message)
+
+    def set_instrument(self, channel: int, instrument: int):
+        """
+        Sets the instrument for the given channel.
+
+        Args:
+            channel (int): The channel for which to change the instrument
+            instrument (int): The instrument to change to. Choose one of the instrument constants
+        """
+        patch, bank = instrument_get_patch_bank(instrument)
+        self._synth.set_instrument(channel, patch, bank)
