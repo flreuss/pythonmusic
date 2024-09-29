@@ -1,17 +1,31 @@
-from copy import copy as _copy
-import typing as _typing
+from copy import copy
+from typing import Self, Any
 from .phrase_element import PhraseElement
-from pythonmusic.constants.articulations import LEGATO as _LEGATO
-from pythonmusic.constants.articulations import ACCENT as _ACCENT
-from pythonmusic.util import assert_range as _assert_range
-from pythonmusic.constants.dynamics import MF as _MF
-from pythonmusic.constants.pitches import REST as _REST
+from pythonmusic.constants.articulations import LEGATO
+from pythonmusic.constants.articulations import ACCENT
+from pythonmusic.util import assert_range
+from pythonmusic.constants.dynamics import MF
+from pythonmusic.constants.pitches import REST
+
+__all__ = ["Note"]
 
 
 class Note(PhraseElement):
     """
-    Notes represent a single musical note event. They are defines by their pitch,
-    duration and dynamic.
+    Notes represent a single musical note event. They are defined by their pitch,
+    duration and dynamic. Use notes to create :obj:`pythonmusic.music.Phrase`
+    and :obj:`pythonmusic.music.Chord`.
+
+    Args:
+        pitch (int): The note's pitch in midi representations. See
+            :mod:`pythonmusic.constants.pitches`. Valid values are in range
+            from `0` to `127`
+        duration (float): The note's duration in quarter notes. See
+            :mod:`pythonmusic.constants.durations`
+        dynamic (int): The note's dynamic in range from `0` to `127`
+        articulations: (list[int]): A list of articulations represented by
+            bit sets. Use values defined in
+            :mod:`pythonmusic.constants.articulations`
     """
 
     # Instructs python to store notes as a tuple. This can potentially reduce the
@@ -22,14 +36,14 @@ class Note(PhraseElement):
         self,
         pitch: int,
         duration: float,
-        dynamic: int = _MF,
+        dynamic: int = MF,
         articulations: list[int] = [],
     ) -> None:
         # Asserts that the given pitch and dynamic values can be represented
         # with a i8 / are in MIDI range. Pitch is allowed to be below 0 to
         # accommodate rests
-        _assert_range(pitch, -1, 127)
-        _assert_range(dynamic, 0, 127)
+        assert_range(pitch, -1, 127)
+        assert_range(dynamic, 0, 127)
 
         self._pitch: int = pitch
         self._dynamic: int = dynamic
@@ -39,7 +53,7 @@ class Note(PhraseElement):
         for articulation in articulations:
             self.add_articulation(articulation)
 
-    def __eq__(self, other: _typing.Any) -> bool:
+    def __eq__(self, other: Any) -> bool:
         if not isinstance(other, Note):
             return False
         return (
@@ -53,24 +67,27 @@ class Note(PhraseElement):
     # value
     @property
     def pitch(self) -> int:
+        """Pitch of the note."""
         return self._pitch
 
     @pitch.setter
     def pitch(self, new_value):
-        _assert_range(new_value, -1, 127)
+        assert_range(new_value, -1, 127)
         self._pitch = new_value
 
     @property
     def dynamic(self) -> int:
+        """Dynamic of the note."""
         return self._dynamic
 
     @dynamic.setter
     def dynamic(self, new_value: int):
-        _assert_range(new_value, 0, 127)
+        assert_range(new_value, 0, 127)
         self._dynamic = new_value
 
     @property
     def duration(self) -> float:
+        """Duration of the note."""
         return self._duration
 
     @duration.setter
@@ -78,16 +95,28 @@ class Note(PhraseElement):
         self._duration = new_value
 
     def is_note(self) -> bool:
+        """
+        Returns `True` if the element is a note.
+
+        .. note:: Always returns `True`.
+        """
         return True
 
     def is_chord(self) -> bool:
+        """
+        Returns `True` if the element is a chord.
+
+        .. note:: Always returns `False`.
+        """
         return False
 
     def add_articulation(self, articulation: int):
         """
         Adds the given articulation to the note.
 
-        Use the constants defined in `pythonmusic.constants.articulations`.
+        Args:
+            articulation (int): A bitset representing a note's articulation. Use
+                a constant from :mod:`pythonmusic.constants.articulations`.
         """
         self._articulation |= articulation
 
@@ -95,7 +124,10 @@ class Note(PhraseElement):
         """
         Removes the given articulation from the note.
 
-        Use the constants defined in `pythonmusic.constants.articulations`.
+        Use the constants defined in :mod:`pythonmusic.constants.articulations`.
+
+        Args:
+            articulation (int): Articulation to add
         """
         self._articulation &= ~articulation
 
@@ -103,37 +135,61 @@ class Note(PhraseElement):
         """
         Returns `True` if this note has the given articulation.
 
-        Use the constants defined in `pythonmusic.constants.articulations`.
+        Args:
+            articulation (int): A bitset representing a note's articulation. Use
+                a constant from :mod:`pythonmusic.constants.articulations`
+
+        Returns:
+            bool: `True` if note has articulation
         """
         return self._articulation & articulation == articulation
 
-    def with_legato(self) -> _typing.Self:
+    def with_legato(self) -> Self:
         """
         Returns this note with added legato.
+
+        Returns:
+            Note: This note with legato
         """
-        note = _copy(self)
-        note.add_articulation(_LEGATO)
+        note = copy(self)
+        note.add_articulation(LEGATO)
         return note
 
-    def with_accent(self) -> _typing.Self:
+    def with_accent(self) -> Self:
         """
         Returns this note with added accent.
+
+        Returns:
+            Note: This note with accent
         """
-        note = _copy(self)
-        note.add_articulation(_ACCENT)
+        note = copy(self)
+        note.add_articulation(ACCENT)
         return note
 
     def is_rest(self) -> bool:
         """Returns `True` if this note is a rest."""
-        return self._pitch == _REST
+        return self._pitch == REST
 
-    def as_rest(self) -> _typing.Self:
-        """Returns a rest with this notes duration."""
-        rest = _copy(self)
-        rest.pitch = _REST
+    def as_rest(self) -> Self:
+        """
+        Returns a rest with this note's duration.
+
+        Returns:
+            Note: A rest with this note's duration
+        """
+        rest = copy(self)
+        rest.pitch = REST
         return rest
 
-    @staticmethod
-    def rest(duration: float) -> "Note":
-        """Constrcuts a rest from the given duration."""
-        return Note(_REST, duration, 0)
+    @classmethod
+    def rest(cls, duration: float) -> Self:
+        """
+        Constructs a rest from the given duration.
+
+        Args:
+            duration (float): The duration of the rest
+
+        Returns:
+            Note: A rest with the given duration
+        """
+        return cls(REST, duration, 0)

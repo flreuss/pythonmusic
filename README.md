@@ -113,7 +113,7 @@ synth_player = SynthPlayer(PATH)
 TODO
 
 ## Classes
-![Classes](classes.png)
+![Classes](docs/images/classes.png)
 
 
 ## Links

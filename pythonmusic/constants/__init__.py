@@ -1,5 +1,5 @@
 """
-This module defines several MIDI constants.
+This module defines several MIDI and music constants.
 """
 
 from .articulations import *
@@ -15,3 +15,5 @@ from .pitches import *
 from .scales import *
 from .tempo import *
 from .messages import *
+
+# __all__ is not necessary in these modules, but still provided for easy copy

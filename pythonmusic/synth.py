@@ -1,11 +1,11 @@
 from typing import override
-from os.path import abspath as _abspath
+from os.path import abspath, expanduser
 
-from fluidsynth import Synth as _Synth
+from fluidsynth import Synth as FSynth
 
-from pythonmusic.util import assert_range
+from pythonmusic.util import assert_range, instrument_get_patch_bank
 from pythonmusic.io import MidiMessage
-from pythonmusic.play.player import Player
+from pythonmusic.play import Player
 from pythonmusic.constants.messages import (
     NOTE_ON,
     NOTE_OFF,
@@ -14,13 +14,30 @@ from pythonmusic.constants.messages import (
     PITCHWHEEL,
 )
 
-# TODO: surpress ALSA messages on Linux
+__all__ = ["Synth", "SynthPlayer"]
 
 
 class Synth:
+    """
+    A synth object that can load and play SoundFont2 libraries.
+
+    Keep in mind that no instrument is selected by default. You need to set an
+    instrument for each individual channel manually.
+
+    .. note:: On Linux using ALSA, you may encounter various error messages reporting that
+        some playback devices have not been found. This is normal as ALSA checks for
+        multiple output sources that may not exist. As long as audio can be heard,
+        you can ignore these messages.
+
+    Args:
+        sound_font (str): Path to a SoundFont2 compatible library
+    """
+
     def __init__(self, sound_font: str):
-        path = _abspath(sound_font)
-        synth = _Synth()
+        path = abspath(sound_font)
+        path = expanduser(path)
+
+        synth = FSynth()
         synth.start()
         font_id = synth.sfload(path)
 
@@ -34,26 +51,55 @@ class Synth:
 
     @property
     def current_sound_font(self) -> str:
-        """Returns the currently loaded sound font."""
+        """The currently loaded sound font."""
         return self._font_path
 
     # Note events
     def note_on(self, channel: int, pitch: int, velocity: int):
-        """Sends a note on message to the synth."""
+        """
+        Sends a note on message to the synth.
+
+        Args:
+            channel (int): The channel to send the message to
+            pitch (int): The pitch of the note
+            velocity (int): The velocity of the note
+        """
         self._synth.noteon(channel, pitch, velocity)
 
     def note_off(self, channel: int, pitch: int):
-        """Sends a note off message to the synth."""
+        """
+        Sends a note off message to the synth.
+
+        Args:
+            channel (int): The channel to send the message to
+            pitch (int): The note's pitch
+        """
         self._synth.noteoff(channel, pitch)
         self._synth.program_select
 
     # CC Values
     def set_control_change(self, channel: int, control: int, value: int):
-        """Sets the control change value for a channel on the given `control`."""
+        """
+        Sets the control change value for a channel on the given `control`.
+
+        Args:
+            channel (int): The channel to send the message to
+            control (int): Control id for the event
+            value (int): The control event's value
+        """
         self._synth.cc(channel, control, value)
 
     def control_change(self, channel: int, control: int) -> int:
-        """Returns the control change value for a channel on the given `control`."""
+        """
+        Returns the control change value for a channel on the given `control`.
+
+        Args:
+            channel (int): The channel for which to check
+            control (int): The control id for which to check
+
+        Returns:
+            int: Value of control on the requested channel
+        """
         return self._synth.get_cc(channel, control)
 
     # Pitchbend
@@ -63,6 +109,10 @@ class Synth:
 
         This value must be in bounds of `8192` to `-8192` (4 semitones), where
         one semitone is `+/- 2048` respectively.
+
+        Args:
+            channel (int): The channel to send the message to
+            value (int): The value of the pitch bend in range -2048 to 2028
         """
         MAX = 8192
         assert_range(value, -MAX, MAX)
@@ -73,6 +123,11 @@ class Synth:
     def set_instrument(self, channel: int, patch: int, bank: int):
         """
         Sets the instrument for the given channel.
+
+        Args:
+            channel (int): The channel to send the message to
+            patch (int): The patch value of the instrument
+            bank (int): the bank value of the instrument
         """
         # TODO: add level 2
 
@@ -90,10 +145,16 @@ class Synth:
         level: float | None = None,
     ):
         """
-        Updates parameters of synth's reverb.
+        Updates parameters of the synth's reverb.
 
         `size`, `damping`, and `level` range from `0.0` to `1.0`, `width` ranges
         from `0.0` to `100.0`.
+
+        Args:
+            size (float): The size of the reverb in range from 0.0 to 1.0
+            damping (float): The damping of the reverb in range from 0.0 to 1.0
+            width (float): The width of the reverb in range from 0.0 to 100.0
+            level (float): The level of the reverb in range from 0.0 to 1.0
         """
         self._synth.set_reverb(
             size or -1.0, damping or -1.0, width or -1.0, level or -1.0
@@ -103,14 +164,30 @@ class Synth:
         """Rests reverb to default values."""
         self.set_reverb(0.0, 0.0, 0.0, 0.0)
 
-    # def set_chorus(self):
-    #     self._synth.set_chorus()
-
 
 class SynthPlayer(Player):
+    """
+    A player implementation for the :obj:`pythonmusic.synth.Synth` object.
+
+    .. note:: On Linux using ALSA, you may encounter various error messages reporting that
+        some playback devices have not been found. This is normal as ALSA checks for
+        multiple output sources that may not exist. As long as audio can be heard,
+        you can ignore these messages.
+
+    Args:
+        sound_font (str): Path to a SoundFont2 compatible library
+    """
+
     def __init__(self, sound_font: str):
         super().__init__()
         self._synth = Synth(sound_font)
+
+    @property
+    def synth(self) -> Synth:
+        """
+        Accesses to the internal synth.
+        """
+        return self._synth
 
     def _note_on(self, message: MidiMessage):
         channel = message["channel"]
@@ -142,7 +219,13 @@ class SynthPlayer(Player):
         self._synth.set_pitchbend(channel, pitch)
 
     @override
-    def _play_message(self, message: MidiMessage):
+    def play_message(self, message: MidiMessage):
+        """
+        Plays the given midi message.
+
+        Args:
+            message (MidiMessage): A MidiMessage
+        """
         # TODO: add own message type
 
         message_type = message.type
@@ -156,3 +239,14 @@ class SynthPlayer(Player):
             self._program_change(message)
         elif message_type == PITCHWHEEL:
             self._pitchwheel(message)
+
+    def set_instrument(self, channel: int, instrument: int):
+        """
+        Sets the instrument for the given channel.
+
+        Args:
+            channel (int): The channel for which to change the instrument
+            instrument (int): The instrument to change to. Choose one of the instrument constants
+        """
+        patch, bank = instrument_get_patch_bank(instrument)
+        self._synth.set_instrument(channel, patch, bank)

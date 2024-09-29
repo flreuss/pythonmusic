@@ -1,19 +1,35 @@
-from abc import ABC as _ABC
-from abc import abstractmethod as _abstractmethod
+from abc import ABC
+from abc import abstractmethod
+
+__all__ = ["PhraseElement"]
 
 
-class PhraseElement(_ABC):
+class PhraseElement(ABC):
+    """
+    An abstract class that defines methods for phrase elements such as notes and
+    chords.
+    """
+
     @property
-    @_abstractmethod
+    @abstractmethod
     def duration(self) -> float:
+        """
+        The vertical duration of the element.
+        """
         pass
 
     # the following two methods are overwritten in sub classes
     # this is a messy solution to circular import while using the type checker
-    @_abstractmethod
+    @abstractmethod
     def is_chord(self) -> bool:
+        """
+        Returns `True` if the phrase element is a chord.
+        """
         pass
 
-    @_abstractmethod
+    @abstractmethod
     def is_note(self) -> bool:
+        """
+        Returns `True` if the phrase element is a note.
+        """
         pass

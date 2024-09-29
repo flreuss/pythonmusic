@@ -1,8 +1,18 @@
-"""
-Defines pitch offset constants for chotds.
-"""
-
 from .intervals import *
+
+__all__ = [
+    "MAJOR",
+    "MINOR",
+    "MAJOR7",
+    "MAJORM7",
+    "MINOR7",
+    "MINORM7",
+    "AUGMENTED",
+    "DIMINISHED",
+    "HALF_DIMINISHED",
+    "SUS2",
+    "SUS4",
+]
 
 MAJOR: list[int] = [UNISON, MAJOR_THIRD, FIFTH]
 """Chord constant that defines offsets over a root note for a major chord."""

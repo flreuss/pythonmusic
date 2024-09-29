@@ -6,14 +6,25 @@ from .midi_io import *
 # does not import ir
 
 # Module functions
-from typing import cast as _cast
+from typing import cast
 
-from mido import get_input_names as _get_input_names  # type: ignore [reportAttributeAccessIssue]
-from mido import get_output_names as _get_output_names  # type: ignore [reportAttributeAccessIssue]s
+from mido import get_input_names  # type: ignore [reportAttributeAccessIssue]
+from mido import get_output_names  # type: ignore [reportAttributeAccessIssue]s
 
+__all__ = [
+    "get_midi_receivers",
+    "get_midi_senders",
+    "find_midi_receiver",
+    "find_midi_sender",
+    "export_score",
+    "MidiMessage",
+    "RawMessage",
+    "MidiReceiver",
+    "MidiSender",
+]
 
 # reg. tests:
-# these functions are not all tested directyl because they rely on connected midi
+# these functions are not all tested directly because they rely on connected midi
 # devices
 
 
@@ -26,8 +37,11 @@ def get_midi_receivers() -> list[str]:
     using a slightly different name. For instance, "ExampleMidiReceiver" may show
     up as "RtMidiIn Client:ExampleMidiReceiver 128:0". Use this function to
     retrieve the valid name of your receivers etc.
+
+    Returns:
+        list[str]: A list of available midi receivers
     """
-    return _cast(list[str], _get_output_names())
+    return cast(list[str], get_output_names())
 
 
 def get_midi_senders() -> list[str]:
@@ -39,8 +53,11 @@ def get_midi_senders() -> list[str]:
     using a slightly different name. For instance, "ExampleMidiSender" may show
     up as "RtMidiOut Client:ExampleMidiSender 128:0". Use this function to
     retrieve the valid name of your senders etc.
+
+    Returns:
+        list[str]: A list of available midi senders
     """
-    return _cast(list[str], _get_input_names())
+    return cast(list[str], get_input_names())
 
 
 def _find_pattern(input: list[str], pattern: str) -> str | None:
@@ -66,8 +83,12 @@ def find_midi_receiver(name: str) -> str | None:
     receiver on certain platforms. Not all platforms guarantee that the
     receiver's given name is used on a system level.
 
-    :param name: A device name to search for
-    :return: The port name that contains the given name, or `None` if not found
+    Args:
+        name (str): A device name to search for
+
+    Returns:
+        str | None: The prot name that contains the given name, or `None` if
+            none are found
     """
     return _find_pattern(get_midi_receivers(), name)
 
@@ -81,7 +102,11 @@ def find_midi_sender(name: str) -> str | None:
     on certain platforms. Not all platforms guarantee that the sender's given
     name is used on a system level.
 
-    :param name: A device name to search for
-    :return: The port name that contains the given name, or `None` if not found
+    Args:
+        name (str): A device name to search for
+
+    Returns:
+        str | None: The port name that contains the given name, or `None` if
+            none are found
     """
     return _find_pattern(get_midi_senders(), name)

@@ -1,4 +1,4 @@
-from functools import reduce as _reduce
+from functools import reduce
 from typing import Any, Sequence
 
 from .chord import Chord
@@ -6,19 +6,20 @@ from .note import Note
 from .note_collection import NoteCollection
 from .phrase_element import PhraseElement
 
+__all__ = ["Phrase"]
+
 
 class Phrase(NoteCollection):
-    """Phrases group notes into connected units."""
+    """
+    Phrases group notes into connected units.
+
+    Args:
+        notes (Sequence[PhraseElement]): Notes to add. Can also be added later
+    """
 
     __slots__ = "_notes"
 
     def __init__(self, notes: Sequence[PhraseElement] = []) -> None:
-        """
-        Constructs a phrase from the given note list. Returns an empty phrase if
-        no list of notes is given.
-
-        :param list[Note] notes: A list of notes to add to the phrase
-        """
         self._notes: list[PhraseElement] = []
         # Deep copies the notes given to the phrase. Modification should happen
         # inside the phrase, not the original array.
@@ -40,6 +41,7 @@ class Phrase(NoteCollection):
 
     @property
     def notes(self) -> list[PhraseElement]:
+        """The phrases notes."""
         return self._notes
 
     @notes.setter
@@ -51,28 +53,41 @@ class Phrase(NoteCollection):
         Returns the number of elements in the phrase.
 
         Chords only count as one element.
+
+        Returns:
+            int: The number of elements in the phrase.
         """
         return len(self.notes)
 
     @property
     def duration(self) -> float:
         """
-        Returns the total unit length of the phrase.
+        The total unit length of the phrase.
 
         The returned value is equal to the sum of all note's durations.
-
-        :return: The total duration of the phrase
         """
-        return _reduce(lambda previous, note: previous + note.duration, self.notes, 0)
+        return reduce(lambda previous, note: previous + note.duration, self.notes, 0)
 
     def add_chord(self, chord: Chord):
-        """Adds the given chord to the phrase."""
+        """
+        Adds the given chord to the phrase.
+
+        Args:
+            chord (Chord): The chord to add
+        """
         self.notes.append(chord)
 
     def add_chord_by_lists(
         self, pitches: list[int], durations: list[float], dynamics: list[int]
     ):
-        """Adds a chord constructed by the given lists."""
+        """
+        Adds a chord constructed by the given lists.
+
+        Args:
+            pitches (list[int]): The note's pitches
+            durations (list[float]): The note's durations
+            dynamics (list[int]): The note's dynamics
+        """
         self.add_chord(Chord.from_lists(pitches, durations, dynamics))
 
     def add_chords_by_lists(
@@ -81,6 +96,17 @@ class Phrase(NoteCollection):
         durations: list[list[float]],
         dynamics: list[list[int]],
     ):
+        """
+        Adds multiple chords defined by their elements.
+
+        Args:
+            pitches (list[list[int]]): A list that contains the chord's note's
+                pitchs
+            durations (list[list[float]]): A list that contains the chord's note's
+                durations
+            dynamics (list[list[int]]): A list that contains the chord's note's
+                dynamics
+        """
         len_pitches = len(pitches)
         if len_pitches != len(durations) or len_pitches != len(dynamics):
             raise ValueError(
@@ -94,7 +120,12 @@ class Phrase(NoteCollection):
             )
 
     def add_rest(self, duration: float):
-        """Adds a rest of the given duration to the phrase."""
+        """
+        Adds a rest of the given duration to the phrase.
+
+        Args:
+            duration (float): The duration of the rest to add
+        """
         self.notes.append(Note.rest(duration))
 
     def linearise(self) -> list[Note]:
@@ -105,6 +136,9 @@ class Phrase(NoteCollection):
         the returned notes will be higher than the original phrase. This will
         also change the melody, because chords are replaced by their linearised
         parts.
+
+        Returns:
+            list[Note]: The linearised contents
         """
 
         def _flatten(input: PhraseElement) -> list[Note]:

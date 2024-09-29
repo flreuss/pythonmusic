@@ -1,6 +1,19 @@
-"""
-Defines common scales by their offset from a root note.
-"""
+__all__ = [
+    "MAJOR_SCALE",
+    "MINOR_SCALE",
+    "HARMONIC_MINOR_SCALE",
+    "MELODIC_MINOR_SCALE",
+    "CHROMATIC_SCALE",
+    "WHOLE_TONE_SCALE",
+    "PENTATONIC_SCALE",
+    "IONIAN_SCALE",
+    "DORIAN_SCALE",
+    "PHRYGIAN_SCALE",
+    "LYDIAN_SCALE",
+    "MIXOLYDIAN_SCALE",
+    "AEOLIAN_SCALE",
+    "LOCRIAN_SCALE",
+]
 
 MAJOR_SCALE: list[int] = [0, 2, 4, 5, 7, 9, 11]
 """Scale constant for the major scale."""

@@ -1,20 +1,27 @@
-from typing import cast as _cast, Any, Self
+from typing import cast, Any, Self
 
 from .note import Note
 from .phrase_element import PhraseElement
 from .note_collection import NoteCollection
-from ..constants.dynamics import MF as _MF
-from ..constants.intervals import OCTAVE as _OCTAVE
+from ..constants.dynamics import MF
+from ..constants.intervals import OCTAVE
+
+__all__ = ["Chord"]
 
 
 class Chord(PhraseElement, NoteCollection):
-    """A type that groups multiple notes together."""
+    """
+    A type that groups multiple notes together.
+
+    Args:
+        notes (list[Note]): A list of notes to add to the chord
+    """
 
     __slots__ = "_notes"
 
     def __init__(self, notes: list[Note] = []) -> None:
         self._notes = []
-        self.add_notes(_cast(list[PhraseElement], notes))
+        self.add_notes(cast(list[PhraseElement], notes))
 
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, Chord):
@@ -31,7 +38,15 @@ class Chord(PhraseElement, NoteCollection):
         return True
 
     def length(self) -> int:
-        """Returns the number of notes in the chord."""
+        """
+        Returns the number of notes in the chord.
+
+        .. note:: Only checks for top level entries. Embedded chord will not be
+            counted recursively.
+
+        Return:
+            int: The count of notes in the chord
+        """
         return len(self.notes)
 
     @classmethod
@@ -40,14 +55,29 @@ class Chord(PhraseElement, NoteCollection):
         pitches: list[int],
         durations: list[float],
         dynamics: list[int],
-    ) -> "Chord":
-        chord = Chord()
+    ) -> Self:
+        """
+        Creates a chord by adding notes created from their individual values.
+
+        .. warning:: The length of the given lists must be equal. That is, each
+            note must have a pitch, duration and dynamic.
+
+        Args:
+            pitches (list[int]): A list of pitches
+            durations (list[int]): A list of durations
+            dynamics (list[int]): A list of dynamics
+
+        """
+        chord = cls()
         chord.add_notes_by_lists(pitches, durations, dynamics)
 
         return chord
 
     @property
     def notes(self) -> list[PhraseElement]:
+        """
+        The notes within the chord.
+        """
         return self._notes
 
     @notes.setter
@@ -56,33 +86,47 @@ class Chord(PhraseElement, NoteCollection):
 
     @property
     def duration(self) -> float:
-        """Returns the duration of the chord."""
+        """The duration of the chord."""
         return self.max_duration() or 0.0
 
     def is_note(self) -> bool:
+        """
+        Returns `True` if this element is a note.
+
+        .. note:: Always returns `False`.
+        """
         return False
 
     def is_chord(self) -> bool:
+        """
+        Returns `True` if this element is a note.
+
+        .. note:: Always returns `True`.
+        """
         return True
 
-    @staticmethod
+    @classmethod
     def from_root(
+        cls,
         root: int,
         intervals: list[int],
         duration: float,
-        dynamic: int = _MF,
+        dynamic: int = MF,
         limit: int | None = None,
-    ) -> "Chord":
+    ) -> Self:
         """Creates a chord from given intervals over a root note.
 
-        :param root: A root pitch.
-        :param intervals: A list of intervals over the root note
-        :duration: The duration of the chord
-        :dynamic: The chord's dynamic, defaults to `MF`
-        :limit: Optional, the upper pitch limit until which the chord will be
-            constructed. If `None`, the given intervals will only be added once.
+        Args:
+            root (int): A root pitch
+            intervals (list[int]) A list of intervals over the root note
+            duration (float): The duration of the chord
+            dynamic (int): The dynamic of the chord
+            limit (int | None): The upperlimit of the chord. If given, repeats
+                intervale over the root note until limit is reached, otherwise,
+                repeats only once. Defaults to `None`
 
-        :return: The constructed chord.
+        Returns:
+            The constructed chord.
         """
         notes: list[Note] = []
         # if no intervals are given, return empty chord
@@ -104,7 +148,7 @@ class Chord(PhraseElement, NoteCollection):
                 pitch = (
                     root
                     + intervals[current_interval_index]
-                    + (current_octave_offset * _OCTAVE)
+                    + (current_octave_offset * OCTAVE)
                 )
 
                 # if we are above the inclusive limit, break out of loop
@@ -114,4 +158,4 @@ class Chord(PhraseElement, NoteCollection):
                 # if not, create note and add it to notes
                 notes.append(Note(pitch, duration, dynamic))
 
-        return Chord(notes)
+        return cls(notes)

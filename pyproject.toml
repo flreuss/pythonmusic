@@ -12,12 +12,12 @@ authors = [
 ]
 description = "Make music in python"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Programming Language :: Python",
 ]
 keywords = []
 
-[projects.urls]
+[project.urls]
 Homepage = "https://gitup.uni-potsdam.de/music-with-pc/pythonmusic"

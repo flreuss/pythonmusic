@@ -1,20 +1,54 @@
-from .note import *
-from .chord import *
-from .phrase import *
-from .part import *
-from .score import *
-from .note_collection import *
-from .phrase_element import *
+from .note_collection import NoteCollection
+from .phrase_element import PhraseElement
+from .note import Note
+from .chord import Chord
+from .phrase import Phrase
+from .part import Part
+from .score import Score
+
+__all__ = [
+    "NoteCollection",
+    "PhraseElement",
+    "Note",
+    "Chord",
+    "Phrase",
+    "Part",
+    "Score",
+    # functions
+    "sharp",
+    "flat",
+    "dotted",
+    "legato",
+]
 
 
 # TODO: find shorter function name
 def sharp(pitch: int) -> int:
-    """Returns the given pitch raised by one. This is equivalent to `pitch + 1`."""
+    """
+    Returns the given pitch raised by one.
+
+    .. note:: This is equivalent to ``pitch + 1``.
+
+    Args:
+        pitch (int): The base pitch
+
+    Returns:
+        int: Increased pitch
+    """
     return pitch + 1
 
 
 def flat(pitch: int) -> int:
-    """Returns the given pitch lowered by one. This is equivalent to `pitch - 1`."""
+    """
+    Returns the given pitch lowered by one.
+
+    Args:
+        pitch (int): The base pitch
+
+    Returns:
+        int: Decreased pitch
+
+    .. note:: This is equivalent to ``pitch - 1``."""
     return pitch - 1
 
 

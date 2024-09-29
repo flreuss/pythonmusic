@@ -1,6 +1,59 @@
-"""
-Defines MIDI constants for note and rest durations.
-"""
+__all__ = [
+    "QUARTER_NOTE",
+    "QN",
+    "CROTCHET",
+    "HALF_NOTE",
+    "HN",
+    "MINIM",
+    "WHOLE_NOTE",
+    "WN",
+    "SEMI_BREVE",
+    "DOUBLE_WHILE_NOTE",
+    "WWN",
+    "BREVE",
+    "EIGHTH_NOTE",
+    "EN",
+    "QUAVER",
+    "SIXTEENTH_NOTE",
+    "SN",
+    "SEMI_QUAVER",
+    "THIRTYSECOND_NOTE",
+    "TN",
+    "DEMISEMI_QUAVER",
+    "SIXTYFOURTH_NOTE",
+    "SFN",
+    "SEMIDEMISEMI_QUAVER",
+    "DOTTED_QUARTER_NOTE",
+    "DQN",
+    "DOTTED_CROTCHET",
+    "DOUBLE_DOTTED_QUARTER_NOTE",
+    "DDQN",
+    "DOUBLE_DOTTED_CROTCHET",
+    "DOTTED_HALF_NOTE",
+    "DHN",
+    "DOTTED_MINIM",
+    "DOUBLE_DOTTED_HALF_NOTE",
+    "DDHN",
+    "DOUBLE_DOTTED_MINIM",
+    "DOTTED_WHOLE_NOTE",
+    "DWN",
+    "DOTTED_SEMI_BREVE",
+    "DOTTED_EIGHTH_NOTE",
+    "DEN",
+    "DOTTED_QUAVER",
+    "DOUBLE_DOTTED_EIGHTH_NOTE",
+    "DDEN",
+    "DOUBLE_DOTTED_QUAVER",
+    "QUARTER_NOTE_TRIPLET",
+    "QNT",
+    "CROTCHET_TRIPLET",
+    "EIGHTH_NOTE_TRIPLET",
+    "ENT",
+    "QUAVER_TRIPLET",
+    "SIXTEENTH_NOTE_TRIPLET",
+    "SNT",
+    "SEMI_QUAVER_TRIPLET",
+]
 
 
 def _dotted(base: float, dots: int) -> float:
@@ -87,9 +140,9 @@ DOTTED_CROTCHET: float = DOTTED_QUARTER_NOTE
 DOUBLE_DOTTED_QUARTER_NOTE: float = _dotted(QUARTER_NOTE, 2)
 """Defines the length constant for a double dotted *quarter note* or *crotchet*."""
 DDQN: float = DOUBLE_DOTTED_QUARTER_NOTE
-"""Defines the length constant for a dotted *quarter note* or *crotchet*."""
+"""Defines the length constant for a double dotted *quarter note* or *crotchet*."""
 DOUBLE_DOTTED_CROTCHET: float = DOUBLE_DOTTED_QUARTER_NOTE
-"""Defines the length constant for a dotted *quarter note* or *crotchet*."""
+"""Defines the length constant for a double dotted *quarter note* or *crotchet*."""
 
 # Dotted Half Note
 DOTTED_HALF_NOTE: float = _dotted(HALF_NOTE, 1)

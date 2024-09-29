@@ -1,20 +1,27 @@
 from .phrase_element import PhraseElement
 from .note import Note
 
-from abc import ABC as _ABC
-from abc import abstractmethod as _abstractmethod
-from functools import reduce as _reduce
-from typing import Sequence, cast as _cast
+from abc import ABC
+from abc import abstractmethod
+from functools import reduce
+from typing import Sequence, cast
+
+__all__ = ["NoteCollection"]
 
 
-class NoteCollection(_ABC):
+class NoteCollection(ABC):
+    """
+    An abstract class that defines methods for chords and phrases.
+    """
+
     @property
-    @_abstractmethod
+    @abstractmethod
     def notes(self) -> list[PhraseElement]:
+        """The notes contained in this collection."""
         pass
 
     @notes.setter
-    @_abstractmethod
+    @abstractmethod
     def notes(self, new_value: list[PhraseElement]):
         pass
 
@@ -40,24 +47,35 @@ class NoteCollection(_ABC):
 
             return output
 
-        return _cast(list[Note], inner(elements))
+        return cast(list[Note], inner(elements))
 
     def __len__(self) -> int:
-        """Returns the number of notes in this colleciton."""
+        """Returns the number of notes in this collection."""
         return self.notes.__len__()
 
     # due to chord needing to conform both to NoteColelction
     @property
-    @_abstractmethod
+    @abstractmethod
     def duration(self) -> float:
+        """The duration of this collection."""
         pass
 
     def add_note(self, note: PhraseElement):
-        """Adds the given note to the collection."""
+        """
+        Adds the given note to the collection.
+
+        Args:
+            note (PhraseElement): A phrase element (note, chord) to add
+        """
         self.notes.append(note)
 
     def add_notes(self, notes: Sequence[PhraseElement]):
-        """Adds the given notes to the collection."""
+        """
+        Adds the given notes to the collection.
+
+        Args:
+            note (Sequence[PhraseElement]): Phrase elements to add
+        """
         self.notes.extend(notes)
 
     def add_notes_by_lists(
@@ -65,7 +83,7 @@ class NoteCollection(_ABC):
         pitches: list[int],
         durations: list[float],
         dynamics: list[int],
-    ) -> None:
+    ):
         """
         Adds notes defined by their parts.
 
@@ -76,16 +94,18 @@ class NoteCollection(_ABC):
         one note represents one entry from `pitches`, `durations`, and
         `dynamics`, respectively.
 
-        ```python
-        for index in range(0, len(pitches)):
-            note = Note(pitches[i], durations[i], dynamics[i])
-            notes.append(note)
-        ```
+        Example:
+            >>> for index in range(0, len(pitches)):
+            >>>     note = Note(pitches[i], durations[i], dynamics[i])
+            >>>     notes.append(note)
 
-        :param list[int] pitches: A list of pitches
-        :param list[float] durations: A list of durations
-        :param list[int] dynamics: A list of dynamics
-        :raises ValueError: if arrays are not the same length
+        Raises:
+            ValueError: If arrays are not of the same length
+
+        Args:
+            pitches (list[int]): A list of pitches
+            durations (list[float]): A list of durations
+            dynamics (list[int]): A list of dynamics
         """
 
         # assert that all lists are parallel
@@ -110,9 +130,14 @@ class NoteCollection(_ABC):
         """
         Removes the note at the given index and optionally returns it.
 
-        :param int index: The index of the note to be removed
-        :return: The removed note
-        :raises IndexError: If given index is outsides bounds
+        Raises:
+            IndexError: If given index is out of bounds
+
+        Args:
+            index (int): The index of the phrase element to be removed
+
+        Returns:
+            PhraseElement: The removed phrase element
         """
 
         return self.notes.pop(index)
@@ -126,14 +151,15 @@ class NoteCollection(_ABC):
         Returns the smallest pitch in the phrase or `None` if empty.
         Ignores rests.
 
-        :return: The smallest pitch in the phrase of `None` if empty
+        Returns:
+            int | None: The minimum pitch or `None` if collection is empty
         """
         if len(self.notes) == 0:
             return None
 
         INVALID_PITCH = 1000
         notes = self._flatten(self.notes)
-        return _reduce(
+        return reduce(
             lambda current, next: (
                 min(current, next.pitch) if not next.is_rest() else current
             ),
@@ -146,12 +172,13 @@ class NoteCollection(_ABC):
         Returns the highest pitch in the phrase or `None` if empty.
         Ignores rests.
 
-        :return: The highest pitch in the phrase of `None` if empty
+        Returns:
+            int | None: The highest pitch in the phrase of `None` if empty
         """
         if len(self.notes) == 0:
             return None
         notes = self._flatten(self.notes)
-        return _reduce(
+        return reduce(
             lambda current, next: (
                 max(current, next.pitch) if not next.is_rest() else current
             ),
@@ -163,7 +190,8 @@ class NoteCollection(_ABC):
         """
         Returns the smallest duration in the phrase or `None` if empty.
 
-        :return: The smallest duration in the phrase of `None` if empty
+        Returns:
+            float | None: The smallest duration in the phrase of `None` if empty
         """
         return (
             min(map(lambda note: note.duration, self.notes))
@@ -175,7 +203,8 @@ class NoteCollection(_ABC):
         """
         Returns the highest duration in the phrase or `None` if empty.
 
-        :return: The highest duration in the phrase of `None` if empty
+        Returns:
+            float | None: The highest duration in the phrase of `None` if empty
         """
         return (
             max(map(lambda note: note.duration, self.notes))
@@ -188,14 +217,15 @@ class NoteCollection(_ABC):
         Returns the smallest dynamic in the phrase or `None` if empty.
         Ignores rests.
 
-        :return: The smallest dynamic in the phrase of `None` if empty
+        Returns:
+            int | None: The smallest dynamic in the phrase of `None` if empty
         """
         if len(self.notes) == 0:
             return None
 
         INVALID_DYNAMIC = 200  # a value above valid dynamic range
         notes = self._flatten(self.notes)
-        return _reduce(
+        return reduce(
             lambda current, next: (
                 min(current, next.dynamic) if not next.is_rest() else current
             ),
@@ -208,13 +238,14 @@ class NoteCollection(_ABC):
         Returns the highest dynamic in the phrase or `None` if empty.
         Ignores rests.
 
-        :return: The highest dynamic in the phrase of `None` if empty
+        Returns:
+            int | None: The highest dynamic in the phrase of `None` if empty
         """
         if len(self.notes) == 0:
             return None
 
         notes = self._flatten(self.notes)
-        return _reduce(
+        return reduce(
             lambda current, next: (
                 max(current, next.dynamic) if not next.is_rest() else current
             ),

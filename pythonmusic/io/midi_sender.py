@@ -1,19 +1,42 @@
 from typing import Self
 
-from mido import open_output as _open_output  # type: ignore [reportAttributeAccessIssue]
+from mido import open_output  # type: ignore [reportAttributeAccessIssue]
 from mido.backends.rtmidi import Output as RtOutput
 
 from .midi_message import MidiMessage
 
 
+__all__ = ["MidiSender"]
+
+
 class MidiSender:
     """
-    An object that can be used to send midi messages to midi input ports.
+    A midi sender object.
+
+    Use this class to create objects that can send midi messages. Midi senders
+    can take on two rolls.
+
+    * A sender that is created using its normal initialiser (``MidiSender()``)
+      is virtual. This opens a midi ports that other receivers on the system can
+      start listening to. Receive messages using
+      :obj:`pythonmusic.io.MidiReceiver`, some DAWs, or similar. The created
+      sender send messages to all attached receivers.
+
+    * To create a non-virtual port, use the `attach` method of this class. This
+      creates a sender that attaches to a specific output given as the `name`
+      parameter. Messages are only send to that receiver. Depending on your use
+      case, this may be necessary to attach to a source that itself does not
+      select a target, such as midi keyboards.
+
+    You can then send messages using the sender.
+
+    Args:
+        name (str): The name this sender will be displayed to the system as
     """
 
     def __init__(self, name: str) -> None:
         self.name: str | None = name
-        self._port: RtOutput = _open_output(name, virtual=True)
+        self._port: RtOutput = open_output(name, virtual=True)
 
     def __del__(self):
         self.port.close()
@@ -30,6 +53,9 @@ class MidiSender:
 
     @property
     def port(self) -> RtOutput:
+        """
+        Returns the raw port this sender uses internally.
+        """
         self._assert_open_port()
         return self._port
 
@@ -38,10 +64,10 @@ class MidiSender:
         """
         Attaches to the given output.
 
-        The `output_name` parameter must refer to a valid, open midi port.
-        Use `MidiSender.get_outputs()` to retrieve a list of open ports.
+        Args:
+            output_name (str): A valid system registered midi port (receiver)
         """
-        port = _open_output(output_name, virtual=False)
+        port = open_output(output_name, virtual=False)
         if not port:
             raise ConnectionError(f'Cannot attach to given output "{output_name}"')
 
@@ -54,6 +80,9 @@ class MidiSender:
     def send_message(self, msg: MidiMessage):
         """
         Sends the given midi message to this sender's output.
+
+        Args:
+            msg (MidiMessage): A message to send
         """
         self.port.send(msg.raw())
 
@@ -66,7 +95,7 @@ class MidiSender:
         """
         self.port.reset()
 
-    def force_note_off(self):
+    def force_notes_off(self):
         """
         Instructs the attached receiver to abort all notes. This does not reset
         controller values.
