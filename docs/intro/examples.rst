@@ -42,7 +42,7 @@ A simple template to get you started.
 Synth
 -----
 
-Use you computer as a synthesizer to playback input from a MIDI keyboard, or similar.
+Use your computer as a synthesizer to playback input from a MIDI keyboard, or similar.
 
 .. code-block:: python
 
