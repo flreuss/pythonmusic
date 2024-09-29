@@ -28,7 +28,7 @@ to alter the length or velocity of the note.
 Articulations
 .............
 
-Articulations can be added to notes to change their length, velocity, or general playback behaviour. To add an articulation to a Note,
+Articulations can be added to notes to change their length, velocity, or general playback behaviour. To add an articulation to a note,
 either pass a list of articulations to the notes initialiser, or use the :meth:`add_articulation <pythonmusic.music.Note.add_articulation>`
 method.
 

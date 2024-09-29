@@ -89,7 +89,7 @@ Source code is available on this project's `repository <https://gitup.uni-potsda
    objects/midi_io
 
 .. toctree::
-   :caption: Reference
+   :caption: Reference / API
    :maxdepth: 1
    :hidden:
 

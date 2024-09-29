@@ -1,20 +1,9 @@
-Midi
-====
+Midi Messages
+=============
 
-MIDI (Musical Instrument Digital Interface) is a standard that enables electronic musical instruments and devices to communicate by 
-sending performance data, rather than audio signals. MIDI messages, which consist of simple instructions like "note on" or "note off,"
-allow devices to produce or modify sounds based on these commands.
 
-MIDI operates across 16 channels (0-15), each capable of controlling a different instrument or sound. The messages are typically 2 or 3
-bytes long: the first byte identifies the type of message, and the following bytes contain additional details, like which note to play 
-or how hard to press a key. Constants in the MIDI specification define note numbers, velocities, and other parameters to ensure
-compatibility between different devices.
-
-PythonMusic uses `mido <https://mido.readthedocs.io/en/stable/index.html>`_ for its MIDI communication. This document will list the
-necessities for interacting with messages. For a more complete overview, see mido's documentation.
-
-Messages
---------
+PythonMusic uses `mido <https://github.com/mido/mido>`_ for its MIDI communication. This document will list the
+necessities for interacting with messages. For a more complete overview, see mido's `documentation <https://mido.readthedocs.io/en/stable/index.html>`_.
 
 The parameters that need to be passed to the initialiser of a :obj:`MidiMessage <pythonmusic.io.MidiMessage>` object differ, depending
 on the type of message that you create. The table below lists the required parameters for each message type.

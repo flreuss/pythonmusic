@@ -130,6 +130,7 @@ function.
 
 This leaves us with the example ``spring.py`` from PythonMusic's examples. More example scores can be found
 in the project's `example directory <https://gitup.uni-potsdam.de/music-with-pc/pythonmusic/-/tree/main/examples>`_.
+For code snippets and a starter template, have a look at the :doc:`Examples <./examples>` section.
 
 .. code-block:: python
 
@@ -190,13 +191,3 @@ in the project's `example directory <https://gitup.uni-potsdam.de/music-with-pc/
         player.play_score(score)
     else:
         print("No midi devices found")
-
-
-
-
-
-
-
-
-
-For more code samples and examples, see the :doc:`Examples <./examples>` section.

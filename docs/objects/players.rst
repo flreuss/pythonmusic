@@ -119,12 +119,24 @@ To create a synth player, pass the path to a SoundFont2 library to the initialis
     SF2_PATH = "./resources/gm.sf2"
     player = SynthPlayer(SF2_PATH)
 
-.. note:: Depending on your playform, you may see a lot of messages when initialising this object.
-  FluidSynth may report any invalid instruments found in the selected SF2 library. The library will propably still work.
-  Some sound drivers (i.e. ALSA) may try to find some outputs that are not availble. If you hear sound, you should be fine.
+.. note::
+
+    If you create a :obj:`SynthPlayer <pythonmusic.synth.SynthPlayer>` (or a :obj:`Synth <pythonmusic.synth.Synth>`), no instrument is 
+    selected by default. You need to manually select an instrument for each channel.
+
+    .. code-block:: python
+
+       player.set_instrument(channel=0, instrument=VIOLIN)
+
+    Use one of the provided :mod:`instrument constants <pythonmusic.constants.instruments>`.
+
 
 Not all features of MIDI may be availble with this player. Some features may be further restricted depending on the selected
 SoundFont2 library.
+
+.. note:: Depending on your playform, you may see a lot of messages when initialising this object.
+  FluidSynth may report any invalid instruments found in the selected SF2 library. The library will propably still work.
+  Some sound drivers (i.e. ALSA) may try to find some outputs that are not availble. If you hear sound, you should be fine.
 
 Reference
 .........
