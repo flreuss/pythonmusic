@@ -172,7 +172,7 @@ class Note(PhraseElement):
 
     def as_rest(self) -> Self:
         """
-        Returns a rest with this notes duration.
+        Returns a rest with this note's duration.
 
         Returns:
             Note: A rest with this note's duration
@@ -184,7 +184,7 @@ class Note(PhraseElement):
     @classmethod
     def rest(cls, duration: float) -> Self:
         """
-        Constrcuts a rest from the given duration.
+        Constructs a rest from the given duration.
 
         Args:
             duration (float): The duration of the rest
