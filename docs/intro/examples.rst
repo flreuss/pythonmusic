@@ -89,9 +89,9 @@ Receive messages from a midi sender, and print them to the terminal.
 
     receiver = find_midi_receiver(RECEIVER_NAME)
     if receiver is None:
-        raise IOError(f'No open midi port found for "{SENDER_NAME}"')
+        raise IOError(f'No open midi port found for "{RECEIVER_NAME}"')
 
-    receiver = MidiReceiver.attach(sender, True)
+    receiver = MidiReceiver.attach(receiver, True)
 
     while True:
         # keep thread busy
