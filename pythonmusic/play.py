@@ -7,8 +7,7 @@ from dataclasses import dataclass
 from threading import Thread, Event
 from time import time
 
-from pythonmusic.constants import ACOUSTIC_GRAND_PIANO, PAN_CENTER
-from pythonmusic.constants.tempo import ANDANTE
+from pythonmusic.constants import ACOUSTIC_GRAND_PIANO, PAN_CENTER, MODERATO
 from pythonmusic.music import Note, Chord, Phrase, Part, Score, PhraseElement
 from pythonmusic.constants import ADAGIO as _ADAGIO
 from pythonmusic.io import MidiMessage, MidiSender
@@ -301,8 +300,10 @@ class AsyncPlayer:
     Other players will block the main thread when playing elements.
     """
 
-    def __init__(self, player: Player) -> None:
+    def __init__(self, player: Player, tempo: float) -> None:
         self._player = player
+        self.tempo = tempo
+
         # defining with maxsize 0 results in infinite queue
         # according to the docs, this queue is thread-safe
         self._queue: PriorityQueue[PriorityItem] = PriorityQueue(maxsize=0)
@@ -346,15 +347,13 @@ class AsyncPlayer:
         instrument: int = ACOUSTIC_GRAND_PIANO,
         channel: int = 0,
         panning: int = PAN_CENTER,
-        tempo: float = 120.0,
     ):
         # first convert to ir, then midi message
         nodes: list[IrNode] = [
-            make_tempo_node(tempo),
             make_instrument_node(instrument),
             make_panning_node(panning),
         ] + pe_to_ir(note, 0.00001)
-        messages = irnodes_to_midi(nodes, tempo, channel)
+        messages = irnodes_to_midi(nodes, self.tempo, channel)
 
         for message in messages:
             # calculate real time of playback
@@ -413,3 +412,45 @@ class CodePlayer:
         self._player = player
         # AsyncPlayer is local to playback method call. This avoids the issue
         # where the AsyncPlayer-thread will prevent Python to exit.
+
+    def play_note(
+        self,
+        note: Note,
+        channel: int = 0,
+        instrument: int = ACOUSTIC_GRAND_PIANO,
+        panning: int = PAN_CENTER,
+        tempo: float = MODERATO,
+    ):
+        self.play_phrase(Phrase([note]), channel, instrument, panning, tempo)
+
+    def play_chord(
+        self,
+        chord: Chord,
+        channel: int = 0,
+        instrument: int = ACOUSTIC_GRAND_PIANO,
+        panning: int = PAN_CENTER,
+        tempo: float = MODERATO,
+    ):
+        self.play_phrase(Phrase([chord]), channel, instrument, panning, tempo)
+
+    def play_phrase(
+        self,
+        phrase: Phrase,
+        channel: int = 0,
+        instrument: int = ACOUSTIC_GRAND_PIANO,
+        panning: int = PAN_CENTER,
+        tempo: float = MODERATO,
+    ):
+        self.play_part(Part(None, instrument, [phrase], channel, panning), tempo)
+
+    def play_part(self, part: Part, tempo: float = MODERATO):
+        self.play_score(Score(None, [part], tempo))
+
+    def play_score(self, score: Score):
+        player: Optional[AsyncPlayer]
+        if self._player is not None:
+            player = AsyncPlayer(self._player, score.tempo)
+
+        # CONTINUE: convert
+
+        ir = score_to_ir(score)

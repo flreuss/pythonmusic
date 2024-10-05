@@ -1,7 +1,7 @@
 Play
 ====
 
-The ``play`` module 
+The ``play`` module.
 
 .. automodule:: pythonmusic.play
    :members:
