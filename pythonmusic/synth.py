@@ -169,6 +169,9 @@ class SynthPlayer(Player):
     """
     A player implementation for the :obj:`pythonmusic.synth.Synth` object.
 
+    When using the SynthPlayer to playback notes or phrases, you need to set an
+    instrument to use for playback. For this, use the ``set_instrument`` function.
+
     .. note:: On Linux using ALSA, you may encounter various error messages reporting that
         some playback devices have not been found. This is normal as ALSA checks for
         multiple output sources that may not exist. As long as audio can be heard,

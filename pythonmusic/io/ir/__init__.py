@@ -144,6 +144,29 @@ class IrFile:
     channels: list[IrChannel]
 
 
+# ==== Conversions ====
+def make_instrument_node(value: int) -> IrNode:
+    # inline from instrument_get_path_bank
+    # if I dont inline this this doesnt work... I have no clue why
+    BYTE = 0b11111111
+    patch = value & BYTE
+    bank = (value >> 8) & BYTE
+    # inline end
+
+    payload = IrProgramChange(patch, bank)
+    return IrNode(0.0, IrNode.Type.PROGRAM, payload)
+
+
+def make_panning_node(value: int) -> IrNode:
+    payload = IrControlChange(CHANNEL_PAN, value)
+    return IrNode(0.0, IrNode.Type.CC, payload)
+
+
+def make_tempo_node(value: float) -> IrNode:
+    payload = IrTempo(value)
+    return IrNode(0.0, IrNode.Type.META, payload)
+
+
 # ==== Methods ====
 def pe_to_ir(pe: PhraseElement, start_time: float) -> list[IrNode]:
     """
@@ -247,22 +270,10 @@ def part_to_ir(part: Part) -> IrChannel:
         IrChannel: An ir channel object
     """
 
-    def instrument_node(value: int) -> IrNode:
-        # inline from instrument_get_path_bank
-        # if I dont inline this this doesnt work... I have no clue why
-        BYTE = 0b11111111
-        patch = value & BYTE
-        bank = (value >> 8) & BYTE
-        # inline end
-
-        payload = IrProgramChange(patch, bank)
-        return IrNode(0.0, IrNode.Type.PROGRAM, payload)
-
-    def panning_node(value: int) -> IrNode:
-        payload = IrControlChange(CHANNEL_PAN, value)
-        return IrNode(0.0, IrNode.Type.CC, payload)
-
-    nodes: list[IrNode] = [instrument_node(part.instrument), panning_node(part.panning)]
+    nodes: list[IrNode] = [
+        make_instrument_node(part.instrument),
+        make_panning_node(part.panning),
+    ]
 
     for start_time, phrase in part.phrases:
         nodes += phrase_to_ir(phrase, start_time)
@@ -283,13 +294,9 @@ def score_to_ir(score: Score) -> IrFile:
         IrFile: An ir file object
     """
 
-    def tempo_node(value: float) -> IrNode:
-        payload = IrTempo(value)
-        return IrNode(0.0, IrNode.Type.META, payload)
-
     channels: list[IrChannel] = list(map(lambda part: part_to_ir(part), score.parts))
 
-    tempo = tempo_node(score.tempo)
+    tempo = make_tempo_node(score.tempo)
     if len(channels) == 0:
         channels = [IrChannel("Channel 0", 0, [tempo])]
     else:
