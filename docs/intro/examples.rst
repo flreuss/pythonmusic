@@ -42,7 +42,7 @@ A simple template to get you started.
 Synth
 -----
 
-Use you computer as a synthesizer to playback input from a MIDI keyboard, or similar.
+Use your computer as a synthesizer to playback input from a MIDI keyboard, or similar.
 
 .. code-block:: python
 
@@ -85,9 +85,9 @@ Receive messages from a midi sender, and print them to the terminal.
     from pythonmusic import *
     from time import sleep
 
-    RECEIVER_NAME = "MyKeyboard"  # change name
+    SENDER_NAME = "MyKeyboard"  # change name
 
-    receiver = find_midi_receiver(RECEIVER_NAME)
+    sender = find_midi_sender(SENDER_NAME)
     if receiver is None:
         raise IOError(f'No open midi port found for "{RECEIVER_NAME}"')
 
