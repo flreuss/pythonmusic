@@ -1,23 +1,34 @@
 from collections.abc import Callable
 from abc import ABC, abstractmethod
 from time import sleep
-from typing import Optional, override
+from typing import Optional, TypeVar, override, cast
 from queue import PriorityQueue, Empty
 from dataclasses import dataclass
 from threading import Thread, Event
 from time import time
 
-from pythonmusic.constants import ACOUSTIC_GRAND_PIANO, PAN_CENTER, MODERATO
+from pythonmusic.constants import (
+    ACOUSTIC_GRAND_PIANO,
+    PAN_CENTER,
+    MODERATO,
+    CONTROL_CHANGE,
+    PROGRAM_CHANGE,
+    ADAGIO,
+    NOTE_ON,
+    NOTE_OFF,
+    BANK_CHANGE,
+)
 from pythonmusic.music import Note, Chord, Phrase, Part, Score, PhraseElement
-from pythonmusic.constants import ADAGIO as _ADAGIO
 from pythonmusic.io import MidiMessage, MidiSender
 from pythonmusic.io.ir import (
+    IrNote,
+    IrControlChange,
+    IrProgramChange,
     pe_to_ir,
     phrase_to_ir,
     part_to_ir,
     score_to_ir,
     IrNode,
-    make_tempo_node,
     make_panning_node,
     make_instrument_node,
 )
@@ -59,7 +70,7 @@ class Player(ABC):
                 If the playback finishes normally, the passed bool will be ``True``. If the playback loop receives a ``KeyboardInterrupt``
                 before then, the passed boolean is ``False``.
         """
-        self._play_pe(note, _ADAGIO, 0, on_start, on_message, on_end)
+        self._play_pe(note, ADAGIO, 0, on_start, on_message, on_end)
 
     def play_chord(
         self,
@@ -79,12 +90,12 @@ class Player(ABC):
                 If the playback finishes normally, the passed bool will be ``True``. If the playback loop receives a ``KeyboardInterrupt``
                 before then, the passed boolean is ``False``.
         """
-        self._play_pe(chord, _ADAGIO, 0, on_start, on_message, on_end)
+        self._play_pe(chord, ADAGIO, 0, on_start, on_message, on_end)
 
     def play_phrase(
         self,
         phrase: Phrase,
-        tempo: float = _ADAGIO,
+        tempo: float = ADAGIO,
         channel: int = 0,
         on_start: Callable[[list[MidiMessage]], None] | None = None,
         on_message: Callable[[MidiMessage, float], None] | None = None,
@@ -110,7 +121,7 @@ class Player(ABC):
     def play_part(
         self,
         part: Part,
-        tempo: float = _ADAGIO,
+        tempo: float = ADAGIO,
         start_beat: int = 0,
         on_start: Callable[[list[MidiMessage]], None] | None = None,
         on_message: Callable[[MidiMessage, float], None] | None = None,
@@ -191,19 +202,35 @@ class Player(ABC):
         on_message: Callable[[MidiMessage, float], None] | None,
         on_end: Callable[[bool], None] | None,
     ):
-        # TODO: do proper sorting here, check for faster algorithms
-        messages.sort(
-            key=lambda message: message.time, reverse=True
-        )  # sorts in decending order for fast pop
+        # return if no messages given
+        if len(messages) == 0:
+            return
 
+        # sort in descending order for fast pop, making this, essentially, a
+        # stack
+        messages.sort(key=lambda message: message.time, reverse=True)
+
+        # remove messages that occur before start time
         start_time: float = start_at
-        while len(messages) > 0:
-            index = len(messages) - 1
-            if messages[index].time < start_time:
-                del messages[index]
+
+        index = len(messages) - 1
+        while index < len(messages) and index >= 0:
+            message = messages[index]
+
+            # if message starts before the start time and is a 0x09 or 0x08
+            # event, pop from stack
+            if message.time < start_time:
+                # this conditional needs to be split to allow for optimisation
+                # below (not checking ever message)
+                message_type = message.type
+                if message_type == NOTE_ON or message_type == NOTE_OFF:
+                    del messages[index]
+                else:
+                    index -= 1
             else:
                 break
 
+        # return if no messages left
         if len(messages) == 0:
             return
 
@@ -211,10 +238,10 @@ class Player(ABC):
             on_start(messages)
 
         current: MidiMessage
-        next: MidiMessage | None = messages.pop()  # we at least one
+        next: MidiMessage = messages.pop()  # we at least one
 
         try:
-            while next is not None:
+            while True:
                 current = next
 
                 if on_message:
@@ -226,11 +253,11 @@ class Player(ABC):
                     next = messages.pop()
                     start_time += current.time
                     # protect against negative sleep time
-                    # this should not happen, but float imprecision may cause this
+                    # this should not happen, but float imprecision may cause this maybe
                     sleep_time = max(0, next.time - current.time)
                     sleep(sleep_time)
                 else:
-                    next = None
+                    break
 
             if on_end:
                 on_end(True)
@@ -285,14 +312,6 @@ def _decode_timing(coded: int) -> float:
     return float(coded) / _CODE_MULTIPLYER
 
 
-@dataclass(order=True)
-class PriorityItem:
-    """An item in the priority queue."""
-
-    priority: int
-    message: MidiMessage
-
-
 class AsyncPlayer:
     """
     An object that sends messages to a player on another thread.
@@ -306,7 +325,7 @@ class AsyncPlayer:
 
         # defining with maxsize 0 results in infinite queue
         # according to the docs, this queue is thread-safe
-        self._queue: PriorityQueue[PriorityItem] = PriorityQueue(maxsize=0)
+        self._queue: PriorityQueue[MidiMessage] = PriorityQueue(maxsize=0)
         # if set to true, stops the thread on the next pass
         self._abort = Event()
         self._thread = Thread(
@@ -325,17 +344,21 @@ class AsyncPlayer:
         self._abort.set()
         self._thread.join()
 
+    @property
+    def player(self) -> Player:
+        return self._player
+
     @staticmethod
-    def _loop(queue: PriorityQueue[PriorityItem], player: Player, abort: Event):
+    def _loop(queue: PriorityQueue[MidiMessage], player: Player, abort: Event):
         while not abort.is_set():
             try:
                 # I don't see another way to check if a message should be played
                 # we cant store this in, lets say, `next_message` because another
                 # message may be added that precedes the stored message
                 item = queue.get(False, timeout=None)
-                trigger = _decode_timing(item.priority)
+                trigger = _decode_timing(item[0])
                 if trigger >= time():
-                    player.play_message(item.message)
+                    player.play_message(item[1])
                 else:
                     queue.put(item, block=False)
             except Empty:
@@ -361,54 +384,29 @@ class AsyncPlayer:
             # "encode" to int (precise to 5 post decimals)
             coded = _encode_timing(timing)
             # construct item
-            item = PriorityItem(coded, message)
+            item = PriorityItem((coded, message))
 
             # add to queue
             self._queue.put(item, block=True, timeout=1)
 
+    def send_message(self, message: MidiMessage):
+        """Remember to set time"""
+        timing = message.time + time()
+        coded = _encode_timing(timing)
+        self._queue.put(PriorityItem((coded, message)))
+
 
 class CodePlayer:
-    """
-    A player that uses a callback function to play the given material.
-
-    Use this player to define how a :obj:`Note <pythonmusic.music.Note>` is
-    played back in a callback you pass to the initialiser. The callback should
-    be defined as such:
-
-    .. code-block:: python
-
-        def my_callback(
-            player: AsyncPlayer | None,
-            note: Note,
-            channel: int,
-            instrument: int,
-            panning: int
-        ):
-            # do something
-            pass
-
-    To playback notes on a :obj:`Player <pythonmusic.play.Player>`
-    (:obj:`MidiPlayer <pythonmusic.play.MidiPlayer>`,
-    :obj:`SynthPlayer <pythonmusic.play.PynthPlayer>`, ...), create a player and
-    pass it to the initialiser. This will create an
-    :obj:`AsyncPlayer <pythonmusic.play.AsyncPlayer>` internally, and pass it to
-    your callback.
-
-    For more information, see the Players section in the documentation.
-
-    Args:
-        callback (Callable[[Optional[AsyncPlayer], Note, int, int, int] None]):
-            A callback that is called for each note.
-        player: (Optional[Player]): An optional player object. If defined, an
-            AsyncPlayer will be available to the callback.
-    """
+    """ """
 
     def __init__(
         self,
-        callback: Callable[[Optional[AsyncPlayer], Note, int, int, int], None],
         player: Optional[Player],
+        on_note: Callable[
+            [Optional[AsyncPlayer], Note, int, Optional[int], Optional[int]], None
+        ],
     ):
-        self.callback = callback
+        self.on_note = on_note
         self._player = player
         # AsyncPlayer is local to playback method call. This avoids the issue
         # where the AsyncPlayer-thread will prevent Python to exit.
@@ -447,10 +445,79 @@ class CodePlayer:
         self.play_score(Score(None, [part], tempo))
 
     def play_score(self, score: Score):
-        player: Optional[AsyncPlayer]
-        if self._player is not None:
-            player = AsyncPlayer(self._player, score.tempo)
-
-        # CONTINUE: convert
-
         ir = score_to_ir(score)
+        nodes: list[tuple[int, IrNode]] = []  # channel_nr, node
+        for channel in ir.channels:
+            channel_nr = channel.channel
+            for node in channel.nodes:
+                nodes.append((channel_nr, node))
+
+        self._play_nodes(nodes, score.tempo)
+
+    def _play_nodes(self, nodes: list[tuple[int, IrNode]], tempo: float):
+        if len(nodes) == 0:
+            return
+
+        # init optional player
+        player: Optional[AsyncPlayer] = None
+        if self._player is not None:
+            player = AsyncPlayer(self._player, tempo)
+
+        # setup memory for instruments and panning for all 16 channels
+        instruments: list[Optional[int]] = [None] * 16
+        pannings: list[Optional[int]] = [None] * 16
+
+        # main loop
+        current: tuple[int, IrNode]
+        next: tuple[int, IrNode] = nodes.pop()
+        Ty = IrNode.Type
+
+        try:
+            while next is not None:
+                current = next
+                channel, node = current
+
+                instrument = instruments[channel]
+                panning = pannings[channel]
+
+                match node.type:
+                    case Ty.NOTE | Ty.REST:
+                        note_node = cast(IrNote, node.payload)
+                        note = Note(
+                            note_node.note, note_node.duration, note_node.velocity
+                        )
+
+                        self.on_note(player, note, channel, instrument, panning)
+
+                    case Ty.CC:
+                        if player:
+                            cc_node = cast(IrControlChange, node.payload)
+                            message = MidiMessage(
+                                CONTROL_CHANGE,
+                                control=cc_node.control,
+                                value=cc_node.value,
+                            )
+
+                            player.send_message(message)
+
+                    case Ty.PROGRAM:
+                        if player:
+                            program_node = cast(IrProgramChange, node.payload)
+                            program_message = MidiMessage(
+                                PROGRAM_CHANGE,
+                                channel=channel,
+                                program=program_node.program,
+                            )
+                            bank_message = MidiMessage(
+                                CONTROL_CHANGE,
+                                channel=channel,
+                                control=BANK_CHANGE,
+                                value=program_node.bank,
+                            )
+
+                            # time is 0 to play immediately (or as close as possible)
+                            player.send_message(program_message)
+                            player.send_message(bank_message)
+
+        except KeyboardInterrupt:
+            pass
