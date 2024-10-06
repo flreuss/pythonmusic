@@ -30,6 +30,9 @@ class MidiMessage:
     def __getitem__(self, key: str) -> Any:
         return self._raw.dict()[key]
 
+    def __lt__(self, other: Self) -> bool:
+        return self.time < other.time
+
     @property
     def type(self) -> str:
         """
