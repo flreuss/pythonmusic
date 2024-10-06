@@ -521,3 +521,6 @@ class CodePlayer:
 
         except KeyboardInterrupt:
             pass
+
+
+# CONTINUE: rename PriorityItem to MidiMessage, remove first typle item, encode timing in message
