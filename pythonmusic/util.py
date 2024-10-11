@@ -53,7 +53,7 @@ def make_instrument(patch: int, bank: int = 0) -> int:
         int: A composite integer containing the patch in the lower and the
         variation bank in the upper byte.
     """
-    assert_range(patch, 1, 128)
+    assert_range(patch, 0, 128)
     assert_range(bank, 0, 128)
     return (bank << 8) | patch
 
@@ -73,6 +73,6 @@ def instrument_get_patch_bank(instrument: int) -> tuple[int, int]:
     patch = instrument & BYTE
     bank = (instrument >> 8) & BYTE
 
-    assert_range(patch, 1, 128)
+    assert_range(patch, 0, 128)
     assert_range(bank, 0, 128)
     return (patch, bank)
