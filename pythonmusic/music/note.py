@@ -63,7 +63,15 @@ class Note(PhraseElement):
             and self._articulation == other._articulation
         )
 
-    # properties here assert that pitch and dynamic are never set to an invlaid
+    def __str__(self) -> str:
+        base = f"Note({self.pitch}, {self.duration}, {self.dynamic}"
+        if self._articulation == 0:
+            return base + ")"
+
+        articulation_string = ", 0b" + str("{0:b}".format(self._articulation))
+        return base + articulation_string + ")"
+
+    # properties here assert that pitch and dynamic are never set to an invalid
     # value
     @property
     def pitch(self) -> int:
