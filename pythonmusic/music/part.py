@@ -1,4 +1,5 @@
 from .phrase import Phrase
+from .note import Note
 from pythonmusic.constants.panning import PAN_CENTER
 from pythonmusic.constants.instruments import ACOUSTIC_GRAND_PIANO
 
@@ -167,3 +168,24 @@ class Part:
     def clear(self):
         """Removes all phrases from the part."""
         self.phrases = []
+
+    def linearise(self) -> list[tuple[float, Note]]:
+        """
+        Returns a list of this part's notes flattened.
+
+        Use this function to retrieve all notes contained in this part.
+        Because Phrases are not necessarily contiguous, each note is also
+        prefixed by its start time.
+
+        The returned list is not sorted and may not be in order of start times.
+
+        Returns:
+            list[tuple[float, Note]]: All notes contained in the phrase with
+                their start_time attached
+        """
+        notes: list[tuple[float, Note]] = []
+
+        # for start_time, phrase in self.phrases:
+        #     for note in phrase.linearise()
+
+        return notes

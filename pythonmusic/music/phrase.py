@@ -128,30 +128,34 @@ class Phrase(NoteCollection):
         """
         self.notes.append(Note.rest(duration))
 
-    def linearise(self) -> list[Note]:
+    def linearise(self) -> list[tuple[float, Note]]:
         """
-        Returns a list of this phrase's notes, where chords are flattened.
+        Returns a list of this phrase's notes and their start_times, where
+        chords are flattened.
 
         Because chords are a vertical structure, the resulting total duration of
         the returned notes will be higher than the original phrase. This will
         also change the melody, because chords are replaced by their linearised
         parts.
 
+        Raises:
+            TypeError: If an object in the phrase is not a PhraseElement
+
         Returns:
             list[Note]: The linearised contents
         """
 
-        def _flatten(input: PhraseElement) -> list[Note]:
-            if isinstance(input, Note):
-                return [input]
-            elif isinstance(input, Chord):
-                output = []
-                for pe in input.notes:
-                    output += _flatten(pe)
-                return output
-            return []
+        output: list[tuple[float, Note]] = []
+        start_time = 0.0
 
-        output = []
-        for pe in self.notes:
-            output += _flatten(pe)
+        for pe in self._notes:
+            if isinstance(pe, Note):
+                output.append((start_time, pe))
+            elif isinstance(pe, Chord):
+                output += map(lambda element: (start_time, element), pe.flatten())
+            else:
+                raise TypeError("Not a Phrase Element")
+
+            start_time += pe.duration
+
         return output
