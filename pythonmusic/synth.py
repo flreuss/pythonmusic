@@ -243,9 +243,10 @@ class SynthPlayer(Player):
         elif message_type == PITCHWHEEL:
             self._pitchwheel(message)
 
+    @override
     def set_instrument(self, channel: int, instrument: int):
         """
-        Sets the instrument for the given channel.
+        Updates the instrument for a given channel.
 
         Args:
             channel (int): The channel for which to change the instrument

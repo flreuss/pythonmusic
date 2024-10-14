@@ -30,6 +30,7 @@ from pythonmusic.io.ir import (
     make_instrument_node,
 )
 from pythonmusic.io.ir.midi import irnodes_to_midi, irchannel_to_midi, irfile_to_midi
+from pythonmusic.util import instrument_get_patch_bank
 
 __all__ = ["Player", "MidiPlayer"]
 
@@ -191,6 +192,20 @@ class Player(ABC):
     @abstractmethod
     def play_message(self, message: MidiMessage): ...
 
+    def set_instrument(self, channel: int, instrument: int):
+        """
+        A method that should update the instrument for the player.
+
+        By default, this does nothing.
+
+        Args:
+            channel (int): The channel for which to change the instrument for
+            instrument (int): The new instrument
+        """
+        # keep the type checker happy
+        _ = channel
+        _ = instrument
+
     def _play_messages(
         self,
         messages: list[MidiMessage],
@@ -294,3 +309,25 @@ class MidiPlayer(Player):
             message (MidiMessage): A MidiMessage
         """
         self.sender.send_message(message)
+
+    @override
+    def set_instrument(self, channel: int, instrument: int):
+        """
+        Updates the selected instrument for a given channel.
+
+        Sends both a program and bank change to the attached midi receiver.
+
+        .. note:: Depends on the ``play_message()`` method.
+
+        Args:
+            channel (int): A channel for which to change the instrument for
+            instrument (int): The id of the new instrument
+        """
+        patch, bank = instrument_get_patch_bank(instrument)
+        program_change = MidiMessage(PROGRAM_CHANGE, channel=channel, program=patch)
+        bank_change = MidiMessage(
+            CONTROL_CHANGE, channel=channel, control=BANK_CHANGE, value=bank
+        )
+
+        self.play_message(program_change)
+        self.play_message(bank_change)
