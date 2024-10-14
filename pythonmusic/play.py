@@ -192,20 +192,6 @@ class Player(ABC):
     @abstractmethod
     def play_message(self, message: MidiMessage): ...
 
-    def set_instrument(self, channel: int, instrument: int):
-        """
-        A method that should update the instrument for the player.
-
-        By default, this does nothing.
-
-        Args:
-            channel (int): The channel for which to change the instrument for
-            instrument (int): The new instrument
-        """
-        # keep the type checker happy
-        _ = channel
-        _ = instrument
-
     def _play_messages(
         self,
         messages: list[MidiMessage],
@@ -277,6 +263,36 @@ class Player(ABC):
             if on_end:
                 on_end(False)
 
+    def set_instrument(self, channel: int, instrument: int):
+        """
+        A method that should update the instrument for the player.
+
+        By default, this does nothing.
+
+        Args:
+            channel (int): The channel for which to change the instrument for
+            instrument (int): The new instrument
+        """
+        # keep the type checker happy
+        _ = channel
+        _ = instrument
+
+    def send_cc(self, channel: int, control: int, value: int):
+        """
+        A method that should react to a control change.
+
+        By default, this does nothing.
+
+        Args:
+            channel (int): The channel for which to update the cc value
+            control (int): The control id to update
+            value (int): The control value to update with
+        """
+        # type checker is very happy and satisfied
+        _ = channel
+        _ = control
+        _ = value
+
 
 class MidiPlayer(Player):
     """
@@ -331,3 +347,19 @@ class MidiPlayer(Player):
 
         self.play_message(program_change)
         self.play_message(bank_change)
+
+    @override
+    def send_cc(self, channel: int, control: int, value: int):
+        """
+        Send a control change message to the attached midi receiver.
+
+        .. note:: Depends on the ``play_message()`` method.
+
+        Args:
+            channel (int): The channel for which to update the cc value
+            control (int): The control id to update
+            value (int): The control value to update with
+        """
+        self.play_message(
+            MidiMessage(CONTROL_CHANGE, channel=channel, control=control, value=value)
+        )

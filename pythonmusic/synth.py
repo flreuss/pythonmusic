@@ -254,3 +254,15 @@ class SynthPlayer(Player):
         """
         patch, bank = instrument_get_patch_bank(instrument)
         self._synth.set_instrument(channel, patch, bank)
+
+    @override
+    def send_cc(self, channel: int, control: int, value: int):
+        """
+        Notifies the internal synth of a control value change.
+
+        Args:
+            channel (int): The channel for which to update the cc value
+            control (int): The control id to update
+            value (int): The control value to update with
+        """
+        self._synth.set_control_change(channel, control, value)
