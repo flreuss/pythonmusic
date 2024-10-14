@@ -43,14 +43,9 @@ class ProxyPlayer:
         tempo (float): A playback tempo
     """
 
-    def __init__(self, tempo: float, instruments: list[int], pannings: list[int]):
-        self._buffer: list[MidiMessage] = []
+    def __init__(self, tempo: float):
+        self._buffer: list[IrNode] = []
         self._tempo = tempo
-        self._instruments: list[int] = instruments
-        self._pannings: list[int] = pannings
-
-    def __len__(self) -> int:
-        return self._buffer.__len__()
 
     def tempo(self) -> float:
         """
@@ -58,24 +53,18 @@ class ProxyPlayer:
         """
         return self._tempo
 
-    def buffer(self) -> list[MidiMessage]:
+    def _has_messages(self) -> bool:
         """
-        Returns the internal buffer that stores midi messages.
-        """
-        return self._buffer
-
-    def has_messages(self) -> bool:
-        """
-        Returns `True` if the proxy has buffered messages.
+        Returns `True` if the proxy has buffered nodes.
         """
         return self._buffer.__len__() != 0
 
-    def _pop_message(self) -> Optional[MidiMessage]:
+    def _pop_node(self) -> Optional[IrNode]:
         """
-        Pops the top-most (latest) Midi Message of the internal buffer.
+        Pops the top-most (latest) IrNode of the internal buffer.
 
         Returns:
-            Optional[MidiMessage]: Latest message, or `None` if empty
+            Optional[IrNode]: Latest node, or `None` if empty
         """
         if len(self._buffer) == 0:
             return None
@@ -98,9 +87,6 @@ class ProxyPlayer:
         """
         Registers a note event with the player.
 
-        The given input parameters will be converted into messages and passed to
-        the :obj:`CodePlayer's <pythonmusic.play.CodePlayer>` internal player.
-
         Args:
             note (Note): A note to play
             instrument (Optional[int]): If set, updates the instrument on the channel
@@ -111,14 +97,14 @@ class ProxyPlayer:
         timing = time()
 
         # make instrument node
-        if instrument is not None and instrument != self._instruments[channel]:
+        if instrument is not None and instrument:
             patch, bank = instrument_get_patch_bank(instrument)
             nodes.append(
                 IrNode(timing, IrNode.Type.PROGRAM, IrProgramChange(patch, bank))
             )
 
         # make panning node
-        if panning is not None and panning != self._pannings[channel]:
+        if panning is not None:
             nodes.append(
                 IrNode(timing, IrNode.Type.CC, IrControlChange(CHANNEL_PAN, panning))
             )
@@ -126,9 +112,17 @@ class ProxyPlayer:
         # make note nodes
         nodes += pe_to_ir(note, timing)
 
-        # convert to midi messages
-        self._buffer += irnodes_to_midi(nodes, self._tempo, channel)
-        print(self._buffer)
+        self._buffer += nodes
+
+
+@dataclass
+class _Channel:
+    instrument: int
+    panning: int
+    nodes: list[tuple[float, Note]]  # flat, (reversed) stack
+
+    def last(self) -> Optional[N]
+    # CONTINUE: why is this Note?!
 
 
 class CodePlayer:
@@ -190,148 +184,45 @@ class CodePlayer:
         self.play_score(Score(None, [part], tempo))
 
     def play_score(self, score: Score):
-        # timing = time()
-        ir = score_to_ir(score)
-        nodes: list[tuple[int, IrNode]] = []  # channel_nr, node
-        for channel in ir.channels:
-            channel_nr = channel.channel
-            for node in channel.nodes:
-                # node.time += timing
-                nodes.append((channel_nr, node))
+        channels: list[Optional[_Channel]] = [None] * 16
 
-        # FIXME: first few notes may be sent without a selected instrument
+        for part in score.parts:
+            notes: list[tuple[float, Note]] = part.linearise()
+            notes.sort(key=lambda element: element[0], reverse=True)  # stack
 
-        self._play_nodes(nodes, score.tempo)
+            channels[part.channel] = _Channel(part.instrument, part.panning, notes)
 
-    def _play_nodes(self, nodes: list[tuple[int, IrNode]], tempo: float):
-        """
-        Entry function to play a list of nodes with the code player.
-        """
-        # if no nodes, return early
-        if len(nodes) == 0:
-            return
+        self._play_channels(channels, score.tempo)
 
-        # init memory for instruments and pannings on all 16 channels
-        instruments: list[int] = [0] * 16  # zero represents no instrument selected
-        pannings: list[int] = [PAN_CENTER] * 16
-
-        # init proxy player
-        proxy = ProxyPlayer(tempo, instruments, pannings)
-
-        # prepare a queue and stack for messages and nodes
-        messages: list[MidiMessage] = []  # heapsort queue
-        nodes.sort(key=lambda item: item[1].time, reverse=True)  # stack
-
-        # store current time to calculate offset
+    def _play_channels(self, channels: list[Optional[_Channel]], tempo: float):
+        proxy_player = ProxyPlayer(tempo)
         start_time = time()
 
-        try:
-            while len(nodes) > 0:
-                # save current time
-                timing = time() - start_time
+        # if we have a player
+        if self._player is not None:
+            # for each channel
+            for channel_nr, channel in enumerate(channels):
+                # that exists (counted for channel_nr)
+                if channel is not None:
+                    self._player.set_instrument(channel_nr, channel.instrument)
+                    self._player.send_cc(channel_nr, CHANNEL_PAN, channel.panning)
 
-                # check for nodes that need to be handled
-                channel, node = nodes[len(nodes) - 1]
-                if timing >= node.time:
-                    # if node is ready, handle node and pop off the stack
-                    self._handle_node(
-                        proxy, channel, node, tempo, instruments, pannings
-                    )
-                    nodes.pop()
+        messages: list[MidiMessage] = []  # heap sorted
 
-                # for each message in the proxy player, push message onto the
-                # heap
-                while True:
-                    message = proxy._pop_message()
-                    if message is None:
-                        break
+        while True:
+            delta_time = time() - start_time  # seconds since start
 
-                    # insert message into heap
-                    heappush(messages, message)
+            for channel_nr, channel in enumerate(channels):
+                if channel is not None:
+                    last_node = channel.nodes[]
 
-                    # ensures that proxy is empty after this loop
 
-                # check for messages that need to be dispatched
-                # heap-sorted property: heap[0] is smallest/next element
-                if len(messages) != 0 and messages[0].time >= timing:
-                    message = heappop(messages)
-                    self._handle_message(message, channel, instruments, pannings)
 
-                sleep(0.001)  # arbitrary sleep
 
-        except KeyboardInterrupt:
-            pass
 
-    def _handle_node(
-        self,
-        proxy: ProxyPlayer,
-        channel: int,
-        node: IrNode,
-        tempo: float,
-        instruments: list[int],
-        pannings: list[int],
-    ) -> list[MidiMessage]:
-        """
-        Handles a node event. If the event is a NOTE, the users callback is
-        executed and the proxy player read.
-        """
-        # if node type is not a NOTE, handle internally and return
-        if node.type != IrNode.Type.NOTE:
-            messages = irnodes_to_midi([node], tempo, channel)
-            for m in messages:
-                t = m.type
-                if t == "control_change":
-                    print(f"CC: {m["value"]}")
-                else:
-                    print(f"PC: {m["program"]}")
-            return messages
 
-        # else, prepare and use callback
-        note_node = cast(IrNote, node.payload)
-        instrument = instruments[channel]
-        panning = pannings[channel]
-        note = Note(note_node.note, note_node.duration, note_node.velocity)
 
-        self.on_note(proxy, note, channel, instrument, panning)
 
-        return []
 
-    def _handle_message(
-        self,
-        message: MidiMessage,
-        channel: int,
-        instruments: list[int],
-        pannings: list[int],
-    ):
-        """
-        Handles a midi message event and updates instrument and panning values.
-        """
-        # update instrument (patch)
-        if message.type == PROGRAM_CHANGE:
-            print(f"MSG: Program Change to {message["program"]}")
-            _, bank = instrument_get_patch_bank(instruments[channel])
-            new_patch = message["program"]
-            instruments[channel] = make_instrument(new_patch, bank)
-            exit(123)
 
-        # update panning or instrument (bank)
-        elif message.type == CONTROL_CHANGE:
-            control = message["control"]
-
-            # update bank in instrument
-            if control == BANK_CHANGE:
-                print(f"MSG: Bank Change to {message["value"]}")
-                patch, _ = instrument_get_patch_bank(instruments[channel])
-                new_bank = message["value"]
-                instruments[channel] = make_instrument(patch, new_bank)
-
-            # update channel pan
-            elif control == CHANNEL_PAN:
-                print(f"MSG: Channel Pan to {message["value"]}")
-                pannings[channel] = message["value"]
-
-        # if a player was provided during init, send message along
-        # this should guarantee identical instrument (patch+bank) and pan
-        #   settings in player and scope
-        if self._player:
-            self._player.play_message(message)
+            sleep(0.001)
