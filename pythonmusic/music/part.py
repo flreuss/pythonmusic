@@ -185,7 +185,8 @@ class Part:
         """
         notes: list[tuple[float, Note]] = []
 
-        # for start_time, phrase in self.phrases:
-        #     for note in phrase.linearise()
+        for phrase_start_time, phrase in self.phrases:
+            for note_start_time, note in phrase.linearise():
+                notes.append((phrase_start_time + note_start_time, note))
 
         return notes
