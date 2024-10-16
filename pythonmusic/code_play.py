@@ -14,6 +14,8 @@ from pythonmusic.constants import (
     MODERATO,
     CHANNEL_PAN,
     PROGRAM_CHANGE,
+    NOTE_ON,
+    NOTE_OFF,
     BANK_CHANGE,
     CONTROL_CHANGE,
 )
@@ -53,11 +55,14 @@ class ProxyPlayer:
         """
         return self._tempo
 
-    def _has_messages(self) -> bool:
+    def is_empty(self) -> bool:
         """
-        Returns `True` if the proxy has buffered nodes.
+        Returns `True` if there are no notes in the proxy's buffer.
+
+        Returns:
+            bool: `True` if no notes in internal buffer
         """
-        return self._buffer.__len__() != 0
+        return self._buffer.__len__() == 0
 
     def _pop_node(self) -> Optional[IrNode]:
         """
@@ -94,23 +99,25 @@ class ProxyPlayer:
             panning (Optional[int]): If set, updates the panning on the channel
         """
         nodes: list[IrNode] = []
-        timing = time()
+        START_TIME = 0.0
 
         # make instrument node
         if instrument is not None and instrument:
             patch, bank = instrument_get_patch_bank(instrument)
             nodes.append(
-                IrNode(timing, IrNode.Type.PROGRAM, IrProgramChange(patch, bank))
+                IrNode(START_TIME, IrNode.Type.PROGRAM, IrProgramChange(patch, bank))
             )
 
         # make panning node
         if panning is not None:
             nodes.append(
-                IrNode(timing, IrNode.Type.CC, IrControlChange(CHANNEL_PAN, panning))
+                IrNode(
+                    START_TIME, IrNode.Type.CC, IrControlChange(CHANNEL_PAN, panning)
+                )
             )
 
         # make note nodes
-        nodes += pe_to_ir(note, timing)
+        nodes += pe_to_ir(note, START_TIME)
 
         self._buffer += nodes
 
@@ -119,10 +126,45 @@ class ProxyPlayer:
 class _Channel:
     instrument: int
     panning: int
-    nodes: list[tuple[float, Note]]  # flat, (reversed) stack
+    notes: list[tuple[float, Note]]  # flat, (reversed) stack
 
-    def last(self) -> Optional[N]
-    # CONTINUE: why is this Note?!
+    def __len__(self) -> int:
+        return self.notes.__len__()
+
+    def next(self) -> Optional[tuple[float, Note]]:
+        """
+        Returns the next node of the channel.
+
+        .. important:: Does not remove. Uses ``pop()`` instead.
+
+        Returns:
+            IrNode: The next node in the channel
+        """
+        length = len(self)
+        if length == 0:
+            return None
+        return self.notes[length - 1]
+
+    def pop(self) -> Optional[tuple[float, Note]]:
+        """
+        Pop the next node of the internal stack and returns it.
+
+        Returns:
+            IrNode: The next node in the channel
+        """
+        if len(self) == 0:
+            return None
+        else:
+            return self.notes.pop()
+
+    def is_empty(self) -> bool:
+        """
+        Returns `True` if no notes are left in the channel.
+
+        Returns:
+            bool: If no notes are left in the channel
+        """
+        return len(self) == 0
 
 
 class CodePlayer:
@@ -132,7 +174,7 @@ class CodePlayer:
         self,
         player: Optional[Player],
         on_note: Callable[
-            [ProxyPlayer, Note, int, Optional[int], int], None
+            [ProxyPlayer, Note, int, int, int], None
         ],  # channel, instrument, panning
     ):
         self.on_note = on_note
@@ -195,7 +237,6 @@ class CodePlayer:
         self._play_channels(channels, score.tempo)
 
     def _play_channels(self, channels: list[Optional[_Channel]], tempo: float):
-        proxy_player = ProxyPlayer(tempo)
         start_time = time()
 
         # if we have a player
@@ -207,22 +248,85 @@ class CodePlayer:
                     self._player.set_instrument(channel_nr, channel.instrument)
                     self._player.send_cc(channel_nr, CHANNEL_PAN, channel.panning)
 
+        # NOTE: If this library is ever updated to allow for tempo changes (or
+        # other meta and cc changes), add them here
         messages: list[MidiMessage] = []  # heap sorted
 
-        while True:
+        # calculate number of channels that have notes
+        counter = 16 - (channels.count(None))
+
+        # repeat while all channels still have messages
+        while counter != 0:
             delta_time = time() - start_time  # seconds since start
 
+            # check channels for notes that need to be played
             for channel_nr, channel in enumerate(channels):
                 if channel is not None:
-                    last_node = channel.nodes[]
+                    if not channel.is_empty():
+                        last_note = cast(tuple[float, Note], channel.next())
+                        if last_note[0] <= delta_time:
+                            for message in self._handle_note(
+                                last_note[1],
+                                channel_nr,
+                                channel.instrument,
+                                channel.panning,
+                                tempo,
+                            ):
+                                heappush(messages, message)
+                            channel.pop()
+                        else:
+                            pass  # wait until note needs to be sent
+                else:
+                    channels[channel_nr] = None
+                    counter -= 1
 
-
-
-
-
-
-
-
-
+            # check messages that need to be sent
+            #   the heap invariant guarantees that element 0 is the next message
+            #   --> we do not need to check other messages, only ever the first
+            while messages and messages[0].time <= delta_time:
+                self._handle_message(channels, heappop(messages))
 
             sleep(0.001)
+
+    def _handle_note(
+        self, note: Note, channel: int, instrument: int, panning: int, tempo: float
+    ) -> list[MidiMessage]:
+        proxy = ProxyPlayer(tempo)
+        self.on_note(proxy, note, channel, instrument, panning)
+        return irnodes_to_midi(proxy._buffer, tempo, channel)
+
+    def _handle_message(self, channels: list[Optional[_Channel]], message: MidiMessage):
+        message_type = message.type
+
+        # if message type is a program change, update channel instrument
+        if message_type == PROGRAM_CHANGE:
+            channel_nr = message["channel"]
+            channel = channels[channel_nr]
+
+            _, bank = instrument_get_patch_bank(channel.instrument)
+            program = message["program"]
+            channel.instrument = make_instrument(program, bank)
+
+        # if control change, handle if bank or panning change
+        elif message_type == CONTROL_CHANGE:
+            channel_nr = message["channel"]
+            channel = channels[channel_nr]
+            control = message["control"]
+
+            # update bank change
+            if control == BANK_CHANGE:
+                patch, _ = instrument_get_patch_bank(channel.instrument)
+                bank = message["value"]
+                channel.instrument = make_instrument(patch, bank)
+
+            # update panning change
+            elif control == CHANNEL_PAN:
+                channel.panning = message["value"]
+
+        if message_type in [NOTE_ON, NOTE_OFF]:
+            print(f"{message_type} for {message["note"]}")
+
+        # CONTINUE: Note off event come exponentioally (?) quicker after note on
+
+        if self._player is not None:
+            self._player.play_message(message)
