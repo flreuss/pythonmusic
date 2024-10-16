@@ -130,13 +130,16 @@ class Phrase(NoteCollection):
 
     def linearise(self) -> list[tuple[float, Note]]:
         """
-        Returns a list of this phrase's notes and their start_times, where
-        chords are flattened.
+        Returns a list of this phrase's notes and their start times. Flattens
+        chords.
+
+        The returned start times reflect the offset in seconds of a note's start
+        from the beginning of the phrase, not the part or higher.
 
         Because chords are a vertical structure, the resulting total duration of
         the returned notes will be higher than the original phrase. This will
         also change the melody, because chords are replaced by their linearised
-        parts.
+        parts. Use the prepended start times to play notes individually.
 
         Raises:
             TypeError: If an object in the phrase is not a PhraseElement
