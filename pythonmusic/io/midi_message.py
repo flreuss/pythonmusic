@@ -1,4 +1,4 @@
-from typing import Self, Any, cast
+from typing import Self, Any, cast, Optional
 from mido.messages import Message as RawMessage
 from mido.messages.checks import Integral
 
@@ -29,6 +29,12 @@ class MidiMessage:
 
     def __getitem__(self, key: str) -> Any:
         return self._raw.dict()[key]
+
+    def _get_item_checked(self, key: str) -> Optional[Any]:
+        try:
+            return getattr(self._raw, key)
+        except AttributeError:
+            return None
 
     def __lt__(self, other: Self) -> bool:
         return self.time < other.time
