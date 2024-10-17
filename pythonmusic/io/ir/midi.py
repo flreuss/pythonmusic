@@ -23,7 +23,7 @@ __all__ = ["irnodes_to_midi", "irchannel_to_midi", "irfile_to_midi"]
 
 
 def irnodes_to_midi(
-    nodes: list[IrNode], tempo: float, channel: int
+    nodes: list[IrNode], tempo: float, channel: int, offset: float = 0
 ) -> list[MidiMessage]:
     """
     Converts a list of ir nodes to midi messages.
@@ -42,7 +42,7 @@ def irnodes_to_midi(
     output = []
 
     for node in nodes:
-        start_time = node.time * tempo_multiplyer
+        start_time = node.time * tempo_multiplyer + offset
 
         match node.type:
             case Ty.REST:

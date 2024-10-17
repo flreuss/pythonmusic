@@ -1,6 +1,6 @@
 # TODO: move into play
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from heapq import heappop, heappush
 from typing import Callable
 from typing import Optional, cast
@@ -14,27 +14,20 @@ from pythonmusic.constants import (
     MODERATO,
     CHANNEL_PAN,
     PROGRAM_CHANGE,
-    NOTE_ON,
-    NOTE_OFF,
     BANK_CHANGE,
     CONTROL_CHANGE,
 )
-from pythonmusic.music import Note, Chord, Phrase, Part, Score, PhraseElement
+from pythonmusic.music import Note, Chord, Phrase, Part, Score
 from pythonmusic.io import MidiMessage
 from pythonmusic.io.ir import (
-    IrNote,
+    pe_to_ir,
     IrControlChange,
     IrProgramChange,
-    pe_to_ir,
-    score_to_ir,
     IrNode,
 )
 from pythonmusic.io.ir.midi import irnodes_to_midi
 
 __all__ = ["ProxyPlayer", "CodePlayer"]
-
-
-CODE_MULTIPLYER = 100_000
 
 
 class ProxyPlayer:
@@ -230,6 +223,20 @@ class CodePlayer:
 
         for part in score.parts:
             notes: list[tuple[float, Note]] = part.linearise()
+            notes = list(
+                map(
+                    lambda element: (element[0] * (60 / score.tempo), element[1]), notes
+                )
+            )
+
+            # if another part uses the same channel, this simply adds the
+            # already existing notes to the new channel so no notes a dropped
+            # however, this also means that only the last part can set
+            # instrument and panning
+            other_channel = channels[part.channel]
+            if other_channel is not None:
+                notes += other_channel.notes
+
             notes.sort(key=lambda element: element[0], reverse=True)  # stack
 
             channels[part.channel] = _Channel(part.instrument, part.panning, notes)
@@ -271,7 +278,9 @@ class CodePlayer:
                                 channel.instrument,
                                 channel.panning,
                                 tempo,
+                                delta_time,
                             ):
+                                print(message)
                                 heappush(messages, message)
                             channel.pop()
                         else:
@@ -289,11 +298,17 @@ class CodePlayer:
             sleep(0.001)
 
     def _handle_note(
-        self, note: Note, channel: int, instrument: int, panning: int, tempo: float
+        self,
+        note: Note,
+        channel: int,
+        instrument: int,
+        panning: int,
+        tempo: float,
+        current_time: float,
     ) -> list[MidiMessage]:
         proxy = ProxyPlayer(tempo)
         self.on_note(proxy, note, channel, instrument, panning)
-        return irnodes_to_midi(proxy._buffer, tempo, channel)
+        return irnodes_to_midi(proxy._buffer, tempo, channel, current_time)
 
     def _handle_message(self, channels: list[Optional[_Channel]], message: MidiMessage):
         message_type = message.type
@@ -323,10 +338,6 @@ class CodePlayer:
             elif control == CHANNEL_PAN:
                 channel.panning = message["value"]
 
-        if message_type in [NOTE_ON, NOTE_OFF]:
-            print(f"{message_type} for {message["note"]}")
-
-        # CONTINUE: Note off event come exponentioally (?) quicker after note on
-
+        # if a player exists, play the message
         if self._player is not None:
             self._player.play_message(message)
