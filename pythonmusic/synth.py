@@ -1,5 +1,5 @@
 from typing import override
-from os.path import abspath, expanduser
+from os.path import abspath, expanduser, isfile
 
 from fluidsynth import Synth as FSynth
 
@@ -29,6 +29,10 @@ class Synth:
         multiple output sources that may not exist. As long as audio can be heard,
         you can ignore these messages.
 
+
+    Raises:
+        FileNotFoundError: If the given sound font path was not found
+
     Args:
         sound_font (str): Path to a SoundFont2 compatible library
     """
@@ -36,6 +40,9 @@ class Synth:
     def __init__(self, sound_font: str):
         path = abspath(sound_font)
         path = expanduser(path)
+
+        if not isfile(path):
+            raise FileNotFoundError(f'File "{path}" not found')
 
         synth = FSynth()
         synth.start()
