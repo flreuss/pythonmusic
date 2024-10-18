@@ -369,14 +369,18 @@ class MidiPlayer(Player):
 # CONTINUE: docs for below and players.rst
 class ProxyPlayer:
     """
-    A player class that can be used to play notes inside a code player.
+    A player class that can be used to pass note events to a CodePlayer.
+
+    .. note:: You do not need to create this class yourself. Use it from inside
+        the ``on_note`` callback closure you pass during the construction of a
+        :obj:`CodePlayer <pythonmusic.play.CodePlayer>`.
 
     Args:
-        tempo (float): A playback tempo
+        tempo (float): The playback tempo
     """
 
     def __init__(self, tempo: float):
-        self._buffer: list[IrNode] = []
+        self._buffer: list[tuple[int, IrNode]] = []
         self._tempo = tempo
 
     def tempo(self) -> float:
@@ -394,7 +398,7 @@ class ProxyPlayer:
         """
         return self._buffer.__len__() == 0
 
-    def _pop_node(self) -> Optional[IrNode]:
+    def _pop_node(self) -> Optional[tuple[int, IrNode]]:
         """
         Pops the top-most (latest) IrNode of the internal buffer.
 
@@ -449,11 +453,15 @@ class ProxyPlayer:
         # make note nodes
         nodes += pe_to_ir(note, START_TIME)
 
-        self._buffer += nodes
+        self._buffer += map(lambda node: (channel, node), nodes)
 
 
 @dataclass
 class _Channel:
+    """
+    An object that represents a playback channel or instrument.
+    """
+
     instrument: int
     panning: int
     notes: list[tuple[float, Note]]  # flat, (reversed) stack
@@ -497,8 +505,21 @@ class _Channel:
         return len(self) == 0
 
 
+# TODO: this could in theory also inherit from Player (but shouldn't)
 class CodePlayer:
-    """ """
+    """
+    A player that allows you to play notes from within a Python function that
+    you define.
+
+    Optionally, you can pass a :obj:`player <pythonmusic.plat.Player>` object
+    to the initialiser to use it in your callback. For more information, see
+    the :doc:`Players <../objects/players>` page in the documentation.
+
+    Args:
+        player (Optional[Player]): A player that you can use to playback notes
+        on_note (Callable[[ProxyPlayer, Note, int, int, int], None]): A callback
+            that is used to playback notes
+    """
 
     def __init__(
         self,
@@ -530,6 +551,18 @@ class CodePlayer:
         panning: int = PAN_CENTER,
         tempo: float = MODERATO,
     ):
+        """
+        Plays a note.
+
+        `instrument` and `panning` are updated with the provided player.
+
+        Args:
+            note (Note): A note
+            channel (int): A channel to play the note on
+            instrument (int): An instrument to use when playing the note
+            panning (int): The panning to use for playback
+            tempo (float): The playback tempo in BPM
+        """
         self.play_phrase(Phrase([note]), channel, instrument, panning, tempo)
 
     def play_chord(
@@ -540,6 +573,18 @@ class CodePlayer:
         panning: int = PAN_CENTER,
         tempo: float = MODERATO,
     ):
+        """
+        Plays a chord.
+
+        `instrument` and `panning` are updated with the provided player.
+
+        Args:
+            chord (Chord): A chord
+            channel (int): A channel to play the note on
+            instrument (int): An instrument to use when playing the note
+            panning (int): The panning to use for playback
+            tempo (float): The playback tempo in BPM
+        """
         self.play_phrase(Phrase([chord]), channel, instrument, panning, tempo)
 
     def play_phrase(
@@ -550,12 +595,42 @@ class CodePlayer:
         panning: int = PAN_CENTER,
         tempo: float = MODERATO,
     ):
+        """
+        Plays a phrase.
+
+        `instrument` and `panning` are updated with the provided player.
+
+        Args:
+            phrase (Phrase): A phrase
+            channel (int): A channel to play the note on
+            instrument (int): An instrument to use when playing the note
+            panning (int): The panning to use for playback
+            tempo (float): The playback tempo in BPM
+        """
         self.play_part(Part(None, instrument, [phrase], channel, panning), tempo)
 
     def play_part(self, part: Part, tempo: float = MODERATO):
+        """
+        Plays a part.
+
+        The part's instrument and panning are updated in the internal player.
+
+        Args:
+            part (Part): A part
+            tempo (float): The playback tempo in BPM
+        """
         self.play_score(Score(None, [part], tempo))
 
     def play_score(self, score: Score):
+        """
+        Plays a score.
+
+        The intrument and panning settings of the internal player (if given)
+        are updated to the score part's settings.
+
+        Args:
+            score (Score): A score
+        """
         channels: list[Optional[_Channel]] = [None] * 16
 
         for part in score.parts:
@@ -644,15 +719,31 @@ class CodePlayer:
     ) -> list[MidiMessage]:
         proxy = ProxyPlayer(tempo)
         self.on_note(proxy, note, channel, instrument, panning)
-        return irnodes_to_midi(proxy._buffer, tempo, channel, current_time)
+        nodes = []
+
+        # bit inefficient, but this allows the user to update or reroute channels
+        for item in proxy._buffer:
+            node_channel, node = item
+            nodes += irnodes_to_midi([node], tempo, node_channel, current_time)
+
+        return nodes
+
+    @staticmethod
+    def _get_init_channel(channels: list[Optional[_Channel]], index: int) -> _Channel:
+        if channels[index] is None:
+            channels[index] = _Channel(ACOUSTIC_GRAND_PIANO, PAN_CENTER, [])
+
+        # SAFETY: we guarantee above that a channel at index exists
+        return cast(_Channel, channels[index])
 
     def _handle_message(self, channels: list[Optional[_Channel]], message: MidiMessage):
         message_type = message.type
+        print(message["channel"])
 
         # if message type is a program change, update channel instrument
         if message_type == PROGRAM_CHANGE:
             channel_nr = message["channel"]
-            channel = channels[channel_nr]
+            channel = self._get_init_channel(channels, channel_nr)
 
             _, bank = instrument_get_patch_bank(channel.instrument)
             program = message["program"]
