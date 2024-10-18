@@ -160,3 +160,38 @@ Implement a custom player that can playback scores and other musical objects.
 
     player = PrintPlayer()
     player.play_phrase(Phrase([Note(C4, EN), Note(E4, QN)]), ADAGIO)
+
+
+Use a :obj:`CodePlayer <pythonmusic.play.CodePlayer>` to modify notes before
+they are played.
+
+.. code-block:: python
+
+    from time import sleep
+    from pythonmusic import *
+
+    SOUNF_FONT_PATH = "../resources/gm.sf2"
+
+
+    # define a callback for notes; the parameters must match as shows below
+    def note_callback(
+        proxy: ProxyPlayer,
+        note: Note,
+        channel: int,
+        instrument: int,
+        panning: int,
+    ):
+        proxy.play_note(note, channel, instrument, panning)
+
+
+    # create any player or pass `None` instead
+    synth = SynthPlayer(SOUNF_FONT_PATH)
+    player = CodePlayer(synth, note_callback)
+
+    # create score here
+    score = Score("MyScore")
+    player.play_score(score)
+
+    # to prevent cutoff sounds on midi synthesizers, add a delay after playback
+    # finishes
+    sleep(1)
