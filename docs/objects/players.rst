@@ -11,8 +11,8 @@ Players are objects used to playback
 PythonMusic provides two player implementations by default. 
 
 
-Callbacks
----------
+Message Callbacks
+-----------------
 
 All players feature functions to play musical objects. These functions allow for callbacks that react to certain stages 
 of the playback.
@@ -91,6 +91,22 @@ If you know the name of the midi receiver, you can simply pass that as a string 
     player = MidiPlayer(receiver)
     player.play_score(score)
 
+
+When using a :obj:`MidiPlayer <pythonmusic.play.MidiPlayer>`, you may want to add a small delay after your
+playback finishes. A note may still continue to play (fade out, or similar) on the synthesizer even after 
+the note-off event has been sent. If Python terminates before the sound finishes, you may experience a cut 
+off on your midi receiver. 
+
+.. code-block:: python
+
+   from pythonmusic import *
+   from time import sleep
+
+   ...
+
+   player = MidiPlayer("Some Piano")
+   player.play_score(score)
+   sleep(1)
 
 Reference
 .........
@@ -257,3 +273,25 @@ of that channel, instead.
 
       player = CodePlayer(synth, my_callback)
       player.play_score(...)
+
+
+Reference
+.........
+
+.. autoclass:: pythonmusic.play.CodePlayer
+   :no-index:
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ProxyPlayer
+...........
+
+A proxy player is an object that stores note events you pass to it during your callback. Generally, you do not need
+to create this class yourself, an instance will be passed to your playback function.
+
+.. autoclass:: pythonmusic.play.ProxyPlayer
+   :no-index:
+   :members:
+   :undoc-members:
+   :show-inheritance:
