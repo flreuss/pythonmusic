@@ -1,4 +1,4 @@
-from typing import cast, Any, Self
+from typing import cast, Any, Self, Optional
 
 from .note import Note
 from .phrase_element import PhraseElement
@@ -115,7 +115,7 @@ class Chord(PhraseElement, NoteCollection):
         intervals: list[int],
         duration: float,
         dynamic: int = MF,
-        limit: int | None = None,
+        limit: Optional[int] = None,
     ) -> Self:
         """Creates a chord from given intervals over a root note.
 
@@ -124,7 +124,7 @@ class Chord(PhraseElement, NoteCollection):
             intervals (list[int]) A list of intervals over the root note
             duration (float): The duration of the chord
             dynamic (int): The dynamic of the chord
-            limit (int | None): The upperlimit of the chord. If given, repeats
+            limit (Optional[int]): The upperlimit of the chord. If given, repeats
                 intervale over the root note until limit is reached, otherwise,
                 repeats only once. Defaults to `None`
 

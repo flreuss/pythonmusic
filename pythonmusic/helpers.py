@@ -1,4 +1,4 @@
-from typing import Any, TypeVar, Callable
+from typing import Any, Callable, Optional
 from math import floor
 
 from pythonmusic.io import get_midi_senders, get_midi_receivers
@@ -13,7 +13,7 @@ __all__ = [
 ]
 
 
-def user_list_prompt(choices: list[Any]) -> Any | None:
+def user_list_prompt(choices: list[Any]) -> Optional[Any]:
     """
     Prompts the user to choose an option from a given number of choices.
 
@@ -35,7 +35,7 @@ def user_list_prompt(choices: list[Any]) -> Any | None:
         return choices[0]
 
     # repeat user prompt until choice is made
-    choice: Any | None = None
+    choice: Optional[Any] = None
     while choice is None:
         # This leverages Python's principle of asking for forgiveness instead of
         # permission. Instead of checking if user input is valid, we try to
@@ -67,13 +67,13 @@ def user_list_prompt(choices: list[Any]) -> Any | None:
     return choice
 
 
-def user_receiver_prompt() -> str | None:
+def user_receiver_prompt() -> Optional[str]:
     """
     Retrieves open midi receivers and asks user to choose one if more than one
     option is available.
 
     Returns:
-        The user's choice of receiver. `None` if no ports are available.
+        Optional[str]: The user's choice of receiver. `None` if no ports are available.
     """
 
     receivers = get_midi_receivers()
@@ -81,13 +81,13 @@ def user_receiver_prompt() -> str | None:
     return receiver_name
 
 
-def user_sender_propt() -> str | None:
+def user_sender_propt() -> Optional[str]:
     """
     Retrieves open midi senders and asks user to choose one if more than one
     option is available.
 
     Returns:
-        The user's choice of sender. `None` if no ports are available.
+        Optional[str]: The user's choice of sender. `None` if no ports are available.
     """
 
     senders = get_midi_senders()
@@ -149,7 +149,7 @@ def map_scale(
     min_result: int,
     max_result: int,
     scale: list[int],
-    root: int | None = None,
+    root: Optional[int] = None,
 ) -> int:
     """
     Maps a given value from on range to another on the given scale.
@@ -166,7 +166,7 @@ def map_scale(
         min_result (int): Defines upper bound of result range
         scale (list[int]): A list of integers that represent interval offsets
             from a root
-        root (int | None): A base pitch that represent the base offset. Defaults
+        root (Optional[int]): A base pitch that represent the base offset. Defaults
             to `min_value`
 
     Returns:

@@ -6,7 +6,7 @@ from .midi_io import *
 # does not import ir
 
 # Module functions
-from typing import cast
+from typing import cast, Optional
 
 from mido import get_input_names  # type: ignore [reportAttributeAccessIssue]
 from mido import get_output_names  # type: ignore [reportAttributeAccessIssue]s
@@ -60,7 +60,7 @@ def get_midi_senders() -> list[str]:
     return cast(list[str], get_input_names())
 
 
-def _find_pattern(input: list[str], pattern: str) -> str | None:
+def _find_pattern(input: list[str], pattern: str) -> Optional[str]:
     # if list is empty, return None
     if len(input) == 0:
         return None
@@ -74,7 +74,7 @@ def _find_pattern(input: list[str], pattern: str) -> str | None:
     return None
 
 
-def find_midi_receiver(name: str) -> str | None:
+def find_midi_receiver(name: str) -> Optional[str]:
     """
     Searches the output of `get_midi_receivers` for the first item that contains
     or equals to the given string.
@@ -87,13 +87,13 @@ def find_midi_receiver(name: str) -> str | None:
         name (str): A device name to search for
 
     Returns:
-        str | None: The prot name that contains the given name, or `None` if
+        Optional[str]: The prot name that contains the given name, or `None` if
             none are found
     """
     return _find_pattern(get_midi_receivers(), name)
 
 
-def find_midi_sender(name: str) -> str | None:
+def find_midi_sender(name: str) -> Optional[str]:
     """
     Searches the output of `get_midi_senders` for the first item that contains or
     equals to the given string.
@@ -106,7 +106,7 @@ def find_midi_sender(name: str) -> str | None:
         name (str): A device name to search for
 
     Returns:
-        str | None: The port name that contains the given name, or `None` if
+        Optional[str]: The port name that contains the given name, or `None` if
             none are found
     """
     return _find_pattern(get_midi_senders(), name)

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pythonmusic.constants.tempo import MODERATO
 from pythonmusic.music.part import Part
 
@@ -11,17 +13,17 @@ class Score:
     A score represents a music piece.
 
     Args:
-        title (str | None): The title of the score. Defaults `None`
+        title (Optional[str]): The title of the score. Defaults `None`
         parts (list[Part]): A list of parts. Can be added later
     """
 
     def __init__(
         self,
-        title: str | None,
+        title: Optional[str],
         parts: list[Part] = [],
         tempo: float = MODERATO,
     ) -> None:
-        self.title: str | None = title
+        self.title: Optional[str] = title
         self.parts: list[Part] = []
         self.tempo: float = tempo
 

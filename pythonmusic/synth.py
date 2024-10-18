@@ -1,4 +1,4 @@
-from typing import override
+from typing import override, Optional
 from os.path import abspath, expanduser, isfile
 
 from fluidsynth import Synth as FSynth
@@ -146,10 +146,10 @@ class Synth:
     # Effects
     def set_reverb(
         self,
-        size: float | None = None,
-        damping: float | None = None,
-        width: float | None = None,
-        level: float | None = None,
+        size: Optional[float] = None,
+        damping: Optional[float] = None,
+        width: Optional[float] = None,
+        level: Optional[float] = None,
     ):
         """
         Updates parameters of the synth's reverb.
@@ -158,10 +158,10 @@ class Synth:
         from `0.0` to `100.0`.
 
         Args:
-            size (float): The size of the reverb in range from 0.0 to 1.0
-            damping (float): The damping of the reverb in range from 0.0 to 1.0
-            width (float): The width of the reverb in range from 0.0 to 100.0
-            level (float): The level of the reverb in range from 0.0 to 1.0
+            size (Optional[float]): The size of the reverb in range from 0.0 to 1.0
+            damping (Optional[float]): The damping of the reverb in range from 0.0 to 1.0
+            width (Optional[float]): The width of the reverb in range from 0.0 to 100.0
+            level (Optional[float]): The level of the reverb in range from 0.0 to 1.0
         """
         self._synth.set_reverb(
             size or -1.0, damping or -1.0, width or -1.0, level or -1.0
