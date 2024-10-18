@@ -188,7 +188,7 @@ method.
     player.play_phrase(Phrase([Note(C4, EN), Note(E4, QN)]), ADAGIO)
 
 
-Optionally, you can also override the :meth:`set_instrument <pythonmusic.play.Player>.set_instrument` and 
+Optionally, you can also override the :meth:`set_instrument <pythonmusic.play.Player.set_instrument>` and 
 :meth:`send_cc <pythonmusic.play.Player.send_cc>` methods to add more functionality.
 
 Reference
