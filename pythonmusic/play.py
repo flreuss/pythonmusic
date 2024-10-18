@@ -752,7 +752,7 @@ class CodePlayer:
         # if control change, handle if bank or panning change
         elif message_type == CONTROL_CHANGE:
             channel_nr = message["channel"]
-            channel = channels[channel_nr]
+            channel = self._get_init_channel(channels, channel_nr)
             control = message["control"]
 
             # update bank change
