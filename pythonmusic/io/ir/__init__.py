@@ -2,6 +2,7 @@ from abc import ABC
 from dataclasses import dataclass
 from enum import Enum
 from math import floor
+from typing import Optional
 
 from pythonmusic.music import PhraseElement, Note, Chord, Phrase, Part, Score
 from pythonmusic.constants import CHANNEL_PAN
@@ -129,7 +130,7 @@ class IrChannel:
 
     __slots__ = ("title", "channel", "nodes")
 
-    title: str | None
+    title: Optional[str]
     channel: int
     nodes: list[IrNode]
 
@@ -140,7 +141,7 @@ class IrFile:
 
     __slots__ = ("title", "channels")
 
-    title: str | None
+    title: Optional[str]
     channels: list[IrChannel]
 
 

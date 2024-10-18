@@ -4,7 +4,7 @@ from .note import Note
 from abc import ABC
 from abc import abstractmethod
 from functools import reduce
-from typing import Sequence, cast
+from typing import Sequence, cast, Optional
 
 __all__ = ["NoteCollection"]
 
@@ -146,13 +146,13 @@ class NoteCollection(ABC):
         """Removes all notes from the phrase."""
         self.notes.clear()
 
-    def min_pitch(self) -> int | None:
+    def min_pitch(self) -> Optional[int]:
         """
         Returns the smallest pitch in the phrase or `None` if empty.
         Ignores rests.
 
         Returns:
-            int | None: The minimum pitch or `None` if collection is empty
+            Optional[int]: The minimum pitch or `None` if collection is empty
         """
         if len(self.notes) == 0:
             return None
@@ -167,13 +167,13 @@ class NoteCollection(ABC):
             INVALID_PITCH,
         )
 
-    def max_pitch(self) -> int | None:
+    def max_pitch(self) -> Optional[int]:
         """
         Returns the highest pitch in the phrase or `None` if empty.
         Ignores rests.
 
         Returns:
-            int | None: The highest pitch in the phrase of `None` if empty
+            Optional[int]: The highest pitch in the phrase of `None` if empty
         """
         if len(self.notes) == 0:
             return None
@@ -186,12 +186,12 @@ class NoteCollection(ABC):
             0,
         )
 
-    def min_duration(self) -> float | None:
+    def min_duration(self) -> Optional[float]:
         """
         Returns the smallest duration in the phrase or `None` if empty.
 
         Returns:
-            float | None: The smallest duration in the phrase of `None` if empty
+            Optional[float]: The smallest duration in the phrase of `None` if empty
         """
         return (
             min(map(lambda note: note.duration, self.notes))
@@ -199,12 +199,12 @@ class NoteCollection(ABC):
             else None
         )
 
-    def max_duration(self) -> float | None:
+    def max_duration(self) -> Optional[float]:
         """
         Returns the highest duration in the phrase or `None` if empty.
 
         Returns:
-            float | None: The highest duration in the phrase of `None` if empty
+            Optional[float]: The highest duration in the phrase of `None` if empty
         """
         return (
             max(map(lambda note: note.duration, self.notes))
@@ -212,13 +212,13 @@ class NoteCollection(ABC):
             else None
         )
 
-    def min_dynamic(self) -> int | None:
+    def min_dynamic(self) -> Optional[int]:
         """
         Returns the smallest dynamic in the phrase or `None` if empty.
         Ignores rests.
 
         Returns:
-            int | None: The smallest dynamic in the phrase of `None` if empty
+            Optional[int]: The smallest dynamic in the phrase of `None` if empty
         """
         if len(self.notes) == 0:
             return None
@@ -233,13 +233,13 @@ class NoteCollection(ABC):
             INVALID_DYNAMIC,
         )
 
-    def max_dynamic(self) -> int | None:
+    def max_dynamic(self) -> Optional[int]:
         """
         Returns the highest dynamic in the phrase or `None` if empty.
         Ignores rests.
 
         Returns:
-            int | None: The highest dynamic in the phrase of `None` if empty
+            Optional[int]: The highest dynamic in the phrase of `None` if empty
         """
         if len(self.notes) == 0:
             return None
