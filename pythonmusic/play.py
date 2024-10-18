@@ -383,6 +383,9 @@ class ProxyPlayer:
         self._buffer: list[tuple[int, IrNode]] = []
         self._tempo = tempo
 
+    def __len__(self) -> int:
+        return len(self._buffer)
+
     def tempo(self) -> float:
         """
         Returns the player's tempo.
@@ -675,7 +678,7 @@ class CodePlayer:
         counter = 16 - (channels.count(None))
 
         # repeat while all channels still have messages
-        while counter != 0:
+        while counter != 0 or len(messages) != 0:
             delta_time = time() - start_time  # seconds since start
 
             # check channels for notes that need to be played
@@ -696,9 +699,9 @@ class CodePlayer:
                             channel.pop()
                         else:
                             pass  # wait until note needs to be sent
-                else:
-                    channels[channel_nr] = None
-                    counter -= 1
+                    else:
+                        channels[channel_nr] = None
+                        counter -= 1
 
             # check messages that need to be sent
             #   the heap invariant guarantees that element 0 is the next message
@@ -706,6 +709,8 @@ class CodePlayer:
             while messages and messages[0].time <= delta_time:
                 self._handle_message(channels, heappop(messages))
 
+            # to prevent the thread from continueously spinning, signal OS that
+            # thread can be parked and resources saved
             sleep(0.001)
 
     def _handle_note(
