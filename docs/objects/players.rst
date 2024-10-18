@@ -183,3 +183,77 @@ Reference
    :members:
    :undoc-members:
    :show-inheritance:
+
+
+CodePlayer
+----------
+
+The :obj:`CodePlayer <pythonmusic.play.CodePlayer>` is a different kind of player. It allows you to specify a playback function 
+that reacts to a note event as opposed to :obj:`MidiMessages <pythonmusic.io.MidiMessage>` for normal players.
+
+When creating a new :obj:`CodePlayer <pythonmusic.play.CodePlayer>` object, you can optionally pass an already initialised 
+:obj:`Player <pythonmusic.play.Player>` (sub-) class to enable playback with that player during your callback. The callback 
+needs to be defined with certain parameters. See below.
+
+.. code-block:: python
+
+    from pythonmusic import *
+
+
+    def my_callback(
+        proxy: ProxyPlayer,
+        note: Note,
+        channel: int,
+        instrument: int,
+        panning: int,
+    ):
+        print(f"{note} on channel {channel}, instrument {instrument}, panning {panning}")
+        proxy.play_note(note)
+
+
+    receiver = find_midi_receiver("Digital Piano")
+    if receiver is None:
+        print("Device not found")
+        exit(1)
+
+    midi_player = MidiPlayer(receiver)
+    code_player = CodePlayer(midi_player, my_callback)
+
+
+If you don't want to use an internal player, pass an explicit ``None`` instead of the player.
+
+.. code-block:: python
+
+   code_player = CodePlayer(None, my_callback)
+   
+
+Inside your callback, you can can update a channel's instrument or panning by passing a value to the 
+corresponding parameter of the :meth:`play_code() <pythonmusic.play.ProxyPlayer.play_node>` method. 
+These changes will be saved during the playback, but generally revert back to default values when a 
+new play-session starts. 
+You can also reroute a note to a different channel. This will update the instrument and panning
+of that channel, instead.
+
+.. important:: You can access other players from within your callback. However, keep in mind that normal players will block the 
+   thread during playback and wait for a given note to finish.
+   This means that you would not be able to playback multiple notes at the same time. Use the provided
+   :obj:`ProxyPlayer <pythonmusic.play.ProxyPlayer>`, instead.
+
+   .. code-block:: python
+
+      synth = SynthPlayer("./resources/gm.sf2")
+
+      def my_callback(
+        proxy: ProxyPlayer, 
+        note: Note, 
+        channel: int, 
+        instrument: int,
+        panning: int
+      ):
+        # do this
+        proxy.play_note(note)
+        # not this
+        synth.play_note(note)
+
+      player = CodePlayer(synth, my_callback)
+      player.play_score(...)

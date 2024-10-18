@@ -385,7 +385,7 @@ class ProxyPlayer:
 
     def tempo(self) -> float:
         """
-        Returns the players tempo.
+        Returns the player's tempo.
         """
         return self._tempo
 
@@ -738,7 +738,6 @@ class CodePlayer:
 
     def _handle_message(self, channels: list[Optional[_Channel]], message: MidiMessage):
         message_type = message.type
-        print(message["channel"])
 
         # if message type is a program change, update channel instrument
         if message_type == PROGRAM_CHANGE:
