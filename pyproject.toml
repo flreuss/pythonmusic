@@ -5,7 +5,14 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pythonmusic"
 version = "0.0.1"
-dependencies = ["mido", "python-osc", "python-rtmidi", "pyfluidsynth"]
+dependencies = [
+  "mido",
+  "python-osc",
+  "python-rtmidi",
+  "pyfluidsynth",
+  "pyaudio",
+  "wave",
+]
 authors = [
   { name = "Darius Löschner", email = "darius.loeschner@uni-potsdam.de" },
   { name = "Florian Reuß", email = "florian.reuss.1@uni-potsdam.de" },
