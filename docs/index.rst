@@ -87,6 +87,7 @@ Source code is available on this project's `repository <https://gitup.uni-potsda
    objects/scores
    objects/players
    objects/midi_io
+   objects/sample
 
 .. toctree::
    :caption: Reference / API
@@ -100,6 +101,7 @@ Source code is available on this project's `repository <https://gitup.uni-potsda
    reference/synth
    reference/helpers
    reference/util
+   reference/sample
 
 .. toctree::
    :caption: Appendix

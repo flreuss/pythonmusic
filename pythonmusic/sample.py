@@ -158,7 +158,7 @@ class AudioSample:
     Contains an external audio file that can be played back.
 
     Currently supported formates are:
-    - *.wav
+      - .wav
     """
 
     def __init__(self, file_path: str):
@@ -199,7 +199,7 @@ class AudioSample:
         """
         Starts playback of the loaded audio file.
 
-        .. imporant:: When using non-blocking playback, you may need to manually
+        .. important:: When using non-blocking playback, you may need to manually
             reset the audio sample. Call
             :meth:`stop() <pythonmusic.sample.AudioSample.stop>` to do so.
 
