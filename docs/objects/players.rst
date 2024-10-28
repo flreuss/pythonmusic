@@ -295,3 +295,17 @@ to create this class yourself, an instance will be passed to your playback funct
    :members:
    :undoc-members:
    :show-inheritance:
+
+
+SamplePlayer
+------------
+
+The :obj:`SamplePlayer <pythonmusic.play.SamplePlayer>` is a player implementation around a
+:obj:`AudioSampler <pythonmusic.sample.AudioSampler>`. For more information see the 
+:doc:`Sample <../objects/sample>` section.
+
+.. autoclass:: pythonmusic.play.SamplePlayer
+   :no-index:
+   :members:
+   :undoc-members:
+   :show-inheritance:
