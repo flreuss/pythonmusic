@@ -16,7 +16,10 @@ from pythonmusic.util import assert_range
 
 __all__ = ["AudioSample", "AudioSampler"]
 
-CHUNK_SIZE: int = 1024
+WAVE_CHUNK_SIZE: int = 1024
+"""
+Size of chunk in read audio file
+"""
 
 
 class UnsupportedAudioFormatError(Exception):
@@ -60,10 +63,7 @@ class _Sample(ABC):
     def set_volume(self, value: int): ...
 
     @abstractmethod
-    def set_falloff(self, value: float): ...
-
-    @abstractmethod
-    def get_falloff(self) -> float: ...
+    def signal_end(self): ...
 
 
 class _WaveSample(_Sample):
@@ -74,6 +74,13 @@ class _WaveSample(_Sample):
     ):
         self.path = Path
         self.wave_file = wave.open(str(path.absolute()), "rb")
+        self.multiplyer = 1.0
+        self.falloff: Optional[int] = None
+
+        # stored to prevent unnecessary lookups
+        self.bits = self.wave_file.getsampwidth() * 8
+        self.frame_rate = self.wave_file.getframerate()
+
         self._stream = port_audio.open(
             format=port_audio.get_format_from_width(self.wave_file.getsampwidth()),
             channels=self.wave_file.getnchannels(),
@@ -81,9 +88,6 @@ class _WaveSample(_Sample):
             output=True,
             stream_callback=self.callback,
         )
-        self.bits = self.wave_file.getsampwidth() * 8
-        self.multiplyer = 1.0
-        self.falloff = -1.0
 
         # prevent stream from starting immediately
         self._stream.stop_stream()
@@ -114,14 +118,16 @@ class _WaveSample(_Sample):
 
         # multiply to change volume
         multiplyer = self.multiplyer
-        if self.falloff > 0.0:
-            fr = float(self.wave_file.getframerate())
-            t = float(CHUNK_SIZE) / fr
-            step = t / self.multiplyer
-            self.falloff -= t
+        if self.falloff is not None:
+            if self.falloff <= 0:
+                self.falloff = None
+                self.wave_file.rewind()
+                return bytes(), paContinue
 
-            multiplyer *= step
-            multiplyer = min(1, max(0, multiplyer))
+            ratio = self.falloff / self.frame_rate
+            multiplyer *= ratio
+            self.falloff -= frame_count
+
         np_array = np_array * multiplyer
 
         # clip range to avoid over-/underflow
@@ -141,11 +147,9 @@ class _WaveSample(_Sample):
     def set_volume(self, value: int):
         self.multiplyer = float(value) / 127.0
 
-    def set_falloff(self, value: float):
-        self.falloff = value
-
-    def get_falloff(self) -> float:
-        return self.falloff
+    def signal_end(self):
+        # yes, this is totally random
+        self.falloff = 15_000
 
 
 # An individual sound file that is loaded and stored inside the audio sampler
@@ -238,9 +242,18 @@ class AudioSample:
         """
         Pauses playback. Can be resumed later.
 
-        To reset the sample, call the stop method.
+        To reset the sample, call the rewind method.
         """
         self._sample.pause()
+
+    def falloff(self):
+        """
+        Stops playback of the loaded audio file. Allows for a short fall off to
+        prevent cut off.
+
+        This does not reset the sample.
+        """
+        self._sample.signal_end()
 
     def stop(self):
         """
@@ -269,20 +282,6 @@ class AudioSample:
         """
         assert_range(value, 0, 127)
         self._sample.set_volume(value)
-
-    def set_falloff(self, time: float):
-        """
-        Phases out the currently playing sound.
-
-        Use this to avoid an audible cut-off when stopping notes.
-        """
-        self._sample.set_falloff(time)
-
-    def get_falloff(self) -> float:
-        """
-        Returns the remaining falloff.
-        """
-        return self._sample.get_falloff()
 
 
 # A sampler that stores audio samples and plays them back as required by
@@ -358,11 +357,10 @@ class AudioSampler:
         sample = self._samples[note]
         if sample is not None:
             sample.stop()
-            sample.set_falloff(-1.0)
             sample.set_volume(velocity)
             sample.play(block=False)
 
     def note_off(self, note: int):
         sample = self._samples[note]
         if sample is not None:
-            sample.set_falloff(0.5)
+            sample.falloff()
