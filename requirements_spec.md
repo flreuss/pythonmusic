@@ -25,7 +25,7 @@ Der Nutzende kann unter Nutzung der Bibliothek...
 Das System sollte...
 
 - [x] [PlayCode](https://jythonmusic.me/play-code/) {5}
-- [ ] [AudioSample](https://jythonmusic.me/api/audiosample/) {4}
+- [x] [AudioSample](https://jythonmusic.me/api/audiosample/) {4}
 - [ ] [MidiSequence](https://jythonmusic.me/api/midisequence/) {4}
 - [ ] [ModFunctions](https://jythonmusic.me/api/music-library-functions/mod-functions/) ist nicht das meiste davon recht simpel, funktional selbst zu implementieren? {3}
     - check functions for useful material that is not easily implemented
