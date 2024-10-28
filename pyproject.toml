@@ -11,6 +11,7 @@ dependencies = [
   "python-rtmidi",
   "pyfluidsynth",
   "pyaudio",
+  "numpy",
   "wave",
 ]
 authors = [
