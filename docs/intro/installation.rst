@@ -21,18 +21,18 @@ this automatically.
 Additional Windows Dependencies
 ...............................
 
-.. important:: This step must be completed **before** installing PythonMusic. Your installation may break without the listed 
-    dependency. If you have installed ``python-rtmidi`` first, you may need to remove and reinstall it before continuing.
+.. important:: This step must be completed **before** installing PythonMusic. If you have
+   installed ``python-rtmidi`` first, you may need to remove and reinstall it after this step before continuing.
 
 PythonMusic on Windows requires 
 `Microsoft Build Tools for Visual Studio 2022 <https://visualstudio.microsoft.com/downloads/?q=build+tools>`_.
-After downloading and running the installer, select the *Desktop development with C++* package in the workloads section (selected by
-default), and click install.
+After downloading and running the installer, select the *Desktop development with C++* package in the workloads section To minimise the
+needed disk space for installation, you can deselect all optional features in the side bar on the right side **except the current 
+version of the MSVC build tools and Windows SDK**. Click on install.
 
 .. note::
   If you have previously installed Visual Studio or the build tools itself, make sure that the *Desktop development with C++* workload is
-  installed. Visual Studio can be installed instead of the build tools, which only provide VS' functionalities without the full 
-  application suite.
+  installed. Visual Studio can be used instead of the build tools, as long as the same dependencies are installed.
 
 
 Synth
