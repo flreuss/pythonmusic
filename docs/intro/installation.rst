@@ -21,21 +21,18 @@ this automatically.
 Additional Windows Dependencies
 ...............................
 
-.. important:: This step must be completed **before** installing PythonMusic. Your installation may break without it.
+.. important:: This step must be completed **before** installing PythonMusic. Your installation may break without the listed 
+    dependency. If you have installed ``python-rtmidi`` first, you may need to remove and reinstall it before continuing.
 
-PythonMusic requires certain `DLLs <https://en.wikipedia.org/wiki/Dynamic-link_library>`_ to be present during the installation process
-which are not installed by default. Download and install the `Visual C++ Redistributable for Visual Studio 2015 <https://www.microsoft.com/en-us/download/details.aspx?id=48145>`_ (32-bit) *before* continuing this guide. Restart your system.
+PythonMusic on Windows requires 
+`Microsoft Build Tools for Visual Studio 2022 <https://visualstudio.microsoft.com/downloads/?q=build+tools>`_.
+After downloading and running the installer, select the *Desktop development with C++* package in the workloads section (selected by
+default), and click install.
 
-If you installed PythonMusic first, you may need to remove the ``python-rtmidi`` package and reinstall PythonMusic afterwards. 
-
-.. code-block:: bash
-
-   pip uninstall python-rtmidi
-
-If you use an IDE, remove the ``python-rtmidi`` package. If this is not listed, remove the ``pythonmusic`` package instead, and reinstall.
-
-Should you still encounter the "DLL not found" error, try installing the 64-bit version of the Redistributable as well. Repeat the 
-reinstallation of ``python-rtmidi``.
+.. note::
+  If you have previously installed Visual Studio or the build tools itself, make sure that the *Desktop development with C++* workload is
+  installed. Visual Studio can be installed instead of the build tools, which only provide VS' functionalities without the full 
+  application suite.
 
 
 Synth
