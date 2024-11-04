@@ -5,7 +5,7 @@ PythonMusic is an open-source music library written in pure Python that enables 
 
 
 ## Installation
-Before installing PythonMusic, make sure that a Python version `>=3.10` is installed on your machine. For this, open a terminal or command prompt (Windows) and type the command below.
+Before installing PythonMusic, make sure that a Python version `>=3.11` is installed on your machine. For this, open a terminal or command prompt (Windows) and type the command below.
 
 ```bash
 python --version
@@ -53,7 +53,7 @@ pip install git+https://gitup.uni-potsdam.de/music-with-pc/pythonmusic
 > Or in PyCharm:
 > 1. clone this git repo somewhere on your system
 > 2. create a new project with venv in PyCharm ("Project venv")
->   - make sure that you create the project with a Python version `>=3.10.x`
+>   - make sure that you create the project with a Python version `>=3.11.x`
 >   - you may need to change the default selected "Python version"
 > 3. then do either of the following:
 >   - Option A

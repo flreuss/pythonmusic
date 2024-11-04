@@ -21,13 +21,12 @@ this automatically.
 Additional Windows Dependencies
 ...............................
 
-.. important:: This step must be completed **before** installing PythonMusic. If you have
-   installed ``python-rtmidi`` first, you may need to remove and reinstall it after this step before continuing.
+.. important:: This step must be completed **before** installing PythonMusic, otherwise you may need to remove and reinstall ``python-rtmidi`` after this step before continuing.
 
 PythonMusic on Windows requires 
 `Microsoft Build Tools for Visual Studio 2022 <https://visualstudio.microsoft.com/downloads/?q=build+tools>`_.
-After downloading and running the installer, select the *Desktop development with C++* package in the workloads section To minimise the
-needed disk space for installation, you can deselect all optional features in the side bar on the right side **except the current 
+After downloading and running the installer, select the *Desktop development with C++* package in the workloads section. To minimise the
+disk space needed for installation, you can deselect all optional features in the side bar on the right side **except the current 
 version of the MSVC build tools and Windows SDK**. Click on install.
 
 .. note::
@@ -41,7 +40,8 @@ Synth
 Optionally, this library supports on-device playback through `FluidSynth <https://www.fluidsynth.org/>`_ and a GM (General MIDI)
 compatible SoundFont2 library.
 
-SF2 libraries can be found online. For a good starting point, have a look at a  `Default Windows MIDI Soundfont <https://musical-artifacts.com/artifacts/713>`_.
+SF2 libraries can be found online. For a good starting point, have a look at a `Default Windows MIDI Soundfont <https://musical-artifacts.com/artifacts/713>`_ or 
+`FluidR3 GM2-2.SF2 <https://www.dropbox.com/s/xixtvox70lna6m2/FluidR3%20GM2-2.SF2>`_.
 
 
 Linux / macOS
@@ -81,34 +81,7 @@ Drag and drop all files from the ``bin\`` directory to ``C:\Windows\System32``. 
 To uninstall FluidSynth, remove the DLLs you moved to ``System32``. Be careful not to remove other DLLs. This may break your system.
 
 
-Creating a Project
-------------------
 
-.. warning::
-   TODO: remove.
-   Because this repository is not public, installing via pip as described below may not work. See the REAMDE on `gitup <https://gitup.uni-potsdam.de/music-with-pc/pythonmusic>`_.
-
-
-Terminal
-........
-
-Create a new directory and initialise a virtual environment inside. Activate the environment and install the PythonMusic package.
-
-.. code-block:: bash
-
-   $ mkdir my_project
-   $ cd my_project
-   $ python3 -m venv venv
-   $ source venv/bin/activate
-   $ pip install git+https://gitup.uni-potsdam.de/music-with-pc/pythonmusic
-
-IDE
-...
-
-When creating a new project, make sure to select a Python version ``>=3.11``. This may not be the default option.
-
-Consult your IDE's documentation on how to install python packages. The repository can be found at ``git+https://gitup.uni-potsdam.de/music-with-pc/pythonmusic``.
 
 
 See :doc:`Getting Started <./getting_started>` to start making music.
-
