@@ -1,118 +1,70 @@
 # PythonMusic
 *make music with your computer*
 
-PythonMusic is an open-source music library written in pure Python that enables you to write music on your computer. It is based on the [mido](https://github.com/mido/mido) library, which enables interaction with midi files.
+PythonMusic is an open-source music library written in Python that enables you to write music on your computer.
+
+```python
+from pythonmusic import *
+
+# create a phrase from a list of notes
+phrase = Phrase(
+    [
+        Note(C4, EN),
+        Note(D4, EN),
+        Note(EF4, EN),
+        Note(G4, QN + EN),
+        Note(F4, QN),
+    ]
+)
+
+# add phrases to parts
+part = Part("Flute", FLUTE, [phrase])
+
+# assemble parts into a score
+score = Score("MyScore", [part], ADAGIO)
+
+# playback your score
+SOUND_FONT2 = "./soundfont.sf2"
+player = SynthPlayer(SOUND_FONT2)
+player.play_score(score)
+
+# export your score to file
+export_score(score, "./output.mid")
+```
 
 
 ## Installation
-Before installing PythonMusic, make sure that a Python version `>=3.11` is installed on your machine. For this, open a terminal or command prompt (Windows) and type the command below.
+This package requires a Python version of `>=3.11`. You can check you installed Python version in the terminal.
 
 ```bash
 python --version
 ```
 
-If Python is not installed, download it on the [official download page](https://www.python.org/downloads/) or use your package manager to install.
-
-Also, make sure that you have access to Python's pip package manager which is used to install most dependencies for PythonMusic.
-
-```bash
-pip --version
-```
-
-
-Next, it is recommended to use a virtual environment for you Python projects. If you are using an IDE, consult its documentation on how to setup an environment. In most cases this is done automatically.
-
-In a terminal environment, use on of the may available options to setup a new virtual environment. For instance
-
-```bash
-python -m venv venv
-```
-
-With your environment created, activate it.
-
-```bash
-#!/bin/bash
-source venv/bin/activate
-```
-
-Finally, install PythonMusic into your virtual environment. At the moment, the package is not available on [PyPi](https://pypi.org/), so you will need to source the package from its repository.
+Installing PythonMusic on a Unix-like system such as macOS and Linux should be as simple as installing the 
+repository via pip. 
 
 ```bash
 pip install git+https://gitup.uni-potsdam.de/music-with-pc/pythonmusic
 ```
 
-> ## While in development,
-> Installing this library may not work as described above because the repo is not public. Instead, you need to
-> install the package from source.
->
-> Either in the terminal:
-> 1. clone this git repo somewhere outside your project
-> 2. activate virtual environment of your project (not the PythonMusic repo)
-> 3. install from source with `pip install [path to PythonMusic repo]`
->
-> Or in PyCharm:
-> 1. clone this git repo somewhere on your system
-> 2. create a new project with venv in PyCharm ("Project venv")
->   - make sure that you create the project with a Python version `>=3.11.x`
->   - you may need to change the default selected "Python version"
-> 3. then do either of the following:
->   - Option A
->     1. navigate to "Python Packages" in the side bar
->     2. click "Add Package" and then "From Disk"
->     3. select the path to the PythonMusic git repo (leave "Install as editable" unchecked)
->     4. click "OK"
->   - Option B
->     1. open a terminal inside PyCharm
->     2. make sure you are inside a venv 
->       - this is signalled by a (venv) before the prompt, or similar
->     3. install using `pip install [path to PythonMusic repo]`
-
-This should automatically install all dependencies necessary for PythonMusic. See `pyproject.toml` for more information.
+For the full instructions and Windows dependencies, see the installation section in the documentation.
 
 
-### Playback
-Optionally, this package also allows you to playback your music through an integrated synthesiser. This requires manual installation of [FluidSynth](https://www.fluidsynth.org/) and a SoundFont2 compatible instrument library.
-
-#### FluidSynth
-To install FluidSynth on **Linux**, use your favourite package manager to install the `fluidsynth` package.
-
-```bash
-# Arch
-pacman -S fluidsynth
-
-# Debian / Ubuntu
-apt install fluidsynth
-```
-
-On **macOS**, install a package manager such as [Homebrew](https://brew.sh/) and install `fluidsynth` via the terminal.
-
-```bash
-# macOS
-brew install fluidsynth
-```
-
-No official **Windows** builds are available at the moment. If you want to use FluidSynth on Windows, you may need to [build Fluidsynth](https://github.com/FluidSynth/fluidsynth/wiki/BuildingWithCMake) from source.
+## Documentation
+The documentation is available for download [here](https://www.youtube.com/watch?v=XfELJU1mRMg). To be updated.
 
 
-#### SoundFont
-Additionally, you will need to download a GM (General Midi) compatible SoundFont2 library to use FluidSynth. These  can be found readily online. Make sure to save the `*.sf2` file in a location that is accessible to your Python project.
+## Dependencies and Requiremenets
+PythonMusic depends on [NumPy](https://numpy.org/), [PortAudio](https://www.portaudio.com/),
+and [RtMidi](https://github.com/thestk/rtmidi). Wheels may not be available for your platform or architecture. 
+Optionally, [FluidSynth](https://www.fluidsynth.org/) can be installed to enable on-device playback.
 
-To load a sound font, simply pass its path to a `Synth` or `SynthPlayer`.
+See the documentation for more information and installation instructions.
 
-```python
-from pythonmusic import Synth, SynthPlayer
-
-# sound font is located in myProject/resources/gm.sf2
-PATH = "resources/gm.sf2"
-
-synth = Synth(PATH)
-synth_player = SynthPlayer(PATH)
-```
-
-## Getting started
-TODO
 
 ## Classes
+this should be internal
+
 ![Classes](docs/images/classes.png)
 
 
