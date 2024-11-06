@@ -65,7 +65,7 @@ Requires Python ``>=3.11``. See :doc:`Installation <intro/installation>` for mor
 Source Code
 -----------
 
-Source code is available on this project's `repository <https://gitup.uni-potsdam.de/music-with-pc/pythonmusic>`_.
+Source code is available on the project's `repository <https://gitup.uni-potsdam.de/music-with-pc/pythonmusic>`_.
 
 .. toctree::
    :caption: Start Here
