@@ -1,112 +1,152 @@
-__all__ = [
-    "NOTE_OFF",
-    "NOTE_ON",
-    "POLYTOUCH",
-    "CONTROL_CHANGE",
-    "PROGRAM_CHANGE",
-    "AFTERTOUCH",
-    "PITCHWHEEL",
-    "SYSEX",
-    "QUARTER_FRAME",
-    "SONGPOS",
-    "SONG_SELECT",
-    "TUNE_REQUEST",
-    "CLOCK",
-    "START",
-    "CONTINUE",
-    "STOP",
-    "ACTIVE_SENSING",
-    "RESET",
-]
-
-NOTE_OFF: str = "note_off"
+# Channel Voice
+NOTE_OFF = 0b1000
 """
-MIDI message constant that defines a note_off message.
+A note off event.
+
+This event is sent when a note is released or ended.
 """
 
-NOTE_ON: str = "note_on"
+NOTE_ON = 0b1001
 """
-MIDI message constant that defines a note_on message.
+A note on event.
+
+This event is sent when a note is pressed or should start.
 """
 
-POLYTOUCH: str = "polytouch"
+AFTERTOUCH = 0b1010
 """
-MIDI message constant that defines a polytouch message.
+An aftertouch event.
+
+This event is usually sent when applying preser to a fully pressed key.
+
+Also polyphonic key pressure.
 """
 
-CONTROL_CHANGE: str = "control_change"
+CONTROL_CHANGE = 0b1011
 """
-MIDI message constant that defines a control_change message.
+A control change event.
+
+This event is sent when a control change value should be changed.
 """
 
-PROGRAM_CHANGE: str = "program_change"
+PROGRAM_CHANGE = 0b1100
 """
-MIDI message constant that defines a program_change message.
+A program change event.
 
-Usually this refers to an instrument change.
-"""
+This event is sent when the patch number of a channel changes.
 
-AFTERTOUCH: str = "aftertouch"
-"""
-MIDI message constant that defines an aftertouch message.
+To change the instrument in terms of GM2, you may also need to update the bank
+number via a bank select CC message.
 """
 
-PITCHWHEEL: str = "pitchwheel"
+CHANNEL_PRESSURE = 0b1101
 """
-MIDI message constant that defines a pitchwheel message.
+A channel pressure event.
+
+This is similar to aftertouch, but instead of individual pressures, should only
+send the greatest aftertouch value.
 """
 
-SYSEX: str = "sysex"
+PITCH_WHEEL = 0b1110
 """
-MIDI message constant that defines a sysex (system exclusive) message.
+A pitch wheel change event.
+
+This event is sent on change of the pitch wheel.
 """
 
-QUARTER_FRAME: str = "quarter_frame"
+
+# Channel Mode Messages
 """
-MIDI message constant that defines a quarter_frame message.
+A channel mode event.
+
+This event uses the same id as control change. The associated value must be
+in `120` to `127`.
+"""
+CHANNEL_MODE = CONTROL_CHANGE
+
+
+# System Common Messages
+SYSTEM_EXCLUSIVE = 0b11110000
+"""
+A system exclusive event.
+
+System exclusive events are used to implement functionality that is not directly
+supported by the MIDI standard.
 """
 
-SONGPOS: str = "songpos"
+END_OF_SYSTEM_EXCLUSIVE = 0b11110111
 """
-MIDI message constant that defines a songpos (song position pointer) message.
+A end of exclusive event.
+
+Indicates end of data stream of system exclusive dump.
 """
 
-SONG_SELECT: str = "song_select"
+TIME_CODE_QF = 0b11110001
 """
-MIDI message constant that defines a song_select message.
-"""
-
-TUNE_REQUEST: str = "tune_request"
-"""
-MIDI message constant that defines a tune_request message.
+A MIDI time code quarter fram event.
 """
 
-CLOCK: str = "clock"
+SONG_POSITION = 0b11110010
 """
-MIDI message constant that defines a clock message.
-"""
-
-START: str = "start"
-"""
-MIDI message constant that defines a start message.
+A song position pointer event.
 """
 
-CONTINUE: str = "continue"
+SONG_SELECT = 0b11110011
 """
-MIDI message constant that defines a continue message.
-"""
-
-STOP: str = "stop"
-"""
-MIDI message constant that defines a stop message.
+A song select event.
 """
 
-ACTIVE_SENSING: str = "active_sensing"
+TUNE_REQUEST = 0b11110110
 """
-MIDI message constant that defines an active_sensing message.
+A tune request event.
 """
 
-RESET: str = "reset"
+# System Real-Time Messages
+CLOCK = 0b11111000
 """
-MIDI message constant that defines a reset message.
+A timing clock signal.
+"""
+
+START = 0b11111010
+"""
+A start event.
+
+Indicates that the current sequence should start playing. Indicates clock 
+signals will follow.
+"""
+
+CONTINUE = 0b11111011
+"""
+A stop event.
+
+Signalls the current sequence be stoped.
+"""
+
+STOP = 0b11111100
+"""
+A stop event.
+
+Stopps the current sequence.
+"""
+
+ACTIVE_SENSING = 0b11111110
+"""
+An active sensing event.
+"""
+
+RESET = 0b11111111
+"""
+A reset event.
+
+When sent, indicates that the receiver should return to its power-up status.
+
+In MIDI files, acts as an escape for meta events. See `ESCAPE`.
+"""
+
+META = RESET
+"""
+An escape sequence indicating a meta event in a MIDI file.
+
+Only use this in MIDI file contexts. The value is identical to `RESET` and has
+different meaning if send to MIDI devices.
 """

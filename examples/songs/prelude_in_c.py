@@ -1,12 +1,11 @@
 """
 Prelude in C
 BWV 846
-J. S. Bach
 Das Wohltemperirte Clavier
+J. S. Bach
 """
 
 from pythonmusic import *
-from time import sleep
 
 
 def left_part() -> Part:
@@ -130,7 +129,7 @@ def right_part() -> Part:
     # similar to the left part, the broken chords repeat twice
     # another function it is, then
     def broken_chord(a: int, b: int, c: int) -> list[Note]:
-        line = legato([Note(a, SN), Note(b, SN), Note(c, SN)])
+        line = legato(Note(a, SN), Note(b, SN), Note(c, SN))
         notes: list[Note] = [Note.rest(EN)] + line + line
 
         return notes + notes
@@ -177,45 +176,41 @@ def right_part() -> Part:
     phrase.add_note(Note.rest(EN))  # 34
     phrase.add_notes(
         legato(
-            [
-                Note(F3, SN),  #
-                Note(A3, SN),
-                Note(C4, SN),  #
-                Note(F4, SN),
-                Note(C4, SN),
-                Note(A3, SN),
-                Note(C4, SN),  #
-                Note(A3, SN),
-                Note(F3, SN),
-                Note(A3, SN),
-                Note(F3, SN),  #
-                Note(D3, SN),
-                Note(F3, SN),
-                Note(D3, SN),
-            ]
+            Note(F3, SN),  #
+            Note(A3, SN),
+            Note(C4, SN),  #
+            Note(F4, SN),
+            Note(C4, SN),
+            Note(A3, SN),
+            Note(C4, SN),  #
+            Note(A3, SN),
+            Note(F3, SN),
+            Note(A3, SN),
+            Note(F3, SN),  #
+            Note(D3, SN),
+            Note(F3, SN),
+            Note(D3, SN),
         )
     )
     phrase.add_note(Note.rest(EN))  # 35
     phrase.add_notes(
         legato(
-            [
-                Note(G4, SN),  #
-                Note(B4, SN),
-                Note(D5, SN),  #
-                Note(F5, SN),
-                Note(D5, SN),
-                Note(B4, SN),
-                Note(D5, SN),  #
-                Note(B4, SN),
-                Note(G4, SN),
-                Note(B4, SN),
-                Note(D4, SN),  #
-                Note(F4, SN),
-                Note(E4, SN / 3),
-                Note(F4, SN / 3),
-                Note(E4, SN / 3),
-                Note(D4, SN),
-            ]
+            Note(G4, SN),  #
+            Note(B4, SN),
+            Note(D5, SN),  #
+            Note(F5, SN),
+            Note(D5, SN),
+            Note(B4, SN),
+            Note(D5, SN),  #
+            Note(B4, SN),
+            Note(G4, SN),
+            Note(B4, SN),
+            Note(D4, SN),  #
+            Note(F4, SN),
+            Note(E4, SN / 3),
+            Note(F4, SN / 3),
+            Note(E4, SN / 3),
+            Note(D4, SN),
         )
     )
 
@@ -240,44 +235,21 @@ def make_score() -> Score:
 
 
 def play_score():
-    # retrieve an open midi receiver
-    device = user_receiver_prompt()
-    if device is None:
-        print("No open receiver found")
-        exit(1)
-
-    # play score allows for callbacks to be set
-    # before the playback starts, but all messages are prepared,
-    def on_start(messages: list[MidiMessage]):
-        print(f"Starting with {len(messages)} midi messages")
-
-    # on every message,
-    def on_message(_message: MidiMessage, _start_time: float):
-        _ = _start_time
-        print(_message.raw())
-
-    # and before the playback method ends
-    def on_end(_):
-        print("Done.")
-
-    # some applications require some time to pick up on our player
-    # this is optional
-    sleep(0.5)
-
-    # play_score allows to define a starting beat
-    # for instance, to start on measure 20, set this value to
-    # 20 * 4 (four beats per bar)
-    start_measure = 0 * 4
-
+    # create the score
     score = make_score()
 
-    # create player
-    player = MidiPlayer(device)
-    # alternatively, you can also create a `SynthPlayer`
-    # player = SynthPlayer("path to sound font 2 file")
+    # create a sound font player, pass a path the a sound font 2 file
+    SF2 = "soundfonts/my_soundfont.sf2"
+    player = SfPlayer(SF2)
 
-    player.play_score(score, start_measure, on_start, on_message, on_end)
+    # play the score
+    # put this inside a try/except block to prevent backtrace on keyboard interrupt
+    try:
+        player.play_score(score)
+    except KeyboardInterrupt:
+        print("stopped")
 
 
+# call `play_score()` if we run this file
 if __name__ == "__main__":
     play_score()

@@ -78,7 +78,11 @@ class Phrase(NoteCollection):
         self.notes.append(chord)
 
     def add_chord_by_lists(
-        self, pitches: list[int], durations: list[float], dynamics: list[int]
+        self,
+        pitches: list[int],
+        durations: list[float],
+        dynamics: list[int],
+        articulations: list[int] = [],
     ):
         """
         Adds a chord constructed by the given lists.
@@ -87,8 +91,9 @@ class Phrase(NoteCollection):
             pitches (list[int]): The note's pitches
             durations (list[float]): The note's durations
             dynamics (list[int]): The note's dynamics
+            articulations (list[int]): A list of articulations for the notes
         """
-        self.add_chord(Chord.from_lists(pitches, durations, dynamics))
+        self.add_chord(Chord.from_lists(pitches, durations, dynamics, articulations))
 
     def add_chords_by_lists(
         self,
@@ -98,6 +103,12 @@ class Phrase(NoteCollection):
     ):
         """
         Adds multiple chords defined by their elements.
+
+        The number of elements in each top level list must be equal. That is,
+        each chord must have its own combination of pitches, durations, and
+        dynamics. The list for each chord, however, does not. See
+        :meth:`from_lists() <pythonmusic.music.Chord.from_lists>` for more
+        information.
 
         Args:
             pitches (list[list[int]]): A list that contains the chord's note's
@@ -116,7 +127,7 @@ class Phrase(NoteCollection):
 
         for index in range(len_pitches):
             self.add_note(
-                Chord.from_lists(pitches[index], durations[index], dynamics[index])
+                Chord.from_lists(pitches[index], durations[index], dynamics[index], [])
             )
 
     def add_rest(self, duration: float):

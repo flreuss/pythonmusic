@@ -1,8 +1,9 @@
 import unittest
-from pythonmusic.music import Note, Chord, PhraseElement, Phrase
-from pythonmusic.constants.pitches import *
+
 from pythonmusic.constants.durations import *
 from pythonmusic.constants.dynamics import *
+from pythonmusic.constants.pitches import *
+from pythonmusic.music import Chord, Note, Phrase, PhraseElement
 
 NOTES: list[PhraseElement] = [
     Note(C3, QN, F),
@@ -64,6 +65,10 @@ class PhraseTests(unittest.TestCase):
         phrase.add_note(Note(A3, QN))
         self.assertIsNot(phrase, Phrase(NOTES))
         self.assertNotEqual(phrase, Phrase(NOTES))
+
+    def test_iter(self):
+        notes = list(map(lambda x: Note(2 * x, x), range(50)))
+        self.assertEqual(notes, list(Phrase(notes).__iter__()))
 
     def test_separation_input_array(self):
         """
@@ -154,17 +159,23 @@ class PhraseTests(unittest.TestCase):
 
         self.assertEqual(phrase.notes, notes)
 
-    def test_add_notes_by_lists_invalid(self):
-        """
-        Tests that Note method add_notes_by_lists() throws if the given lists are
-        not equal in length and, thus, parallel
-        """
-        with self.assertRaises(ValueError):
-            Phrase().add_notes_by_lists([1, 2, 3], [3.0], [1, 2, 3])
-        with self.assertRaises(ValueError):
-            Phrase().add_notes_by_lists([1, 2], [3.0, 4.0, 2.0], [1, 2, 3])
-        with self.assertRaises(ValueError):
-            Phrase().add_notes_by_lists([1, 2, 3], [3.0, 5.0, 7.0], [1, 2])
+        phrase = Phrase()
+        phrase.add_notes_by_lists([A4, D4, C4], [QN], [MF, FF])
+        self.assertEqual(
+            phrase.notes, [Note(A4, QN, MF), Note(D4, QN, FF), Note(C4, QN, FF)]
+        )
+
+        phrase = Phrase()
+        phrase.add_notes_by_lists([A4], [QN, EN, SN], [MF, FF])
+        self.assertEqual(
+            phrase.notes, [Note(A4, QN, MF), Note(A4, EN, FF), Note(A4, SN, FF)]
+        )
+
+        phrase = Phrase()
+        phrase.add_notes_by_lists([A4, D4], [QN], [MF, FF, FFF])
+        self.assertEqual(
+            phrase.notes, [Note(A4, QN, MF), Note(D4, QN, FF), Note(D4, QN, FFF)]
+        )
 
     def test_remove_note_valid(self):
         """Tests Note remove_note() method"""

@@ -1,11 +1,10 @@
 from typing import Optional
 
 from pythonmusic.constants.tempo import MODERATO
-from pythonmusic.music.part import Part
+
+from .part import Part
 
 __all__ = ["Score"]
-
-# TODO: Add tempo units / define the beat (so far, only quarters)
 
 
 class Score:
@@ -28,6 +27,11 @@ class Score:
         self.tempo: float = tempo
 
         self.add_parts(parts)
+
+    def __iter__(self):
+        """Iterates the score's parts."""
+        for part in self.parts:
+            yield part
 
     def __len__(self) -> int:
         return self.parts.__len__()

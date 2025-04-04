@@ -1,3 +1,5 @@
+from time import sleep
+
 from pythonmusic import *
 
 # Defines the path to a SoundFont2 file. Change as needed.
@@ -35,23 +37,24 @@ score.tempo = 96  # in bpm where a beat is a quarter
 score.add_part(part)
 
 
-# === Using the SynthPlayer ===
-# If FluidSynth was not found on your system, the Synth and SynthPlayer classes
-# will not be available.
-try:
-    player = SynthPlayer(SF2_PATH)
-    player.play_score(score)
-except NameError:
-    print("FluidSynth was not detected. Skipping")
+# === Using the SfPlayer ===
+# player = SfPlayer(SF2_PATH)
+# player.play_score(score)
+
+# exit(0)
 
 # === Using a MIDI Keyboard ===
 # Find midi devices connected to your system
-receivers = get_midi_receivers()
+receivers = midi_inputs()
 if len(receivers) > 0:
     # get the first receiver
     receiver = receivers[0]
 
-    player = MidiPlayer(receiver)
-    player.play_score(score)
+    player = MidiOutPlayer(receiver, False)
+    # wrapping in try/except to prevent error stack on KeyboardInterrupt
+    try:
+        player.play_score(score)
+    except KeyboardInterrupt:
+        pass
 else:
     print("No midi devices found")

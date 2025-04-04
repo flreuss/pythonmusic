@@ -6,12 +6,11 @@ build-backend = "setuptools.build_meta"
 name = "pythonmusic"
 version = "0.0.1"
 dependencies = [
-  "mido",
+  "numpy",
+  "pyaudio",
   "python-osc",
   "python-rtmidi",
-  "pyfluidsynth",
-  "pyaudio",
-  "numpy",
+  "tinysoundfont",
   "wave",
 ]
 authors = [
@@ -20,7 +19,7 @@ authors = [
 ]
 description = "Make music in python"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Programming Language :: Python",

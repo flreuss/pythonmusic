@@ -1,11 +1,12 @@
-from copy import copy
-from typing import Self, Any
-from .phrase_element import PhraseElement
-from pythonmusic.constants.articulations import LEGATO
-from pythonmusic.constants.articulations import ACCENT
-from pythonmusic.util import assert_range
+from copy import deepcopy
+from typing import Any, Self
+
+from pythonmusic.constants.articulations import ACCENT, LEGATO, PORTATO
 from pythonmusic.constants.dynamics import MF
 from pythonmusic.constants.pitches import REST
+from pythonmusic.util import assert_range
+
+from .phrase_element import PhraseElement
 
 __all__ = ["Note"]
 
@@ -99,7 +100,7 @@ class Note(PhraseElement):
         return self._duration
 
     @duration.setter
-    def duration(self, new_value: int):
+    def duration(self, new_value: float):
         self._duration = new_value
 
     def is_note(self) -> bool:
@@ -159,7 +160,7 @@ class Note(PhraseElement):
         Returns:
             Note: This note with legato
         """
-        note = copy(self)
+        note = deepcopy(self)
         note.add_articulation(LEGATO)
         return note
 
@@ -170,7 +171,7 @@ class Note(PhraseElement):
         Returns:
             Note: This note with accent
         """
-        note = copy(self)
+        note = deepcopy(self)
         note.add_articulation(ACCENT)
         return note
 
@@ -185,7 +186,7 @@ class Note(PhraseElement):
         Returns:
             Note: A rest with this note's duration
         """
-        rest = copy(self)
+        rest = deepcopy(self)
         rest.pitch = REST
         return rest
 

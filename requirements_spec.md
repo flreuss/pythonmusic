@@ -25,12 +25,12 @@ Der Nutzende kann unter Nutzung der Bibliothek...
 Das System sollte...
 
 - [x] [PlayCode](https://jythonmusic.me/play-code/) {5}
-- [x] [AudioSample](https://jythonmusic.me/api/audiosample/) {4}
+- [ ] [AudioSample](https://jythonmusic.me/api/audiosample/) {4}
 - [ ] [MidiSequence](https://jythonmusic.me/api/midisequence/) {4}
 - [ ] [ModFunctions](https://jythonmusic.me/api/music-library-functions/mod-functions/) ist nicht das meiste davon recht simpel, funktional selbst zu implementieren? {3}
     - check functions for useful material that is not easily implemented
 - [ ] mit OSC-fähigen Geräten kommunizieren _(siehe OSCIn/Out). {2}_
-- [ ] MIDI-Datei als Score importieren. {1}
+- [ ] ~MIDI-Datei als Score importieren. {1}~
 - [ ] [Metronome](https://jythonmusic.me/metronome/) {1}
 
 # Nichtfunktionale Anforderungen

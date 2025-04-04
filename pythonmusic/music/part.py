@@ -1,8 +1,11 @@
-from typing import Optional
-from .phrase import Phrase
-from .note import Note
-from pythonmusic.constants.panning import PAN_CENTER
+from typing import Iterator, Optional
+
 from pythonmusic.constants.instruments import ACOUSTIC_GRAND_PIANO
+from pythonmusic.constants.panning import PAN_CENTER
+from pythonmusic.util import contains_identity
+
+from .note import Note
+from .phrase import Phrase
 
 __all__ = ["Part"]
 
@@ -31,13 +34,56 @@ class Part:
         self.title: Optional[str] = title
         self.instrument: int = instrument
         self.channel: int = channel
-        self.phrases: list[tuple[float, Phrase]] = []
+        self._elements: list[tuple[float, Phrase]] = []
         self.panning: int = panning
 
         self.add_phrases(phrases, None)
 
+    def __iter__(self) -> Iterator[Phrase]:
+        """
+        Returns an iterator over this parts phrases.
+
+        Identical phrases that have been added multiple times are only yielded
+        once. Use `Part().phrases()` or `Part().phrases_with_start_times() for
+        a complete list.
+        """
+        visited: list[Phrase] = []
+
+        for _, phrase in self._elements:
+            if contains_identity(visited, phrase):
+                continue
+
+            visited.append(phrase)
+            yield phrase
+
+    def phrases(self) -> list[Phrase]:
+        """
+        Returns a list over this part's phrases.
+
+        The part stores phrases as tuples of a start time and a phrase. If you
+        need both, use `phrases_with_start_times()` instead.
+
+        Keep in mind that phrases may occur multiple times in the same part.
+
+        Returns:
+            list[Phrase]: A list of this part's phrases
+        """
+        return list(map(lambda element: element[1], self._elements))
+
+    def phrases_with_start_times(self) -> list[tuple[float, Phrase]]:
+        """
+        Returns a list of this part's phrases with their start times.
+
+        Keep in mind that phrases may occur multiple times in the same part.
+
+        Returns:
+            list[tuple[float, Phrase]]: A list of tuples representing this
+                part's phrases and their start times (start_time, phrase)
+        """
+        return self._elements
+
     def __len__(self) -> int:
-        return self.phrases.__len__()
+        return self._elements.__len__()
 
     def length(self) -> int:
         """Returns the number of phrases in the part."""
@@ -55,7 +101,7 @@ class Part:
         """
 
         # default to 0, if empty. Will also prevent exception below for max(None)
-        if self.phrases.__len__() == 0:
+        if self._elements.__len__() == 0:
             return 0
 
         # iterates over all phrases and calculates their end time by adding
@@ -64,7 +110,7 @@ class Part:
         return max(
             map(
                 lambda item: item[0] + item[1].duration,
-                self.phrases,
+                self._elements,
             )
         )
 
@@ -85,7 +131,7 @@ class Part:
 
         # calculate start time, if none was given / append to end
         start_time = start_time if start_time is not None else self.duration()
-        self.phrases.append((start_time, phrase))
+        self._elements.append((start_time, phrase))
 
     def add_phrases(
         self,
@@ -138,12 +184,12 @@ class Part:
                 non_st_elements.append(phrase)
                 continue
 
-            self.phrases.append((start_time, phrase))
+            self._elements.append((start_time, phrase))
 
         # iterates left over phrases and adds them to the end; updates end
         start_time = self.duration()
         for phrase in non_st_elements:
-            self.phrases.append((start_time, phrase))
+            self._elements.append((start_time, phrase))
             start_time += phrase.duration
 
     def remove_phrase(self, phrase: Phrase):
@@ -160,15 +206,15 @@ class Part:
             phrase (Phrases): The phrase to remove
         """
 
-        for index, element in enumerate(self.phrases):
+        for index, element in enumerate(self._elements):
             if phrase is element[1]:
-                self.phrases.pop(index)
+                self._elements.pop(index)
                 return
         raise ValueError("The given phrase is not in part")
 
     def clear(self):
         """Removes all phrases from the part."""
-        self.phrases = []
+        self._elements = []
 
     def linearise(self) -> list[tuple[float, Note]]:
         """
@@ -186,7 +232,7 @@ class Part:
         """
         notes: list[tuple[float, Note]] = []
 
-        for phrase_start_time, phrase in self.phrases:
+        for phrase_start_time, phrase in self.phrases_with_start_times():
             for note_start_time, note in phrase.linearise():
                 notes.append((phrase_start_time + note_start_time, note))
 

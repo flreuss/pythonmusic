@@ -1,10 +1,9 @@
-from .phrase_element import PhraseElement
-from .note import Note
-
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from functools import reduce
-from typing import Sequence, cast, Optional
+from typing import Iterator, Optional, Sequence, cast
+
+from .note import Note
+from .phrase_element import PhraseElement
 
 __all__ = ["NoteCollection"]
 
@@ -13,6 +12,13 @@ class NoteCollection(ABC):
     """
     An abstract class that defines methods for chords and phrases.
     """
+
+    def __iter__(self) -> Iterator[PhraseElement]:
+        for note in self.notes:
+            yield note
+
+    def __getitem__(self, index: int) -> PhraseElement:
+        return self.notes[index]
 
     @property
     @abstractmethod
@@ -83,6 +89,7 @@ class NoteCollection(ABC):
         pitches: list[int],
         durations: list[float],
         dynamics: list[int],
+        articulation: list[int] = [],
     ):
         """
         Adds notes defined by their parts.
@@ -90,38 +97,52 @@ class NoteCollection(ABC):
         Provide lists of pitches, durations, and dynamics that describe the notes
         to add.
 
-        The lists must be parallel and are expected to be equal in length, where
-        one note represents one entry from `pitches`, `durations`, and
-        `dynamics`, respectively.
+        Each list must contain at least one value. If any list has less items
+        than another, its last value is repeated for all remaining notes. This
+        allows, for instance, adding multiple notes with the same duration,
+        without having to provide the same duration multiple times.
 
-        Example:
-            >>> for index in range(0, len(pitches)):
-            >>>     note = Note(pitches[i], durations[i], dynamics[i])
-            >>>     notes.append(note)
+        ..code-block:: python
+            phrase = Phrase()
+            phrase.add_notes_by_lists([A4, C4, D4], [QN], [MF, FF])  # starts with MF and then repeats FF
 
         Raises:
-            ValueError: If arrays are not of the same length
+            ValueError: If any list is empty
 
         Args:
             pitches (list[int]): A list of pitches
             durations (list[float]): A list of durations
             dynamics (list[int]): A list of dynamics
+            articulation(list[int]): A list of articulations for the notes
         """
-
-        # assert that all lists are parallel
+        # no idea if len is trivial in python
         len_pitches = len(pitches)
-        if len(durations) != len_pitches or len(dynamics) != len_pitches:
-            raise ValueError(
-                f"All lists must be equal in length: pitches[{len_pitches}],\
-                durations[{len(durations)}], dynamics[{len(durations)}]"
-            )
+        len_durations = len(durations)
+        len_dynamics = len(dynamics)
+
+        if len_pitches == 0:
+            raise ValueError("At least one pitch must be given")
+
+        if len_durations == 0:
+            raise ValueError("At least one duration must be given")
+
+        if len_dynamics == 0:
+            raise ValueError("At least one dynamic must be given")
+
+        max_length = max(len_pitches, len_durations, len_dynamics)
 
         # create notes form SoA
         self.add_notes(
             list(
                 map(
-                    lambda i: Note(pitches[i], durations[i], dynamics[i]),
-                    range(0, len(pitches)),
+                    lambda i: Note(
+                        # use i, or clip to last index (repeat last)
+                        pitches[min(i, len_pitches - 1)],
+                        durations[min(i, len_durations - 1)],
+                        dynamics[min(i, len_dynamics - 1)],
+                        articulation,
+                    ),
+                    range(max_length),
                 )
             )
         )
