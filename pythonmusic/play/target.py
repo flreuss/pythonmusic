@@ -1,3 +1,4 @@
+from os.path import abspath
 from typing import Optional, override
 
 from tinysoundfont import Synth as TsfSynth
@@ -255,8 +256,7 @@ class SfTarget(Target):
         super().__init__()
 
         self._target = TsfSynth()
-        self._path = sound_font
-        self._sfid = self._target.sfload(sound_font, gain)
+        self._sfid = self._target.sfload(abspath(sound_font), gain)
         self._target.start()
 
         self._target.program_change(PERCUSSION_CHANNEL, 128, True)
