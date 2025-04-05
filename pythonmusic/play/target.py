@@ -127,7 +127,7 @@ class Target:
             key(int): The note's key/pitch
             velocity(int): The note's velocity
         """
-        _ = velocity
+        del velocity
         self._keys[channel][key] = max(0, self._keys[channel][key] - 1)
 
     def note_on(self, channel: int, key: int, velocity: int):
@@ -144,7 +144,7 @@ class Target:
             key(int): The note's key/pitch
             velocity(int): The note's velocity
         """
-        _ = velocity
+        del velocity
         self._keys[channel][key] += 1
 
     def aftertouch(self, channel: int, key: int, value: int):
@@ -156,9 +156,9 @@ class Target:
             key(int): The event's key
             value(int): The aftertouch value
         """
-        _ = channel
-        _ = key
-        _ = value
+        del channel
+        del key
+        del value
 
     def control_change(self, channel: int, control: int, value: int):
         """
@@ -169,9 +169,9 @@ class Target:
             control(int): The cc id
             value(int): The cc's value
         """
-        _ = channel
-        _ = control
-        _ = value
+        del channel
+        del control
+        del value
 
     def program_change(self, channel: int, program: int):
         """
@@ -181,8 +181,8 @@ class Target:
             channel(int): The program change's channel
             program(int): The change's program
         """
-        _ = channel
-        _ = program
+        del channel
+        del program
 
     def channel_pressure(self, channel: int, value: int):
         """
@@ -192,8 +192,8 @@ class Target:
             channel(int): The event's channel
             value(int): The event's pressure
         """
-        _ = channel
-        _ = value
+        del channel
+        del value
 
     def pitch_bend(self, channel: int, value: int):
         """
@@ -203,8 +203,8 @@ class Target:
             channel(int): The change's channel
             value(int): The pitch value
         """
-        _ = channel
-        _ = value
+        del channel
+        del value
 
     def set_instrument(self, channel: int, instrument: int):
         """
