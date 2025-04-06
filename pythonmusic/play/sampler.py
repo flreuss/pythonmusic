@@ -35,23 +35,36 @@ class WaveSample:
 
         sample_count, channels = cast(tuple[int, int], raw_data.shape)
 
+        # make stereo
+        if channels == 1:
+            raw_data = np.repeat(raw_data[:, np.newaxis], 2, axis=1)
+        else:
+            raw_data = raw_data.reshape(-1, channels)[:, :2]
+
+        # resample, if needed
+        raw_data = (
+            cast(
+                NDArray,
+                signal.resample(
+                    raw_data,
+                    round(float(sample_count * target_samplerate) / float(sample_rate)),
+                ),
+            )
+            if sample_rate != target_samplerate or True
+            else raw_data
+        )
+
         raw_data = np.clip(raw_data * amp, I16_MIN, I16_MAX).astype(np.int16)
-
-        # if wav.getnchannels == 1:
-        #     raw_data = np.repeat(raw_data[:, np.newaxis], 2, axis=1)
-        # else:
-        #     raw_data = raw_data.reshape(-1, wav.getnchannels())[:, :2]
-
         self._data = raw_data
 
     def __len__(self) -> int:
         return len(self._data)
 
     def pitch(self, base_freq: float, target_freq: float) -> Self:
-        new_sample = copy(self)
+        new_sample = deepcopy(self)
 
-        # TODO: do some pitching with numpy
-        # i guess we just change the sample rate
+        # CONTINUE: HERE
+        new_sample._data = cast(NDArray, signal.resample())
 
         return new_sample
 
@@ -62,7 +75,7 @@ class Voice:
         self.velocity = velocity
         self.index = 0
         self.falloff_frames = falloff
-        self.remaining_falloff_frames: Optional[int] = None
+        self.remaining_falloff: Optional[int] = None
 
     def chunk(self, size: int) -> Optional[tuple[float, memoryview]]:
         if self.index >= len(self.data):
@@ -74,25 +87,18 @@ class Voice:
 
         multiplyer = self.velocity
 
-        # if falloff init
-        if self.remaining_falloff_frames:
-            # multiply falloff progress into multi
-            multiplyer *= float(self.remaining_falloff_frames) / float(
-                self.falloff_frames
-            )
+        if self.remaining_falloff:
+            multiplyer *= float(self.remaining_falloff) / float(self.falloff_frames)
+            self.remaining_falloff = max(0, self.remaining_falloff - size)
 
-            if size < self.remaining_falloff_frames:
-                self.remaining_falloff_frames -= size
-            else:
+            if self.remaining_falloff == 0:
                 # end sample
                 self.index = len(self.data)
 
         return multiplyer, self.data[start:end]
 
     def init_falloff(self):
-        self.remaining_falloff_frames = min(
-            len(self.data) - self.index, self.falloff_frames
-        )
+        self.remaining_falloff = min(len(self.data) - self.index, self.falloff_frames)
 
 
 class AudioSamplerTarget(Target):
