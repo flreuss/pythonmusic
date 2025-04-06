@@ -1,3 +1,4 @@
+from abc import ABC
 from os.path import abspath
 from typing import Optional, override
 
@@ -14,7 +15,7 @@ from pythonmusic.util import assert_range, instrument_get_patch_bank, make_instr
 __all__ = ["Target", "SfTarget", "MidiOutTarget", "EmptyTarget"]
 
 
-class Target:
+class Target(ABC):
     """
     A type that defines an interface for objects that receive and handle
     midi messages. :obj:`Players <pythonmusic.play.player.Player>` use targets
@@ -39,16 +40,6 @@ class Target:
                 print(f"Changing instrument on channel {channel} to {program}")
 
     """
-
-    def __init__(self):
-        self._keys = [[0] * 128] * 16
-
-    def __del__(self):
-        for channel, keys in enumerate(self._keys):  # for each channel,
-            for key, n in enumerate(keys):  # for each key in the channel,
-                for _ in range(n):  # if any keys are still expected to play,
-                    # send as many note off events as may be necessary
-                    self.note_off(channel, key, 1)
 
     def midi_message(self, message: Message) -> bool:
         """
@@ -128,8 +119,9 @@ class Target:
             key(int): The note's key/pitch
             velocity(int): The note's velocity
         """
+        del channel
+        del key
         del velocity
-        self._keys[channel][key] = max(0, self._keys[channel][key] - 1)
 
     def note_on(self, channel: int, key: int, velocity: int):
         """
@@ -145,8 +137,9 @@ class Target:
             key(int): The note's key/pitch
             velocity(int): The note's velocity
         """
+        del channel
+        del key
         del velocity
-        self._keys[channel][key] += 1
 
     def aftertouch(self, channel: int, key: int, value: int):
         """
@@ -363,9 +356,11 @@ class MidiOutTarget(Target):
     """
 
     def __init__(self, name: str, virtual: bool):
-        super().__init__()
-
         self._port = MidiOut(name, virtual)
+
+    def __del__(self):
+        for channel in range(16):
+            self._port.send_message(Message.new_all_notes_off(channel, 0))
 
     def port(self) -> MidiOut:
         """Returns the internal midi port."""

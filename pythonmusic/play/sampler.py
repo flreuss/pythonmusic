@@ -4,11 +4,12 @@ from os.path import abspath
 from threading import Lock
 from typing import Mapping, Optional, Self
 
-import librosa
+import librosa as lr
 import numpy as np
-import pyaudio
+import pyaudio as pa
 from numpy.typing import NDArray
 
+from pythonmusic.play.audio_steam import AudioStream
 from pythonmusic.play.target import Target
 
 __all__ = ["SamplerTarget"]
@@ -30,7 +31,7 @@ class WaveSample:
     def load(cls, path: str, amp: float, falloff: float, target_sample_rate: int):
 
         raw_data: NDArray
-        raw_data, _ = librosa.load(abspath(path), sr=target_sample_rate, mono=False)
+        raw_data, _ = lr.load(abspath(path), sr=target_sample_rate, mono=False)
 
         if raw_data.ndim == 1:
             raw_data = np.vstack([raw_data, raw_data])  # mono → fake stereo
@@ -50,7 +51,7 @@ class WaveSample:
         return new
 
     def pitch(self, semitones: int, sample_rate: int):
-        self.data = librosa.effects.pitch_shift(
+        self.data = lr.effects.pitch_shift(
             self.data.T, sr=sample_rate, n_steps=semitones, res_type="soxr_qq"
         ).T
 
@@ -87,51 +88,24 @@ class Voice:
         self.remaining_falloff = min(len(self.data) - self.index, self.falloff_frames)
 
 
-class SamplerTarget(Target):
+class SamplerTarget(AudioStream, Target):
     def __init__(
         self,
-        buffer_size: int = 512,
         sample_rate: int = 44_100,
+        buffer_size: int = 512,
     ):
         """
         TODO
 
         Args:
+            sample_rate(int): The sample rate of the imported wav files.
             buffer_size(int): The size of each audio buffer. If you hear popping
                 noises, try to increase this value.
-            sample_rate(int): The sample rate of the imported wav files.
         """
-        super().__init__()
-
-        self._sample_rate = sample_rate
-        self._buffer_size = buffer_size
+        super().__init__(2, sample_rate, buffer_size, pa.paFloat32)
 
         self._samples: list[Optional[WaveSample]] = [None] * 128
         self._voices: list[Optional[Voice]] = [None] * 128
-
-        self._lock = Lock()
-        self._pa = pyaudio.PyAudio()
-        self._stream = self._pa.open(
-            format=pyaudio.paFloat32,
-            channels=2,
-            rate=self._sample_rate,
-            output=True,
-            frames_per_buffer=self._buffer_size,
-            stream_callback=self._callback,
-        )
-
-    def __del__(self):
-        # just to be save, define the order
-        # 1 end stream
-        self._stream.stop_stream()
-        self._stream.close()
-        del self._stream
-
-        # 2 remove lock
-        del self._lock
-
-        # 3 terminate pa
-        self._pa.terminate()
 
     def sample_count(self) -> int:
         """
@@ -144,18 +118,6 @@ class SamplerTarget(Target):
         Returns the number of active voices.
         """
         return len(self._voices)
-
-    def sample_rate(self) -> int:
-        """
-        Returns the sampler's sample rate.
-        """
-        return self._sample_rate
-
-    def buffer_size(self) -> int:
-        """
-        Returns the audio stream's buffer size.
-        """
-        return self._buffer_size
 
     def _add_sample(self, key: int, sample: WaveSample):
         self._samples[key] = sample
@@ -207,7 +169,7 @@ class SamplerTarget(Target):
         self._stop_voice(key)
 
     # IMPL
-    def _callback(
+    def stream_callback(
         self,
         in_data: Optional[bytes],
         frame_count: int,
@@ -242,7 +204,7 @@ class SamplerTarget(Target):
 
         return (
             np.clip(buffer, -1.0, 1.0).tobytes(),
-            pyaudio.paContinue,
+            pa.paContinue,
         )
 
     def _new_voice(self, key: int, velocity: int):
