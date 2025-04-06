@@ -1,19 +1,17 @@
 from collections.abc import Iterable
-from copy import copy, deepcopy
+from copy import copy
 from os.path import abspath
 from threading import Lock
 from typing import Mapping, Optional, Self, cast
 
 import numpy as np
 import pyaudio
-import scipy.io.wavfile as wavfile
-import scipy.signal as signal
 from numpy.typing import NDArray
 
 from pythonmusic.play.target import Target
 from pythonmusic.util import key_to_frequency
 
-__all__ = ["AudioSamplerTarget"]
+__all__ = ["SamplerTarget"]
 
 I16_MAX: int = 32_767
 I16_MIN: int = -32_768
@@ -24,14 +22,13 @@ def falloff_f_to_i(falloff: float, sample_rate: int) -> int:
 
 
 class WaveSample:
-    def __init__(self, path: str, amp: float, falloff: float, target_samplerate: int):
-        self._sample_rate = target_samplerate
-        self._data: NDArray
-        self._falloff = falloff
+    def __init__(self, path: str, amp: float, falloff: float, target_sample_rate: int):
+        self.data: NDArray
+        self.falloff = falloff
 
-        sample_rate: int
+        base_sample_rate: int
         raw_data: NDArray
-        sample_rate, raw_data = wavfile.read(abspath(path))
+        base_sample_rate, raw_data = wavfile.read(abspath(path))
 
         sample_count, channels = cast(tuple[int, int], raw_data.shape)
 
@@ -43,30 +40,31 @@ class WaveSample:
 
         # resample, if needed
         raw_data = (
+            # resample(raw_data, sample_count, sample_rate, target_samplerate)
             cast(
                 NDArray,
                 signal.resample(
                     raw_data,
-                    round(float(sample_count * target_samplerate) / float(sample_rate)),
+                    round(
+                        float(sample_count * target_sample_rate)
+                        / float(base_sample_rate)
+                    ),
                 ),
             )
-            if sample_rate != target_samplerate or True
+            if base_sample_rate != target_sample_rate
             else raw_data
         )
 
         raw_data = np.clip(raw_data * amp, I16_MIN, I16_MAX).astype(np.int16)
-        self._data = raw_data
+        self.data = raw_data
 
     def __len__(self) -> int:
-        return len(self._data)
+        return len(self.data)
 
-    def pitch(self, base_freq: float, target_freq: float) -> Self:
-        new_sample = deepcopy(self)
-
-        # CONTINUE: HERE
-        new_sample._data = cast(NDArray, signal.resample())
-
-        return new_sample
+    def clone(self) -> Self:
+        new = copy(self)
+        new.data = np.copy(self.data)
+        return new
 
 
 class Voice:
@@ -101,7 +99,7 @@ class Voice:
         self.remaining_falloff = min(len(self.data) - self.index, self.falloff_frames)
 
 
-class AudioSamplerTarget(Target):
+class SamplerTarget(Target):
     def __init__(
         self,
         buffer_size: int = 512,
@@ -182,19 +180,32 @@ class AudioSamplerTarget(Target):
         falloff: float = 0.1,
     ):
         sample = WaveSample(path, base_amp, falloff, self._sample_rate)
-        map(
-            lambda target_key: self._add_sample(
-                target_key,
-                (
-                    sample.pitch(
-                        key_to_frequency(base_key), key_to_frequency(target_key)
-                    )
-                    if pitch
-                    else sample
-                ),
-            ),
-            add_to,
-        )
+
+        if pitch:
+            base_sample_rate = key_to_frequency(base_key)
+            for target_key, target_sample in map(
+                lambda key: (key, sample.clone()), add_to
+            ):
+                target_sample_rate = key_to_frequency(target_key)
+
+                print(target_key, len(target_sample.data))
+
+                sample.data = cast(
+                    NDArray,
+                    signal.resample(
+                        sample.data,
+                        round(
+                            float(len(sample.data) * target_sample_rate)
+                            / float(base_sample_rate)
+                        ),
+                    ),
+                ).astype(np.int16)
+
+                self._add_sample(target_key, target_sample)
+
+        else:
+            for target_key in add_to:
+                self._add_sample(target_key, target_sample)
 
     def note_on(self, channel: int, key: int, velocity: int):
         super().note_on(channel, key, velocity)
@@ -212,34 +223,11 @@ class AudioSamplerTarget(Target):
         time_info: Mapping[str, float],
         status: int,
     ) -> tuple[bytes, int]:
+        # unused parameters
         del time_info
         del status
         del in_data
 
-        return self._make_buffer(frame_count)
-
-    def _new_voice(self, key: int, velocity: int):
-        if self._samples[key] is None:
-            return
-
-        sample = self._samples[key]
-
-        if sample:
-            self._voices[key] = Voice(
-                memoryview(sample._data),
-                velocity / 127,
-                falloff_f_to_i(sample._falloff, self._sample_rate),
-            )
-
-    def _stop_voice(self, key: int):
-        voice = self._voices[key]
-        if voice:
-            voice.init_falloff()
-
-    def _remove_voice(self, key: int):
-        self._voices[key] = None
-
-    def _make_buffer(self, frame_count: int) -> tuple[bytes, int]:
         # 32 bit should prevent overflow
         buffer = np.zeros((frame_count, 2), dtype=np.int32)
 
@@ -277,3 +265,24 @@ class AudioSamplerTarget(Target):
             np.clip(buffer, I16_MIN, I16_MAX).astype(np.int16).tobytes(),
             pyaudio.paContinue,
         )
+
+    def _new_voice(self, key: int, velocity: int):
+        if self._samples[key] is None:
+            return
+
+        sample = self._samples[key]
+
+        if sample:
+            self._voices[key] = Voice(
+                memoryview(sample.data),
+                velocity / 127,
+                falloff_f_to_i(sample.falloff, self._sample_rate),
+            )
+
+    def _stop_voice(self, key: int):
+        voice = self._voices[key]
+        if voice:
+            voice.init_falloff()
+
+    def _remove_voice(self, key: int):
+        self._voices[key] = None

@@ -5,12 +5,15 @@ from heapq import heapify, heappop, heappush
 from time import sleep, time
 from typing import Callable, Optional, cast
 
+from pyaudio import paInt16
+
 from pythonmusic.constants import PPQ
 from pythonmusic.constants.tempo import ADAGIO
 from pythonmusic.midi.convert import initial_part_messages, pe_to_midi
 from pythonmusic.midi.io import MidiIn
 from pythonmusic.midi.message import Message
 from pythonmusic.music import Chord, Note, Part, Phrase, PhraseElement, Score
+from pythonmusic.play.sampler import SamplerTarget
 from pythonmusic.util import beats_to_ticks, bpm_to_mpqn
 
 from .target import MidiOutTarget, SfTarget, Target
@@ -351,6 +354,21 @@ class SfPlayer(Player):
         super().__init__(target)
 
 
+class SamplePlayer(Player):
+    # TODO: docs
+    def __init__(
+        self,
+        buffer_size: int = 512,
+        sample_rate: int = 44_100,
+        format: int = paInt16,
+    ):
+        self._sampler = SamplerTarget(
+            buffer_size,
+            sample_rate,
+        )
+        super().__init__(self._sampler)
+
+
 class MidiOutPlayer(Player):
     # TODO: docs
     def __init__(self, name: str, virtual: bool):
@@ -386,5 +404,11 @@ class MidiInPlayer(Player):
 
     def __init__(self, target: Target, name: str, virtual: bool):
         super().__init__(target)
-        self.port = MidiIn(name, virtual)
-        self.port.set_callback(None, self.play_message)
+        self._port = MidiIn(name, virtual)
+        self._port.set_callback(None, self.play_message)
+
+    def port(self) -> MidiIn:
+        """
+        Returns the internal midi port.
+        """
+        return self._port
