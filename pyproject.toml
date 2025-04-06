@@ -6,12 +6,16 @@ build-backend = "setuptools.build_meta"
 name = "pythonmusic"
 version = "0.0.1"
 dependencies = [
-  "numpy",
-  "pyaudio",
-  "python-osc",
-  "python-rtmidi",
-  "tinysoundfont",
-  "wave",
+  # normal installation
+  "numpy>=2.2.4",
+  # required by numba
+  "numpy>=2.1.0",
+  "pyaudio>=0.2.14",
+  "python-osc>=1.9.3 ",
+  "python-rtmidi>=1.5.8 ",
+  # TODO: replace with "normal" version
+  # this commit fixes an issure during installation on Windows
+  "tinysoundfont @ git+https://github.com/nwhitehead/tinysoundfont-pybind@1a690fb0dc3a7908d1873786e824c4538c030f51",
 ]
 authors = [
   { name = "Darius Löschner", email = "darius.loeschner@uni-potsdam.de" },
