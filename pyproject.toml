@@ -6,10 +6,8 @@ build-backend = "setuptools.build_meta"
 name = "pythonmusic"
 version = "0.0.1"
 dependencies = [
-  # normal installation
-  "numpy>=2.2.4",
-  # required by numba
-  "numpy>=2.1.0",
+  "librosa>=0.11.0",
+  "numpy>=2.1",
   "pyaudio>=0.2.14",
   "python-osc>=1.9.3",
   "python-rtmidi>=1.5.8 ",

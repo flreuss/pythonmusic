@@ -2,14 +2,14 @@ from collections.abc import Iterable
 from copy import copy
 from os.path import abspath
 from threading import Lock
-from typing import Mapping, Optional, Self, cast
+from typing import Mapping, Optional, Self
 
+import librosa
 import numpy as np
 import pyaudio
 from numpy.typing import NDArray
 
 from pythonmusic.play.target import Target
-from pythonmusic.util import key_to_frequency
 
 __all__ = ["SamplerTarget"]
 
@@ -22,41 +22,24 @@ def falloff_f_to_i(falloff: float, sample_rate: int) -> int:
 
 
 class WaveSample:
-    def __init__(self, path: str, amp: float, falloff: float, target_sample_rate: int):
-        self.data: NDArray
+    def __init__(self, samples: NDArray, falloff: float):
+        self.data = samples
         self.falloff = falloff
 
-        base_sample_rate: int
+    @classmethod
+    def load(cls, path: str, amp: float, falloff: float, target_sample_rate: int):
+
         raw_data: NDArray
-        base_sample_rate, raw_data = wavfile.read(abspath(path))
+        raw_data, _ = librosa.load(abspath(path), sr=target_sample_rate, mono=False)
 
-        sample_count, channels = cast(tuple[int, int], raw_data.shape)
+        if raw_data.ndim == 1:
+            raw_data = np.vstack([raw_data, raw_data])  # mono → fake stereo
+        elif raw_data.shape[0] > 2:
+            raw_data = raw_data[:2, :]  # drop channels beyond stereo
 
-        # make stereo
-        if channels == 1:
-            raw_data = np.repeat(raw_data[:, np.newaxis], 2, axis=1)
-        else:
-            raw_data = raw_data.reshape(-1, channels)[:, :2]
+        raw_data = np.clip(raw_data * amp, I16_MIN, I16_MAX).astype(np.float32)
 
-        # resample, if needed
-        raw_data = (
-            # resample(raw_data, sample_count, sample_rate, target_samplerate)
-            cast(
-                NDArray,
-                signal.resample(
-                    raw_data,
-                    round(
-                        float(sample_count * target_sample_rate)
-                        / float(base_sample_rate)
-                    ),
-                ),
-            )
-            if base_sample_rate != target_sample_rate
-            else raw_data
-        )
-
-        raw_data = np.clip(raw_data * amp, I16_MIN, I16_MAX).astype(np.int16)
-        self.data = raw_data
+        return cls(raw_data.T, falloff)
 
     def __len__(self) -> int:
         return len(self.data)
@@ -66,16 +49,21 @@ class WaveSample:
         new.data = np.copy(self.data)
         return new
 
+    def pitch(self, semitones: int, sample_rate: int):
+        self.data = librosa.effects.pitch_shift(
+            self.data.T, sr=sample_rate, n_steps=semitones, res_type="soxr_qq"
+        ).T
+
 
 class Voice:
-    def __init__(self, data: memoryview, velocity: float, falloff: int):
+    def __init__(self, data: NDArray, velocity: float, falloff: int):
         self.data = data
         self.velocity = velocity
         self.index = 0
         self.falloff_frames = falloff
         self.remaining_falloff: Optional[int] = None
 
-    def chunk(self, size: int) -> Optional[tuple[float, memoryview]]:
+    def chunk(self, size: int) -> Optional[NDArray]:
         if self.index >= len(self.data):
             return None
 
@@ -83,17 +71,17 @@ class Voice:
         end = min(start + size, len(self.data))
         self.index += size
 
-        multiplyer = self.velocity
+        multiplier = self.velocity
 
         if self.remaining_falloff:
-            multiplyer *= float(self.remaining_falloff) / float(self.falloff_frames)
+            multiplier *= float(self.remaining_falloff) / float(self.falloff_frames)
             self.remaining_falloff = max(0, self.remaining_falloff - size)
 
             if self.remaining_falloff == 0:
                 # end sample
                 self.index = len(self.data)
 
-        return multiplyer, self.data[start:end]
+        return self.data[start:end] * multiplier
 
     def init_falloff(self):
         self.remaining_falloff = min(len(self.data) - self.index, self.falloff_frames)
@@ -104,7 +92,6 @@ class SamplerTarget(Target):
         self,
         buffer_size: int = 512,
         sample_rate: int = 44_100,
-        format: int = pyaudio.paInt16,
     ):
         """
         TODO
@@ -121,7 +108,6 @@ class SamplerTarget(Target):
 
         self._sample_rate = sample_rate
         self._buffer_size = buffer_size
-        self._format = format
 
         self._samples: list[Optional[WaveSample]] = [None] * 128
         self._voices: list[Optional[Voice]] = [None] * 128
@@ -129,7 +115,7 @@ class SamplerTarget(Target):
         self._lock = Lock()
         self._pa = pyaudio.PyAudio()
         self._stream = self._pa.open(
-            format=self._format,
+            format=pyaudio.paFloat32,
             channels=2,
             rate=self._sample_rate,
             output=True,
@@ -150,14 +136,29 @@ class SamplerTarget(Target):
         # 3 terminate pa
         self._pa.terminate()
 
+    def sample_count(self) -> int:
+        """
+        Returns the total number of loaded samples.
+        """
+        return len(list(filter(lambda element: element is not None, self._samples)))
+
+    def voices(self) -> int:
+        """
+        Returns the number of active voices.
+        """
+        return len(self._voices)
+
     def sample_rate(self) -> int:
+        """
+        Returns the sampler's sample rate.
+        """
         return self._sample_rate
 
     def buffer_size(self) -> int:
+        """
+        Returns the audio stream's buffer size.
+        """
         return self._buffer_size
-
-    def format(self) -> int:
-        return self._format
 
     def _add_sample(self, key: int, sample: WaveSample):
         self._samples[key] = sample
@@ -168,7 +169,9 @@ class SamplerTarget(Target):
     def add_sample(
         self, path: str, key: int, base_amp: float = 1.0, falloff: float = 0.1
     ):
-        self._add_sample(key, WaveSample(path, base_amp, falloff, self._sample_rate))
+        self._add_sample(
+            key, WaveSample.load(path, base_amp, falloff, self._sample_rate)
+        )
 
     def add_sample_for_keys(
         self,
@@ -179,33 +182,24 @@ class SamplerTarget(Target):
         base_amp: float = 1.0,
         falloff: float = 0.1,
     ):
-        sample = WaveSample(path, base_amp, falloff, self._sample_rate)
+        sample = WaveSample.load(path, base_amp, falloff, self._sample_rate)
 
         if pitch:
-            base_sample_rate = key_to_frequency(base_key)
-            for target_key, target_sample in map(
-                lambda key: (key, sample.clone()), add_to
-            ):
-                target_sample_rate = key_to_frequency(target_key)
+            key_count = len(list(add_to))
+            for index, target_key in enumerate(add_to):
+                print(
+                    f"pitching samples ({index + 1}/{key_count})", end="\r", flush=True
+                )
 
-                print(target_key, len(target_sample.data))
+                new_sample = sample.clone()
+                if target_key != base_key:
+                    new_sample.pitch(target_key - base_key, self._sample_rate)
 
-                sample.data = cast(
-                    NDArray,
-                    signal.resample(
-                        sample.data,
-                        round(
-                            float(len(sample.data) * target_sample_rate)
-                            / float(base_sample_rate)
-                        ),
-                    ),
-                ).astype(np.int16)
-
-                self._add_sample(target_key, target_sample)
-
+                self._add_sample(target_key, new_sample)
+            print()
         else:
             for target_key in add_to:
-                self._add_sample(target_key, target_sample)
+                self._add_sample(target_key, sample)
 
     def note_on(self, channel: int, key: int, velocity: int):
         super().note_on(channel, key, velocity)
@@ -229,40 +223,28 @@ class SamplerTarget(Target):
         del in_data
 
         # 32 bit should prevent overflow
-        buffer = np.zeros((frame_count, 2), dtype=np.int32)
+        buffer = np.zeros((frame_count, 2), dtype=np.float32)
 
         with self._lock:
             for key_index, voice in enumerate(self._voices):
                 if not voice:
                     continue
 
-                chunk_info = voice.chunk(frame_count)
-                if not chunk_info:
+                data = voice.chunk(frame_count)
+                if data is None:
                     self._remove_voice(key_index)
                     continue
-
-                multiplyer, chunk = chunk_info
-
-                # data = np.array(chunk, dtype=np.int16)
-                data = (
-                    np.frombuffer(chunk, dtype=np.int16)
-                    .reshape(-1, 2)
-                    .astype(np.float32)
-                )
-                data *= multiplyer
-                data = np.clip(np.round(data), I16_MIN, I16_MAX).astype(np.int16)
 
                 # if sample has run out, add padding
                 data_len = len(data)
                 if data_len < frame_count:
-                    padding = np.zeros((frame_count - data_len, 2), dtype=np.int16)
+                    padding = np.zeros((frame_count - data_len, 2), dtype=np.float32)
                     data = np.vstack((data, padding))
 
-                buffer += data.astype(np.int32)
+                buffer += data.astype(np.float32)
 
-        # clip back to 16 bits
         return (
-            np.clip(buffer, I16_MIN, I16_MAX).astype(np.int16).tobytes(),
+            np.clip(buffer, -1.0, 1.0).tobytes(),
             pyaudio.paContinue,
         )
 
@@ -274,7 +256,7 @@ class SamplerTarget(Target):
 
         if sample:
             self._voices[key] = Voice(
-                memoryview(sample.data),
+                sample.data,
                 velocity / 127,
                 falloff_f_to_i(sample.falloff, self._sample_rate),
             )
