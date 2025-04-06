@@ -100,9 +100,6 @@ class SamplerTarget(Target):
             buffer_size(int): The size of each audio buffer. If you hear popping
                 noises, try to increase this value.
             sample_rate(int): The sample rate of the imported wav files.
-            format(int): Audio format as an int type. Defaults to 16-Bit audio,
-                which is common.
-
         """
         super().__init__()
 
