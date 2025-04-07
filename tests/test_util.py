@@ -25,10 +25,10 @@ class UtilTests(unittest.TestCase):
         assert_range(10.0, 9.0, 10.0)
         assert_range(9.0, 9.0, 10.0)
 
-    def test_clamp(self):
-        self.assertEqual(clamp(34, 0, 100), 34)
-        self.assertEqual(clamp(45.1, 0.5, 45.0), 45.0)
-        self.assertEqual(clamp(0, 10, 20), 10)
+    def test_clip(self):
+        self.assertEqual(clip(34, 0, 100), 34)
+        self.assertEqual(clip(45.1, 0.5, 45.0), 45.0)
+        self.assertEqual(clip(0, 10, 20), 10)
 
     def test_make_instrument(self):
         i = make_instrument(1, 0)

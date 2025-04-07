@@ -4,12 +4,14 @@
 # library. Use `helpers` if you need to import
 
 from math import floor, log
+from time import sleep
 from typing import Any, Callable, Optional, TypeVar
 
 __all__ = [
+    "block",
     "Number",
     "assert_range",
-    "clamp",
+    "clip",
     "make_instrument",
     "instrument_get_patch_bank",
     "find_pattern",
@@ -51,9 +53,9 @@ def assert_range(value: Number, lower: Number, upper: Number):
     return
 
 
-def clamp(value: Number, lower: Number, upper: Number):
+def clip(value: Number, lower: Number, upper: Number):
     """
-    Clamps a value to a range.
+    Clips a value to a range.
 
     Returns the lower bound if `value < lower`, or the upper bound if `value >
     upper`; otherwise `value`.
@@ -64,7 +66,7 @@ def clamp(value: Number, lower: Number, upper: Number):
         upper(Number): The upper bound
 
     Returns:
-        Number: The clamped value
+        Number: The clipped value
     """
     return min(upper, max(lower, value))
 
@@ -453,3 +455,31 @@ def vlq_to_int(input: bytes) -> int:
         output |= byte & 0b01111111
 
     return output
+
+
+def block(interval: float = 1.0, condition: Optional[Callable[[], bool]] = None):
+    """
+    Blocks execution of the current thread.
+
+    Use this function to keep players, targets, and midi ports alive in the
+    background.
+
+    You can define a callback function that decides if the block should end. The
+    callback should return `True` if the block should continue, `False`
+    otherwise.
+
+    Args:
+        interval(float): Interval in seconds after which the condition is
+            checked
+        condition(Optional[Callable[[None], bool]]): A callback that returns
+            `True` if the block should continue, or `False` otherwise
+    """
+
+    try:
+        while True:
+            if condition and condition():
+                break
+            else:
+                sleep(interval)
+    except KeyboardInterrupt:
+        pass
