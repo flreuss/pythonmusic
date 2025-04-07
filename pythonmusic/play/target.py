@@ -252,7 +252,7 @@ class SfTarget(Target):
         self._sfid = self._target.sfload(abspath(sound_font), gain)
         self._target.start()
 
-        self._target.program_change(PERCUSSION_CHANNEL, 128, True)
+        self._target.program_change(PERCUSSION_CHANNEL, 127, True)
 
     def __del__(self):
         # aims to prevent an error message on macOS
