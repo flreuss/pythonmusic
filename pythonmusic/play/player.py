@@ -5,9 +5,11 @@ from heapq import heapify, heappop, heappush
 from time import sleep, time
 from typing import Callable, Optional, cast
 
-from pyaudio import paInt16
-
-from pythonmusic.constants import PPQ
+from pythonmusic.constants import (
+    AUDIO_STREAM_DEFAULT_BUFFER_SIZE,
+    AUDIO_STREAM_DEFAULT_SAMPLE_RATE,
+    PPQ,
+)
 from pythonmusic.constants.tempo import ADAGIO
 from pythonmusic.midi.convert import initial_part_messages, pe_to_midi
 from pythonmusic.midi.io import MidiIn
@@ -82,7 +84,7 @@ class Player:
         pe: PhraseElement,
         channel: int,
         tempo: float = ADAGIO,
-        callback: Optional[Callable[[Note, int, bool], Optional[Note]]] = None,
+        callback: Optional[Callable[[Note, int, bool], Note]] = None,
     ):
         """
         Plays a phrase element on the given channel.
@@ -103,7 +105,7 @@ class Player:
         note: Note,
         channel: int,
         tempo: float = ADAGIO,
-        callback: Optional[Callable[[Note, int, bool], Optional[Note]]] = None,
+        callback: Optional[Callable[[Note, int, bool], Note]] = None,
     ):
         """
         Plays a note on the given channel.
@@ -120,7 +122,7 @@ class Player:
         chord: Chord,
         channel: int,
         tempo: float = ADAGIO,
-        callback: Optional[Callable[[Note, int, bool], Optional[Note]]] = None,
+        callback: Optional[Callable[[Note, int, bool], Note]] = None,
     ):
         """
         Plays a chord on the given channel.
@@ -137,7 +139,7 @@ class Player:
         phrase: Phrase,
         channel: int,
         tempo: float = ADAGIO,
-        callback: Optional[Callable[[Note, int, bool], Optional[Note]]] = None,
+        callback: Optional[Callable[[Note, int, bool], Note]] = None,
     ):
         """
         Plays a phrase on the given channel.
@@ -153,7 +155,7 @@ class Player:
         self,
         part: Part,
         tempo: float = ADAGIO,
-        callback: Optional[Callable[[Note, int, bool], Optional[Note]]] = None,
+        callback: Optional[Callable[[Note, int, bool], Note]] = None,
         start_at: float = 0.0,
     ):
         """
@@ -169,7 +171,7 @@ class Player:
     def play_score(
         self,
         score: Score,
-        callback: Optional[Callable[[Note, int, bool], Optional[Note]]] = None,
+        callback: Optional[Callable[[Note, int, bool], Note]] = None,
         start_at: float = 0.0,
     ):
         """
@@ -255,7 +257,7 @@ class Player:
         playback_elements: list[PlaybackElement],
         initial_messages: list[Message],
         tempo: float,
-        callback: Optional[Callable[[Note, int, bool], Optional[Note]]],
+        callback: Optional[Callable[[Note, int, bool], Note]],
     ):
         if len(playback_elements) == 0:
             return
@@ -296,11 +298,11 @@ class Player:
 
                     if not next_pe.note.is_rest():
                         note = copy(next_pe.note)
-                        if callback:
-                            note = (
-                                callback(note, next_pe.channel, next_pe.in_chord)
-                                or note
-                            )
+                        note = (
+                            callback(note, next_pe.channel, next_pe.in_chord)
+                            if callback
+                            else note
+                        )
 
                         note_messages, _ = pe_to_midi(
                             note, next_pe.channel, next_pe.start_time
@@ -358,14 +360,10 @@ class SamplePlayer(Player):
     # TODO: docs
     def __init__(
         self,
-        buffer_size: int = 512,
-        sample_rate: int = 44_100,
-        format: int = paInt16,
+        sample_rate: int = AUDIO_STREAM_DEFAULT_SAMPLE_RATE,
+        buffer_size: int = AUDIO_STREAM_DEFAULT_BUFFER_SIZE,
     ):
-        self._sampler = SamplerTarget(
-            buffer_size,
-            sample_rate,
-        )
+        self._sampler = SamplerTarget(buffer_size, sample_rate)
         super().__init__(self._sampler)
 
 

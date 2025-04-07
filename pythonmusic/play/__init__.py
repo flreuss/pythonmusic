@@ -1,4 +1,4 @@
-from .audio_steam import *
+from .audio_stream import *
 from .player import *
 from .sampler import *
 from .synthesizer import *

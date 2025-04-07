@@ -1,7 +1,6 @@
 from collections.abc import Iterable
 from copy import copy
 from os.path import abspath
-from threading import Lock
 from typing import Mapping, Optional, Self
 
 import librosa as lr
@@ -9,7 +8,11 @@ import numpy as np
 import pyaudio as pa
 from numpy.typing import NDArray
 
-from pythonmusic.play.audio_steam import AudioStream
+from pythonmusic.constants import (
+    AUDIO_STREAM_DEFAULT_BUFFER_SIZE,
+    AUDIO_STREAM_DEFAULT_SAMPLE_RATE,
+)
+from pythonmusic.play.audio_stream import AudioStream
 from pythonmusic.play.target import Target
 
 __all__ = ["SamplerTarget"]
@@ -91,8 +94,8 @@ class Voice:
 class SamplerTarget(AudioStream, Target):
     def __init__(
         self,
-        sample_rate: int = 44_100,
-        buffer_size: int = 512,
+        sample_rate: int = AUDIO_STREAM_DEFAULT_SAMPLE_RATE,
+        buffer_size: int = AUDIO_STREAM_DEFAULT_BUFFER_SIZE,
     ):
         """
         TODO
@@ -200,7 +203,7 @@ class SamplerTarget(AudioStream, Target):
                     padding = np.zeros((frame_count - data_len, 2), dtype=np.float32)
                     data = np.vstack((data, padding))
 
-                buffer += data.astype(np.float32)
+                buffer += data
 
         return (
             np.clip(buffer, -1.0, 1.0).tobytes(),
