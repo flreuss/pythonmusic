@@ -86,6 +86,10 @@ class UtilTests(unittest.TestCase):
         bpm = 120
         self.assertEqual(mpqn_to_bpm(bpm_to_mpqn(bpm)), bpm)
 
+    def test_bpm_sec_conversion(self):
+        bpm = 120
+        self.assertEqual(sec_to_bpm(bpm_to_sec(bpm)), bpm)
+
     def test_beats_to_ticks(self):
         _PPQ = 960
         self.assertEqual(beats_to_ticks(4.0, _PPQ), 3840)
@@ -132,3 +136,8 @@ class UtilTests(unittest.TestCase):
             vlq_to_int(bytes([0b11111111, 0b01101111])), 0b00_1111111_1101111
         )
         self.assertEqual(vlq_to_int(bytes([0xBD, 0x84, 0x40])), 0x0F4240)
+
+    def test_seconds_to_samples(self):
+        sr = 44_100
+        self.assertEqual(seconds_to_samples(1.0, sr), sr)
+        self.assertEqual(samples_to_seconds(seconds_to_samples(1.0, sr), sr), 1.0)

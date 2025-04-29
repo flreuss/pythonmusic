@@ -21,12 +21,16 @@ __all__ = [
     "user_list_prompt",
     "mpqn_to_bpm",
     "bpm_to_mpqn",
+    "bpm_to_sec",
+    "sec_to_bpm",
     "beats_to_ticks",
     "frequency_to_key",
     "key_to_frequency",
     "contains_identity",
     "int_to_vlq",
     "vlq_to_int",
+    "seconds_to_samples",
+    "samples_to_seconds",
 ]
 
 Number = TypeVar("Number", int, float)
@@ -303,7 +307,7 @@ def user_list_prompt(choices: list[Any]) -> Optional[Any]:
     return choice
 
 
-def bpm_to_mpqn(bpm: float) -> int:
+def bpm_to_mpqn(bpm: Number) -> int:
     """
     Converts BPM to MpQN.
 
@@ -311,15 +315,15 @@ def bpm_to_mpqn(bpm: float) -> int:
     midi-standard microseconds per quarter note.
 
     Args:
-        bpm(float): Beats per minute
+        bpm(Number): Beats per minute
 
     Returns:
         int: Microseconds per quarter note
     """
-    return round(60_000_000 / bpm)
+    return round(60_000_000.0 / float(bpm))
 
 
-def mpqn_to_bpm(mpqn: int) -> float:
+def mpqn_to_bpm(mpqn: Number) -> float:
     """
     Converts MpQN to BPM.
 
@@ -327,13 +331,41 @@ def mpqn_to_bpm(mpqn: int) -> float:
     note to beats per minute.
 
     Args:
-        mpqn(int): Microseconds per quarter note
+        mpqn(Number): Microseconds per quarter note
 
     Returns:
         float: Beats per minute
     """
 
-    return 60_000_000 / mpqn
+    return 60_000_000.0 / float(mpqn)
+
+
+def bpm_to_sec(bpm: Number) -> float:
+    """
+    Converts BPM to the duration per beat in seconds.
+
+    Args:
+        bpm(Number): Beats per minute
+
+    Returns:
+        float: Seconds per beat
+    """
+
+    return 60.0 / float(bpm)
+
+
+def sec_to_bpm(sec: Number) -> float:
+    """
+    Converts the duration of a beat in seconds to BPM.
+
+    Args:
+        sec(Number): Duration of beat in seconds
+
+    Returns:
+        float: Beats per minute
+    """
+
+    return 60.0 / float(sec)
 
 
 def beats_to_ticks(beats: float, ppq: int) -> int:
@@ -483,3 +515,34 @@ def block(interval: float = 1.0, condition: Optional[Callable[[], bool]] = None)
                 sleep(interval)
     except KeyboardInterrupt:
         pass
+
+
+def seconds_to_samples(duration: Number, sample_rate: Number) -> int:
+    """
+    Returns the number of samples for a duration at the given smaple rate.
+
+    This function exists to communicate what is being done. Essentially, this
+    boils down to `duration * sample_rate`.
+
+    Args:
+        duration(Number): The duration in seconds
+        sample_rate(Number): The sample rate in samples per second
+
+    Returns:
+        int: Number of samples
+    """
+    return round(float(duration) * float(sample_rate))
+
+
+def samples_to_seconds(samples: int, sample_rate: Number) -> float:
+    """
+    Returns the duration of the given sample count at `sample_rate` in seconds.
+
+    Args:
+        samples(int): Sample count
+        sample_rate(Number): Current sampe rate
+
+    Return:
+        float: Duration is seconds
+    """
+    return float(samples) / float(sample_rate)

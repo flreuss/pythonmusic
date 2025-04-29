@@ -1,6 +1,6 @@
 from collections.abc import Iterable
 from copy import copy
-from os.path import abspath
+from os.path import abspath, expanduser
 from typing import Mapping, Optional, Self
 
 import librosa as lr
@@ -34,7 +34,9 @@ class WaveSample:
     def load(cls, path: str, amp: float, falloff: float, target_sample_rate: int):
 
         raw_data: NDArray
-        raw_data, _ = lr.load(abspath(path), sr=target_sample_rate, mono=False)
+        raw_data, _ = lr.load(
+            abspath(expanduser(path)), sr=target_sample_rate, mono=False
+        )
 
         if raw_data.ndim == 1:
             raw_data = np.vstack([raw_data, raw_data])  # mono → fake stereo
@@ -146,6 +148,7 @@ class SamplerTarget(AudioStream, Target):
     ):
         sample = WaveSample.load(path, base_amp, falloff, self._sample_rate)
 
+        # TODO: multithread / pool execution?
         if pitch:
             key_count = len(list(add_to))
             for index, target_key in enumerate(add_to):
