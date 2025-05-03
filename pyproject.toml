@@ -30,3 +30,6 @@ keywords = []
 
 [project.urls]
 Homepage = "https://gitup.uni-potsdam.de/music-with-pc/pythonmusic"
+
+[project.optional-dependencies]
+docs = ["sphinx>=8.2", "sphinx-rtd-theme>=3.0", "myst-parser>=4.0"]
