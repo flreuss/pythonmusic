@@ -24,16 +24,25 @@ class InvalidMessageError(Exception):
     pass
 
 
-# TODO: docs
-
-
-# time in ms from start
 class Message:
     """
-    A midi message.
-    """
+    An object that represents a variable-length midi message.
 
-    # time is midi ticks
+    Midi messages are used to communicate between midi capable devices. To
+    create a new midi message, use the various class methods:
+    :meth:`new_note_on <pythonmusic.midi.Message.new_note_on>`,
+    :meth:`new_note_on <pythonmusic.midi.Message.new_note_off>`,
+    :meth:`new_note_on <pythonmusic.midi.Message.new_control_change>`, ...
+
+    You can use the initialiser to contruct a message from its bytes.
+
+    The ``time`` attribute is used to define the timing of the message. It is
+    given in ticks from the last event.
+
+    Args:
+        data (bytearray | bytes | list[int]): Some byte data
+        time (int): The message's offset in ticks
+    """
 
     __slots__ = ("data", "time")
 

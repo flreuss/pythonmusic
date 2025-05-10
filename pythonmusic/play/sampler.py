@@ -94,19 +94,30 @@ class Voice:
 
 
 class SamplerTarget(AudioStream, Target):
+    """
+    A sampler for wav files.
+
+    Use this target to play midi messages, notes, and scores using your
+    own ``.wav`` files. To add a sample, use the
+    :meth:`add_sample <pythonmusic.play.SamplerTarget.add_sample>` or
+    :meth:`add_sample_for_keys <pythonmusic.play.SamplerTarget.add_sample_for_keys>`
+    methods.
+
+    The sampler supports ``.wav`` files only. If a file's sample rate differs
+    from the defined sample rate passed to this class' initialiser, the sample
+    is re-sampled automatically.
+
+    Args:
+        sample_rate(int): The sample rate of the imported wav files.
+        buffer_size(int): The size of each audio buffer. If you hear popping
+            noises, try to increase this value.
+    """
+
     def __init__(
         self,
         sample_rate: int = AUDIO_STREAM_DEFAULT_SAMPLE_RATE,
         buffer_size: int = AUDIO_STREAM_DEFAULT_BUFFER_SIZE,
     ):
-        """
-        TODO
-
-        Args:
-            sample_rate(int): The sample rate of the imported wav files.
-            buffer_size(int): The size of each audio buffer. If you hear popping
-                noises, try to increase this value.
-        """
         super().__init__(2, sample_rate, buffer_size, pa.paFloat32)
 
         self._samples: list[Optional[WaveSample]] = [None] * 128
@@ -128,11 +139,30 @@ class SamplerTarget(AudioStream, Target):
         self._samples[key] = sample
 
     def remove_sample(self, key: int):
+        """
+        Removes the sample for the given key.
+        """
         self._samples[key] = None
 
     def add_sample(
         self, path: str, key: int, base_amp: float = 1.0, falloff: float = 0.1
     ):
+        """
+        Adds a sample for the given key.
+
+        You can use the ``base_amp`` parameter to change the base volume for
+        each individual sample.
+
+        Once a sample ends, it continues playing with decreasing volume for
+        ``falloff`` seconds. Try increasing this value if you samples "pop" when
+        stopping.
+
+        Args:
+            path (str): Path to the sample file
+            key (int): Key to add the sample to
+            base_amp (float): Base volume of sample
+            falloff (float): Falloff duration of the sample when note stops
+        """
         self._add_sample(
             key, WaveSample.load(path, base_amp, falloff, self._sample_rate)
         )
@@ -146,6 +176,33 @@ class SamplerTarget(AudioStream, Target):
         base_amp: float = 1.0,
         falloff: float = 0.1,
     ):
+        """
+        Adds a sample for the given range of keys. The sample's pitch is assumed
+        to be at ``base_pitch`` and is pitched to all keys in range.
+
+        Use this function to pitch a sample to multiple keys. The sample should
+        match the given ``base_key`` and is pitched to all keys defined in
+        ``add_to``.
+
+        You can ser ``pitch`` to false to not automatically pitch the sample to
+        each corresponding new frequency, but use the sample as-is.
+
+        You can use the ``base_amp`` parameter to change the base volume for
+        each individual sample.
+
+        Once a sample ends, it continues playing with decreasing volume for
+        ``falloff`` seconds. Try increasing this value if you samples "pop" when
+        stopping.
+
+        Args:
+            path (str): Path to the sample file
+            base_key (int): Pitch of the sample
+            add_to (Iterable[int]): Keys to add the sample to
+            pitch (bool): Pitch when adding to keys that are not base_key. Set
+                to `False` to disable pitching
+            base_amp (float): Base volume of sample
+            falloff (float): Falloff duration of the sample when note stops
+        """
         sample = WaveSample.load(path, base_amp, falloff, self._sample_rate)
 
         # TODO: multithread / pool execution?

@@ -186,7 +186,7 @@ def map_value(
         conversion_strategy (Callable[[float], int]): A function that converts a float to an int
 
     Returns:
-        int | float: The mapped value
+        Number: The mapped value
     """
     # assert that all given values are in bounds
     assert_range(value, min_value, max_value)

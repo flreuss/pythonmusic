@@ -23,10 +23,14 @@ description = "Make music in python"
 readme = "README.md"
 requires-python = ">=3.12"
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 4 - Beta",
   "Programming Language :: Python",
+  "Intended Audience :: Education",
+  "Topic :: Education :: Computer Aided Instruction (CAI)",
+  "Topic :: Multimedia :: Sound/Audio :: MIDI",
+
 ]
-keywords = []
+keywords = ["music", "education", "creativity", "midi", "composition"]
 
 [project.urls]
 Homepage = "https://gitup.uni-potsdam.de/music-with-pc/pythonmusic"

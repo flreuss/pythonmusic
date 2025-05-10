@@ -8,6 +8,16 @@ __all__ = ["OscIn", "OscOut"]
 
 # (server)
 class OscIn:
+    """
+    A simple osc server.
+
+    You can add mapping to the server with the `map` function.
+
+    Args:
+        ip (str): The ip of the server
+        port (int): The port of the server
+    """
+
     def __init__(self, ip: str, port: int):
         self._ip = ip
         self._port = port
@@ -46,7 +56,17 @@ class OscIn:
 
 # (client)
 class OscOut:
-    def __init__(self, ip: str = "127.0.0.1", port: int = 5005):
+    """
+    A simple osc client.
+
+    You can send a message with the `send_message` function.
+
+    Args:
+        ip (str): The ip of the osc server
+        port (int): The port of the osc server
+    """
+
+    def __init__(self, ip: str, port: int):
         self._client = udp_client.SimpleUDPClient(ip, port)
         self._ip = ip
         self._port = port

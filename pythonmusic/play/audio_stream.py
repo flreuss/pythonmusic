@@ -8,6 +8,10 @@ __all__ = ["AudioStream"]
 
 
 class AudioStream(ABC):
+    """
+    An abstract class that defines an interface for audio streams.
+    """
+
     def __init__(self, channels: int, sample_rate: int, buffer_size: int, format: int):
         self._channels = channels
         self._sample_rate = sample_rate
@@ -72,6 +76,4 @@ class AudioStream(ABC):
     ) -> tuple[bytes, int]:
         """
         Defines the callback for the pyaudio audio stream.
-
-        TODO: This needs some explanation
         """

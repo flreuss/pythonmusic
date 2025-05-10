@@ -223,7 +223,6 @@ class EmptyTarget(Target):
     dummy target.
     """
 
-    # does not call init / does not allocate channel info
     pass
 
 
@@ -235,7 +234,6 @@ class SfTarget(Target):
     Sound fonts differ in their base volume. If your playback is too loud or too
     quiet, you can adjust the font's base level with the `gain` parameter. All
     values between `-3` (quieter) and `3` (louder) are valid.
-
 
     Args:
         sound_font(str): Path to a sound font
@@ -341,13 +339,11 @@ class SfTarget(Target):
         self._target.sounds_off(channel)
 
 
-# TODO: docs
 class MidiOutTarget(Target):
     """
     A target implementation for sending midi messages to midi input ports.
 
-    For more information on the `name` and `virtual` parameters, see
-    @@@@@
+    For more information, see :obj:`MidiOut <pythonmusic.midi.MidiOut>`.
 
     Args:
         name(str): Name of midi device or virtual port

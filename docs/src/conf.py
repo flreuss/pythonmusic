@@ -42,4 +42,7 @@ todo_include_todos = False
 
 html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
-html_logo = "images/python-logo.svg"
+html_logo = "./images/pm_title.png"
+html_theme_options = {
+    "logo_only": True,
+}

@@ -56,6 +56,18 @@ class _SynthKeyItem:
 
 
 class Oscillator(ABC):
+    """
+    A base class for oscillators.
+
+    To create a class from this, implement the
+    :meth:`sample() <pythonmusic.play.Oscillator.sample>`
+    method.
+
+    Oscillators should not store and timing data internally, but rely on the
+    passed ``t`` parameter in the
+    :meth:`sample() <pythonmusic.play.Oscillator.sample>` function.
+    """
+
     def _make_buffer_for_key(
         self, buffer_size: int, t: float, step: float, phase: float, amp: float
     ) -> NDArray[np.float32]:
@@ -69,10 +81,22 @@ class Oscillator(ABC):
 
     @abstractmethod
     def sample(self, t: float, phase: float, amplitude: float) -> float:
-        """"""
+        """
+        This method is used to generate samples from the oscillator.
+
+        Args:
+            t (float): Timing offset for the oscillator. Used by the synthesizer
+                to implement pitch
+            phase (float): Timing offset (phase)
+            amplitude (float): Amplitude multiplier (volume)
+        """
 
 
 class SineOscillator(Oscillator):
+    """
+    A sine oscillator.
+    """
+
     def __init__(self):
         pass
 
@@ -90,6 +114,10 @@ class SineOscillator(Oscillator):
 
 
 class SquareOscillator(SineOscillator):
+    """
+    A square oscillator.
+    """
+
     def __init__(self):
         super().__init__()
 
@@ -112,6 +140,10 @@ class SquareOscillator(SineOscillator):
 
 
 class SawOscillator(Oscillator):
+    """
+    A saw oscillator.
+    """
+
     def __init__(self):
         pass
 
@@ -127,6 +159,22 @@ class SawOscillator(Oscillator):
 
 
 class SynthesizerTarget(AudioStream, Target):
+    """
+    A synthesizer that uses :obj:`oscillators <pythonmusic.play.Oscillator>` for
+    sound data generation.
+
+    This target supports attack, sustain, and decay, which can be used to
+    customise the oscillator's sound.
+
+    Args:
+        oscillator (Oscillator): An oscillator
+        attack (Optional[float]): Attack in seconds
+        sustain (Optional[float]): Sustain in seconds
+        decay (Optional[float]): Decay in seconds
+        sample_rate(int): Sample rate per second
+        buffer_size(int): Sample buffer size
+    """
+
     def __init__(
         self,
         oscillator: Oscillator,

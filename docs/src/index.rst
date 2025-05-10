@@ -54,9 +54,47 @@ To get started, see the :doc:`Installation <intro/installation>` and :doc:`Getti
 Requirements
 ------------
 
-Requires Python ``>=3.11``. See :doc:`Installation <intro/installation>` for more information.
+Requires Python ``>=3.12``. See :doc:`Installation <intro/installation>` for more information.
 
 Source Code
 -----------
 
 Source code is available on the project's `repository <https://gitup.uni-potsdam.de/music-with-pc/pythonmusic>`_.
+
+
+.. toctree::
+   :caption: Start Here
+   :maxdepth: 4
+   :hidden:
+
+   intro/installation
+   intro/getting_started
+
+
+.. toctree::
+   :caption: Objects
+   :maxdepth: 4
+   :hidden
+
+
+.. toctree::
+   :caption: Reference / API
+   :maxdepth: 1
+   :hidden:
+
+   reference/constants
+   reference/metronome
+   reference/midi
+   reference/mods
+   reference/music
+   reference/osc
+   reference/play
+   reference/utility
+
+
+.. toctree::
+   :caption: Appendix
+   :maxdepth: 4
+   :hidden:
+
+   appendix/licenses

@@ -1,23 +1,11 @@
-from typing import Callable, Optional, cast
+from typing import Callable, Optional
 
 from rtmidi import MidiIn as RtMidiIn  # type: ignore
 from rtmidi import MidiOut as RtMidiOut  # type: ignore
 
-from pythonmusic.constants import PPQ
-from pythonmusic.constants.control_change import BANK_CHANGE, CHANNEL_PAN
 from pythonmusic.constants.messages import NOTE_OFF
 from pythonmusic.midi.message import Message
-from pythonmusic.music import Score
-from pythonmusic.music.chord import Chord
-from pythonmusic.music.note import Note
-from pythonmusic.music.phrase_element import PhraseElement
-from pythonmusic.util import (
-    beats_to_ticks,
-    find_pattern,
-    find_pattern_index,
-    instrument_get_patch_bank,
-    user_list_prompt,
-)
+from pythonmusic.util import find_pattern, find_pattern_index, user_list_prompt
 
 __all__ = [
     "MidiIn",
@@ -30,7 +18,6 @@ __all__ = [
     "find_output_index",
     "input_user_prompt",
     "output_user_prompt",
-    # "export_score",
 ]
 
 MIDI_CLILENT_NAME = "PythonMusic"
@@ -265,7 +252,6 @@ class MidiIn:
         if callback is not None:
             callback(message)
 
-    # TEST: PyDoc?
     def set_callback(self, event: Optional[int], callback: Callable[[Message], None]):
         """
         Registers a callback for a given message type.
@@ -401,69 +387,3 @@ class MidiOut:
 
         for message in _messages():
             self.send_message(message)
-
-
-# def export_score(score: Score, file_name: str):
-#     def _track_add_pe(
-#         track: MidiTrack, phrase_element: PhraseElement, accumulator: int
-#     ) -> int:
-#         if isinstance(phrase_element, Note):
-#             note = cast(Note, phrase_element)
-#             note_duration = beats_to_ticks(note.duration, PPQ)
-#
-#             if note.is_rest():
-#                 return accumulator + note_duration
-#
-#             print(accumulator)
-#             track.addNoteByNumber(
-#                 part.channel,
-#                 note.pitch,
-#                 accumulator,
-#                 note_duration,
-#                 note.dynamic,
-#             )
-#
-#             return accumulator + note_duration
-#
-#         if isinstance(phrase_element, Chord):
-#             chord = cast(Chord, phrase_element)
-#             chord_duration = beats_to_ticks(chord.duration, PPQ)
-#
-#             for note in chord.flatten():
-#                 _ = _track_add_pe(track, note, accumulator)
-#
-#             return accumulator + chord_duration
-#
-#         raise TypeError("Unknown phrase element")
-#
-#     midi_file = MidiFile(
-#         numTracks=len(score.parts),  # creates a tempo track internally
-#         file_format=1,
-#         ticks_per_quarternote=PPQ,
-#         deinterleave=True,
-#         eventtime_is_ticks=True,
-#     )
-#
-#     midi_file.addTempo(-1, 0, score.tempo)  # can be float
-#     for index, part in enumerate(score.parts):
-#         track: MidiTrack = midi_file.tracks[index + 1]  # accounts for tempo track
-#
-#         # set track name
-#         track.addTrackName(0, part.title or f"part_{index}")
-#
-#         # set instrument
-#         patch, bank = instrument_get_patch_bank(part.instrument)
-#         track.addProgramChange(part.channel, 0, patch)
-#         track.addControllerEvent(part.channel, 0, BANK_CHANGE, bank)
-#
-#         # set panning
-#         track.addControllerEvent(part.channel, 0, CHANNEL_PAN, part.panning)
-#
-#         # add notes
-#         for start_time, phrase in part.phrases_with_start_times():
-#             accumulator: int = beats_to_ticks(start_time, PPQ)
-#             for phrase_element in phrase.notes:
-#                 accumulator += _track_add_pe(track, phrase_element, accumulator)
-#
-#     with open(file_name, "wb") as output:
-#         midi_file.writeFile(output)

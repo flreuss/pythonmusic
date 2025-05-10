@@ -16,6 +16,7 @@ from pythonmusic.midi.io import MidiIn
 from pythonmusic.midi.message import Message
 from pythonmusic.music import Chord, Note, Part, Phrase, PhraseElement, Score
 from pythonmusic.play.sampler import SamplerTarget
+from pythonmusic.play.synthesizer import Oscillator, SynthesizerTarget
 from pythonmusic.util import beats_to_ticks, bpm_to_mpqn
 
 from .target import MidiOutTarget, SfTarget, Target
@@ -24,6 +25,7 @@ __all__ = [
     "Player",
     "Player",
     "SfPlayer",
+    "SynthesizerPlayer",
     "MidiOutPlayer",
     "MidiInPlayer",
 ]
@@ -44,11 +46,29 @@ class Player:
     Players handle the conversion, timing, and sending of midi messages to
     targets.
 
-    Must set instrument under phrase
+    All players accept a callback in their play methods that is called for each
+    note that is about to be played. The callback receives the note, its
+    channel, and a boolean that indicates whether the note is part of a chord.
+    The note may be shortened, though its duration in playback won't change. The
+    callback returns the note that will be played.
 
-    You can change the duration of the note, but it won't change its frame
+    .. code-block:: python
 
-    Callabck can return note instead
+        from pythonmusic import *
+
+        def my_callback(note: Note, channel: int, is_chord: bool) -> Note:
+            # mutes all notes on channel 1, pitch all other notes by +3
+            if channel == 1:
+                return note.as_rest()
+
+            note.pitch += 3
+
+            return note
+
+        player.play_score(score, callback=my_callback)
+
+    Args:
+        target (Target): A target
     """
 
     def __init__(self, target: Target):
@@ -97,6 +117,8 @@ class Player:
             note(PhraseElement): A phrase element
             channel(int): The channel to play on
             tempo(float): The tempo in BPM
+            callback (Optional[Callable[[Note, int, bool], Note]]): Callback for
+                each note
         """
         self.play_phrase(Phrase([pe]), channel, tempo, callback)
 
@@ -114,6 +136,8 @@ class Player:
             note(Note): A note
             channel(int): The channel to play on
             tempo(float): The tempo in BPM
+            callback (Optional[Callable[[Note, int, bool], Note]]): Callback for
+                each note
         """
         self.play_phrase_element(note, channel, tempo, callback)
 
@@ -131,6 +155,8 @@ class Player:
             note(Chord): A chord
             channel(int): The channel to play on
             tempo(float): The tempo in BPM
+            callback (Optional[Callable[[Note, int, bool], Note]]): Callback for
+                each note
         """
         self.play_phrase_element(chord, channel, tempo, callback)
 
@@ -148,6 +174,8 @@ class Player:
             phrase(Phrase): A phrase
             channel(int): The channel to play on
             tempo(float):  Tempo in BPM
+            callback (Optional[Callable[[Note, int, bool], Note]]): Callback for
+                each note
         """
         self.play_part(Part(None, phrases=[phrase], channel=channel), tempo, callback)
 
@@ -164,6 +192,8 @@ class Player:
         Args:
             part(Part): A part
             tempo(float): Tempo in BPM
+            callback (Optional[Callable[[Note, int, bool], Note]]): Callback for
+                each note
             start_at(float): The beat to start on
         """
         self.play_score(Score(None, [part], tempo), callback, start_at)
@@ -179,6 +209,8 @@ class Player:
 
         Args:
             score(Score): A score
+            callback (Optional[Callable[[Note, int, bool], Note]]): Callback for
+                each note
             start_at(float): The beat to start on
         """
         self._play_elements(
@@ -188,7 +220,7 @@ class Player:
                     map(
                         lambda part: filter(
                             lambda element: element.start_time >= start_at,
-                            self.prepare_part(part),
+                            self._prepare_part(part),
                         ),
                         score.parts,
                     ),
@@ -206,7 +238,7 @@ class Player:
         )
 
     @staticmethod
-    def prepare_part(part: Part) -> list[PlaybackElement]:
+    def _prepare_part(part: Part) -> list[PlaybackElement]:
         def _convert_pe(
             pe: PhraseElement, start_time: int, is_chord: bool
         ) -> tuple[list[PlaybackElement], int]:
@@ -337,9 +369,9 @@ class Player:
 
 class SfPlayer(Player):
     """
+    A player implementation for the sound font target.
 
-
-
+    For more information, see :obj:`SfTarget <pythonmusic.play.SfTarget>`.
 
     Sound fonts differ in their base volume. If your playback is too loud or too
     quiet, you can adjust the font's base level with the `gain` parameter. All
@@ -350,14 +382,22 @@ class SfPlayer(Player):
         gain(int): Gain from `-3` to `3`
     """
 
-    # TODO: docs
     def __init__(self, sound_font: str, gain: int = 0):
         target = SfTarget(sound_font, gain)
         super().__init__(target)
 
 
 class SamplePlayer(Player):
-    # TODO: docs
+    """
+    A player implementation for the sampler target.
+
+    For more information, see :obj:`SamplerTarget <pythonmusic.play.SamplerTarget>`.
+
+    Args:
+        sample_rate (int): The sample rate per second
+        buffer_size (int): The buffer size
+    """
+
     def __init__(
         self,
         sample_rate: int = AUDIO_STREAM_DEFAULT_SAMPLE_RATE,
@@ -368,7 +408,12 @@ class SamplePlayer(Player):
 
 
 class MidiOutPlayer(Player):
-    # TODO: docs
+    """
+    A player implementation for the midi out target.
+
+    For more information, see :obj:`MidiOut <pythonmusic.midi.MidiOut>`.
+    """
+
     def __init__(self, name: str, virtual: bool):
         target = MidiOutTarget(name, virtual)
         super().__init__(target)
@@ -382,6 +427,8 @@ class MidiInPlayer(Player):
     """
     A player implementation that receives input from a midi source and plays
     messages on a target.
+
+    For more information, see :obj:`MidiIn <pythonmusic.midi.MidiIn>`.
 
     .. important::
         This player runs in the background and is not blocking. You may need to
@@ -410,3 +457,31 @@ class MidiInPlayer(Player):
         Returns the internal midi port.
         """
         return self._port
+
+
+class SynthesizerPlayer(Player):
+    """
+    A player implementation for the synthesizer target.
+
+    Args:
+        oscillator (Oscillator): An oscillator
+        attack (Optional[float]): Attack in seconds
+        sustain (Optional[float]): Sustain in seconds
+        decay (Optional[float]): Decay in seconds
+        sample_rate(int): Sample rate per second
+        buffer_size(int): Sample buffer size
+    """
+
+    def __init__(
+        self,
+        oscillator: Oscillator,
+        attack: Optional[float] = None,
+        sustain: Optional[float] = None,
+        decay: Optional[float] = None,
+        sample_rate: int = AUDIO_STREAM_DEFAULT_SAMPLE_RATE,
+        buffer_size: int = AUDIO_STREAM_DEFAULT_BUFFER_SIZE,
+    ):
+        target = SynthesizerTarget(
+            oscillator, attack, sustain, decay, sample_rate, buffer_size
+        )
+        super().__init__(target)

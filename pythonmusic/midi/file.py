@@ -63,7 +63,7 @@ def part_to_messages(part: Part) -> list[Message]:
 # export
 def export_score(score: Score, file_name: str):
     """
-    Exports the given score to disk.
+    Saves the given score as a midi file under the given path.
 
     Args:
         score(Score): A score to export

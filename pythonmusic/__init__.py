@@ -5,5 +5,4 @@ from .midi import *
 from .music import *
 from .osc import *
 from .play import *
-from .ui import *
 from .util import *
