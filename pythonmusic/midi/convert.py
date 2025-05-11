@@ -146,9 +146,10 @@ def pe_to_midi(
         elif note.has_articulation(STACCATO):
             duration *= 0.5
         elif note.has_articulation(LEGATO):
-            # FIXME: shoul be at 1.05, but this breaks midi messages
+            # FIXME: this breaks midi messages
             # check why this is, algorithm for inserting may be wrong
-            duration *= 1.0
+            # duration *= 1.05
+            pass
         else:
             duration *= 0.90
 

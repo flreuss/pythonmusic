@@ -46,10 +46,13 @@ class _SynthKeyItem:
         self.duration = 0
 
     def queue_end(self):
-        self.duration = 0
         self.attack = None
         self.sustain = None
-        self.decay = 100
+        if self.duration is not None:
+            self.duration = 0
+            self.decay = 512
+        else:
+            self.decay = None
 
     def end(self):
         self.duration = None
@@ -330,8 +333,11 @@ class SynthesizerTarget(AudioStream, Target):
                 if item.duration is None:  # remember: 0 is falsy
                     continue
 
-                buffer += self._oscillator._make_buffer_for_key(
-                    frame_count, item.t, item.step, 0.0, item.amp
+                buffer += (
+                    self._oscillator._make_buffer_for_key(
+                        frame_count, item.t, item.step, 0.0, item.amp
+                    )
+                    * BASE_AMP
                 )
                 buffer *= self._make_envelope(frame_count, item)
 
