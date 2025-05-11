@@ -68,9 +68,6 @@ class Chord(PhraseElement, NoteCollection):
         allows, for instance, adding multiple notes with the same duration,
         without having to provide the same duration multiple times.
 
-        ..code-block:: python
-            chord = Chord.from_lists([A4, C4, D4], [QN], [MF, FF])  # starts with MF and then repeats FF
-
         Args:
             pitches (list[int]): A list of pitches
             durations (list[int]): A list of durations

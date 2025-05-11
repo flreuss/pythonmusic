@@ -1,5 +1,3 @@
-from time import sleep
-
 from pythonmusic import *
 
 global counter
@@ -16,7 +14,7 @@ def callback() -> bool:
     return counter < MAX
 
 
-metronome = Metronome(120.0, callback)
+metronome = Metronome(120.0, 3, callback=callback)
 metronome.set_velocity(MP)
 
 metronome.start()

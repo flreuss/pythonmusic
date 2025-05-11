@@ -102,10 +102,6 @@ class NoteCollection(ABC):
         allows, for instance, adding multiple notes with the same duration,
         without having to provide the same duration multiple times.
 
-        ..code-block:: python
-            phrase = Phrase()
-            phrase.add_notes_by_lists([A4, C4, D4], [QN], [MF, FF])  # starts with MF and then repeats FF
-
         Raises:
             ValueError: If any list is empty
 

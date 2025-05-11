@@ -23,7 +23,6 @@ from .target import MidiOutTarget, SfTarget, Target
 
 __all__ = [
     "Player",
-    "Player",
     "SfPlayer",
     "SynthesizerPlayer",
     "MidiOutPlayer",
@@ -45,27 +44,6 @@ class Player:
 
     Players handle the conversion, timing, and sending of midi messages to
     targets.
-
-    All players accept a callback in their play methods that is called for each
-    note that is about to be played. The callback receives the note, its
-    channel, and a boolean that indicates whether the note is part of a chord.
-    The note may be shortened, though its duration in playback won't change. The
-    callback returns the note that will be played.
-
-    .. code-block:: python
-
-        from pythonmusic import *
-
-        def my_callback(note: Note, channel: int, is_chord: bool) -> Note:
-            # mutes all notes on channel 1, pitch all other notes by +3
-            if channel == 1:
-                return note.as_rest()
-
-            note.pitch += 3
-
-            return note
-
-        player.play_score(score, callback=my_callback)
 
     Args:
         target (Target): A target

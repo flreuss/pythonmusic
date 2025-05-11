@@ -23,22 +23,6 @@ class Target(ABC):
 
     Implementations of this class should override methods such as `note_on`,
     `note_off`, ... and replace with their desired behaviour.
-
-    .. code-block:: python
-
-        class PrintTarget(Target):
-            def note_off(self, channel: int, key: int, velocity: int):
-                print(f"NoteOff(channel: {channel}, key: {key}, velocity: {velocity})")
-
-            def note_on(self, channel: int, key: int, velocity: int):
-                print(f"NoteOn(channel: {channel}, key: {key}, velocity: {velocity})")
-
-            def control_change(self, channel: int, control: int, value: int):
-                print(f"CC(channel: {channel}, control: {control}, value: {value})")
-
-            def program_change(self, channel: int, program: int):
-                print(f"Changing instrument on channel {channel} to {program}")
-
     """
 
     def midi_message(self, message: Message) -> bool:
@@ -66,8 +50,8 @@ class Target(ABC):
 
             ...
             @override
-            def play_message(self, message: Message) -> bool:
-                if super().play_message(self, message):
+            def midi_message(self, message: Message) -> bool:
+                if super().midi_message(self, message):
                     return True
 
                 match message.type():
@@ -220,7 +204,7 @@ class Target(ABC):
 class EmptyTarget(Target):
     """
     A target implementation that does nothing. Use this class if you need a
-    dummy target.
+    dummy target or to mute playback for classes that require a target.
     """
 
     pass
@@ -259,26 +243,31 @@ class SfTarget(Target):
 
     @override
     def note_on(self, channel: int, key: int, velocity: int):
+        """:meta private:"""
         super().note_on(channel, key, velocity)
         self._target.noteon(channel, key, velocity)
 
     @override
     def note_off(self, channel: int, key: int, velocity: int):
+        """:meta private:"""
         super().note_off(channel, key, velocity)
         self._target.noteoff(channel, key)
 
     @override
     def control_change(self, channel: int, control: int, value: int):
+        """:meta private:"""
         super().control_change(channel, control, value)
         self._target.control_change(channel, control, value)
 
     @override
     def program_change(self, channel: int, program: int):
+        """:meta private:"""
         super().program_change(channel, program)
         self._target.program_change(channel, program, channel == PERCUSSION_CHANNEL)
 
     @override
     def pitch_bend(self, channel: int, value: int):
+        """:meta private:"""
         super().pitch_bend(channel, value)
         # midi uses two bytes (7 bit available) to represent pitch bend
         # this library uses only the msb (0..128), so we need to shift
@@ -369,6 +358,8 @@ class MidiOutTarget(Target):
 
         Unlike other target implementations, this message forwards to the the
         `MidiOut` instance directly. Handler methods are not called.
+
+        :meta private:
 
         Args:
             message(Message): A midi message

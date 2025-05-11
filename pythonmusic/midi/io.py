@@ -125,7 +125,7 @@ def find_output_index(pattern: str) -> Optional[int]:
 
 def input_user_prompt() -> Optional[str]:
     """
-    Retrieves open midi input and asks user to choose one if more than one
+    Retrieves open midi input and asks user to choose if more than one
     option is available.
 
     Returns:
@@ -137,7 +137,7 @@ def input_user_prompt() -> Optional[str]:
 
 def output_user_prompt() -> Optional[str]:
     """
-    Retrieves open midi output and asks user to choose one if more than one
+    Retrieves open midi output and asks user to choose if more than one
     option is available.
 
     Returns:

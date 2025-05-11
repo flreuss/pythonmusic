@@ -10,7 +10,7 @@ from pythonmusic.constants import (
     P,
 )
 from pythonmusic.play.synthesizer import Oscillator, SineOscillator, SynthesizerTarget
-from pythonmusic.play.target import EmptyTarget, Target
+from pythonmusic.play.target import Target
 from pythonmusic.util import bpm_to_sec
 
 __all__ = ["Metronome"]

@@ -261,7 +261,9 @@ class SynthesizerTarget(AudioStream, Target):
     def _get_item_for_key(self, key: int) -> _SynthKeyItem:
         return self._keys[key]
 
+    @override
     def note_on(self, channel: int, key: int, velocity: int):
+        """:meta private:"""
         super().note_on(channel, key, velocity)
         item = self._get_item_for_key(key)
         item.begin()
@@ -270,7 +272,9 @@ class SynthesizerTarget(AudioStream, Target):
         item.decay = self._decay
         item.amp = float(velocity) * ONE_OVER_128
 
+    @override
     def note_off(self, channel: int, key: int, velocity: int):
+        """:meta private:"""
         super().note_off(channel, key, velocity)
         self._get_item_for_key(key).queue_end()
 
