@@ -332,7 +332,6 @@ def cello_db_part() -> Part:
 
 
 def make_score() -> Score:
-    # FIXME: percussion
     parts = [
         flute_part(),
         oboe_part(),
