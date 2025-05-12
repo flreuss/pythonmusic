@@ -17,18 +17,20 @@ __all__ = ["Metronome"]
 
 # default values for metronome
 VELOCITY: int = P
-OSC: type[Oscillator] = SineOscillator
-ATTACK: Optional[float] = 0.01
-SUSTAIN: Optional[float] = None
-DECAY: Optional[float] = 0.2
+OSCILLATOR: type[Oscillator] = SineOscillator
+ATTACK: float = 0.007
+DECAY: tuple[float, float] = (0.04, 0.3)
+SUSTAIN: Optional[float] = 0.0
+RELEASE: float = 0.05
 
 
 def _make_default_target() -> Target:
     return SynthesizerTarget(
-        OSC(),
+        OSCILLATOR(),
         ATTACK,
-        SUSTAIN,
         DECAY,
+        SUSTAIN,
+        RELEASE,
         AUDIO_STREAM_DEFAULT_SAMPLE_RATE,
         AUDIO_STREAM_DEFAULT_BUFFER_SIZE,
     )
