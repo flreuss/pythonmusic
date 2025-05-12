@@ -72,19 +72,20 @@ Source code is available on the project's `repository <https://gitup.uni-potsdam
 
 
 .. toctree::
-   :caption: Objects
+   :caption: API
    :maxdepth: 4
    :hidden:
 
-   objects/phrase_elements
-   objects/phrases
-   objects/parts
-   objects/scores
-   objects/play
-   objects/midi_io
-   objects/sampler
-   objects/synthesizer
-   objects/metronome
+   api/phrase_elements
+   api/phrases
+   api/parts
+   api/scores
+   api/play
+   api/midi_io
+   api/sound_font
+   api/sampler
+   api/synthesizer
+   api/metronome
 
 
 .. toctree::

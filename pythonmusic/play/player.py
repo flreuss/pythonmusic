@@ -24,6 +24,7 @@ from .target import MidiOutTarget, SfTarget, Target
 __all__ = [
     "Player",
     "SfPlayer",
+    "SamplerPlayer",
     "SynthesizerPlayer",
     "MidiOutPlayer",
     "MidiInPlayer",
@@ -365,7 +366,7 @@ class SfPlayer(Player):
         super().__init__(target)
 
 
-class SamplePlayer(Player):
+class SamplerPlayer(Player):
     """
     A player implementation for the sampler target.
 

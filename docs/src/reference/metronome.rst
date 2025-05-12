@@ -2,7 +2,7 @@ Metronome
 =========
 
 The ``metronome`` module provides the :obj:`Metronome <pythonmusic.metronome.Metronome>` class. For more information, see the
-:doc:`metronome section <../objects/metronome>`.
+:doc:`metronome section <../api/metronome>`.
 
 .. automodule:: pythonmusic.metronome
    :members:

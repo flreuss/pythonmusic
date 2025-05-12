@@ -16,7 +16,9 @@ You can check your installed version in the terminal with the following command:
 Installing this library and its dependencies also requires Python's Pip package installer. A normal Python installation should install 
 this automatically.
 
-.. note:: If you are using an IDE, the steps to install the correct Python version may vary. Consult your IDE's documentation on how to install Python.
+.. note:: 
+   If you are using an IDE, the steps to install the correct Python version may vary. Consult your IDE's documentation on how to install Python.
+   Make sure to select the correct Python version. An older version may be selected.
 
 
 Additional Windows Dependencies
