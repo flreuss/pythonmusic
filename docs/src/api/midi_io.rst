@@ -9,7 +9,9 @@ on your platform. As such, the name of your device may differ depending on your 
 :meth:`midi_inputs() <pythonmusic.midi.midi_inputs>` for midi inputs (receivers) and :meth:`midi_outputs() <pythonmusic.midi.midi_outputs>`
 for a list of midi output (senders).
 
-
+.. important:: 
+   Midi channels range from 1 to 16. This library is zero-indexed, so valid channels
+   range from 0 to 15. Convert from midi standards by subtracting 1.
 
 To provide a coherent API, this library uses `Rtmidi <https://www.music.mcgill.ca/~gary/rtmidi/>`_
 (`python-rtmidi <https://spotlightkid.github.io/python-rtmidi/>`_) as its midi backend.

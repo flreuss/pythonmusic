@@ -109,3 +109,5 @@ Source code is available on the project's `repository <https://gitup.uni-potsdam
    :hidden:
 
    appendix/licenses
+   appendix/midi
+   appendix/build_documentation

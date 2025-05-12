@@ -158,7 +158,30 @@ class SawOscillator(Oscillator):
 
 class SynthesizerTarget(AudioStream, Target):
     """
-    explain decay
+    A synthesizer target that generates sound from oscillators.
+
+    The synthesizer uses an :obj:`oscillators <pythonmusic.play.Oscillator>` to
+    create a base wave that is combined with an ADSR envelope, that you define
+    by setting the ``attack``, ``decay``, ``sustain``, and ``release``
+    parameters.
+
+    The ``decay`` parameter requires a two-place tuple with the duration of the
+    decay in first, and the amount of volume reduction in percent in the second.
+    A tuple ``delay=(0.2, 0.75)`` would reduce the volume by 75% in 0.2 seconds.
+
+    The ``sustain`` parameter defines the duration the note is held without
+    change in envelope. You can pass ``None`` to keep the note playing until
+    the note off event is received.
+
+    Args:
+        oscillator (Oscillator): An oscillator
+        attack (float): Duration of attack in seconds
+        decay (tuple[float, float]): Tuple containing delay duration in seconds
+            and volume reduction in percent
+        sustain (Optional[float]): Duration of sustain in seconds
+        release (float): Duration of release in seconds
+        sample_rate(int): Sample rate per second
+        buffer_size(int): Sample buffer size
     """
 
     def __init__(
