@@ -1,6 +1,8 @@
 import math
 from abc import ABC, abstractmethod
-from typing import Mapping, Optional, cast, override
+from enum import Enum
+from queue import Empty, Queue
+from typing import Mapping, Optional, override
 
 import numpy as np
 import pyaudio as pa
@@ -12,7 +14,12 @@ from pythonmusic.constants import (
 )
 from pythonmusic.play.audio_stream import AudioStream
 from pythonmusic.play.target import Target
-from pythonmusic.util import key_to_frequency, samples_to_seconds, seconds_to_samples
+from pythonmusic.util import (
+    assert_range,
+    key_to_frequency,
+    samples_to_seconds,
+    seconds_to_samples,
+)
 
 __all__ = [
     "Oscillator",
@@ -27,35 +34,23 @@ BASE_AMP: float = 0.333
 TAU: float = np.pi * 2
 
 
-class _SynthKeyItem:
-    __slots__ = ("t", "step", "amp", "duration", "attack", "sustain", "decay")
+class SynthStage(Enum):
+    IDLE = 0
+    ATTACK = 1
+    DECAY = 2
+    SUSTAIN = 3
+    RELEASE = 4
+
+
+class SynthKeyItem:
+    __slots__ = ("t", "step", "amp", "duration", "stage")
 
     def __init__(self, step: float):
         self.t = 0.0
         self.step = step
         self.amp = 1.0
-        self.duration: Optional[int] = None
-        self.attack: Optional[int] = None
-        self.sustain: Optional[int] = None
-        self.decay: Optional[int] = None
-
-    def is_alive(self) -> bool:
-        return self.duration is not None
-
-    def begin(self):
-        self.duration = 0
-
-    def queue_end(self):
-        self.attack = None
-        self.sustain = None
-        if self.duration is not None:
-            self.duration = 0
-            self.decay = 512
-        else:
-            self.decay = None
-
-    def end(self):
-        self.duration = None
+        self.duration: int = 0
+        self.stage: SynthStage = SynthStage.IDLE
 
 
 class Oscillator(ABC):
@@ -66,7 +61,7 @@ class Oscillator(ABC):
     :meth:`sample() <pythonmusic.play.Oscillator.sample>`
     method.
 
-    Oscillators should not store and timing data internally, but rely on the
+    Oscillators should not store timing data internally, but rely on the
     passed ``t`` parameter in the
     :meth:`sample() <pythonmusic.play.Oscillator.sample>` function.
     """
@@ -158,32 +153,21 @@ class SawOscillator(Oscillator):
     def _make_buffer_for_key(
         self, buffer_size: int, t: float, step: float, phase: float, amp: float
     ) -> NDArray[np.float32]:
-        return (phase + t + step * np.arange(buffer_size)) % TAU * amp
+        return ((phase + t + (step * np.arange(buffer_size))) % 1.0) * amp
 
 
 class SynthesizerTarget(AudioStream, Target):
     """
-    A synthesizer that uses :obj:`oscillators <pythonmusic.play.Oscillator>` for
-    sound data generation.
-
-    This target supports attack, sustain, and decay, which can be used to
-    customise the oscillator's sound.
-
-    Args:
-        oscillator (Oscillator): An oscillator
-        attack (Optional[float]): Attack in seconds
-        sustain (Optional[float]): Sustain in seconds
-        decay (Optional[float]): Decay in seconds
-        sample_rate(int): Sample rate per second
-        buffer_size(int): Sample buffer size
+    explain decay
     """
 
     def __init__(
         self,
         oscillator: Oscillator,
-        attack: Optional[float] = None,
+        attack: float = 0.02,
+        decay: tuple[float, float] = (0.0, 1.0),
         sustain: Optional[float] = None,
-        decay: Optional[float] = None,
+        release: float = 0.05,
         sample_rate: int = AUDIO_STREAM_DEFAULT_SAMPLE_RATE,
         buffer_size: int = AUDIO_STREAM_DEFAULT_BUFFER_SIZE,
     ):
@@ -192,17 +176,29 @@ class SynthesizerTarget(AudioStream, Target):
         self._buffer_size = buffer_size
         self._keys = list(
             map(
-                lambda key: _SynthKeyItem(
+                lambda key: SynthKeyItem(
                     math.tau * key_to_frequency(key) / float(sample_rate)
                 ),
                 range(128),
             )
         )
 
+        self._event_queue: Queue[tuple[int, int, bool]] = Queue()
+
         self._oscillator = oscillator
-        self._attack = seconds_to_samples(attack, sample_rate) if attack else None
-        self._sustain = seconds_to_samples(sustain, sample_rate) if sustain else None
-        self._decay = seconds_to_samples(decay, sample_rate) if decay else None
+
+        assert attack >= 0.0
+        assert decay[0] >= 0.0
+        assert_range(decay[1], 0.0, 1.0)
+        assert release >= 0
+
+        self._attack: int = seconds_to_samples(attack, sample_rate)
+        self._decay: int = seconds_to_samples(decay[0], sample_rate)
+        self._decay_reduction: float = decay[1]
+        self._sustain: Optional[int] = (
+            seconds_to_samples(sustain, sample_rate) if sustain is not None else None
+        )
+        self._release: int = seconds_to_samples(release, sample_rate)
 
     @property
     def oscillator(self) -> Oscillator:
@@ -213,16 +209,29 @@ class SynthesizerTarget(AudioStream, Target):
         self._oscillator = v
 
     @property
-    def attack(self) -> Optional[float]:
-        return (
-            samples_to_seconds(self._attack, self._sample_rate)
-            if self._attack
-            else None
-        )
+    def attack(self) -> float:
+        return samples_to_seconds(self._attack, self._sample_rate)
 
     @attack.setter
-    def attack(self, v: Optional[float]):
-        self._attack = seconds_to_samples(v, self._sample_rate) if v else None
+    def attack(self, v: float):
+        self._attack = seconds_to_samples(v, self._sample_rate)
+
+    @property
+    def decay(self) -> float:
+        return samples_to_seconds(self._decay, self._sample_rate)
+
+    @decay.setter
+    def decay(self, v: float):
+        self._decay = seconds_to_samples(v, self._sample_rate)
+
+    @property
+    def decay_reduction(self) -> float:
+        return self._decay_reduction
+
+    @decay_reduction.setter
+    def decay_reduction(self, v: float):
+        assert_range(v, 0.0, 1.0)
+        self._decay_reduction = v
 
     @property
     def sustain(self) -> Optional[float]:
@@ -237,14 +246,12 @@ class SynthesizerTarget(AudioStream, Target):
         self._sustain = seconds_to_samples(v, self._sample_rate) if v else None
 
     @property
-    def decay(self) -> Optional[float]:
-        return (
-            samples_to_seconds(self._decay, self._sample_rate) if self._decay else None
-        )
+    def release(self) -> float:
+        return samples_to_seconds(self._release, self._sample_rate)
 
-    @decay.setter
-    def decay(self, v: Optional[float]):
-        self._decay = seconds_to_samples(v, self._sample_rate) if v else None
+    @release.setter
+    def release(self, v: float):
+        self._release = seconds_to_samples(v, self._sample_rate)
 
     def sample_rate(self) -> int:
         """Returns the synth's sample rate."""
@@ -256,67 +263,134 @@ class SynthesizerTarget(AudioStream, Target):
 
     def is_playing(self, key: int) -> bool:
         """Returns `True` if a note for the given key is playing."""
-        return self._keys[key].is_alive()
+        return self._keys[key].stage != SynthStage.IDLE
 
-    def _get_item_for_key(self, key: int) -> _SynthKeyItem:
+    def _get_item_for_key(self, key: int) -> SynthKeyItem:
         return self._keys[key]
 
-    @override
-    def note_on(self, channel: int, key: int, velocity: int):
-        """:meta private:"""
-        super().note_on(channel, key, velocity)
+    def _note_will_start(self, key: int, velocity: int):
         item = self._get_item_for_key(key)
-        item.begin()
-        item.attack = self._attack
-        item.sustain = self._sustain
-        item.decay = self._decay
+
+        item.duration = 0
+        item.stage = SynthStage.ATTACK
         item.amp = float(velocity) * ONE_OVER_128
 
-    @override
-    def note_off(self, channel: int, key: int, velocity: int):
-        """:meta private:"""
-        super().note_off(channel, key, velocity)
-        self._get_item_for_key(key).queue_end()
+    def _note_will_end(self, key: int):
+        item = self._get_item_for_key(key)
+
+        # if item has already ended or is in release, return
+        if item.stage == SynthStage.IDLE or item.stage == SynthStage.RELEASE:
+            return
+
+        # otherwise skip stage to release
+        item.duration = 0
+        item.stage = SynthStage.RELEASE
 
     def _make_envelope(
-        self, buffer_size: int, key_item: _SynthKeyItem
+        self, buffer_size: int, key_item: SynthKeyItem
     ) -> NDArray[np.float32]:
-        buffer: NDArray[np.float32]
+        match key_item.stage:
+            case SynthStage.ATTACK:
+                duration = float(key_item.duration)
+                attack = float(self._attack)
 
-        if key_item.attack:
-            duration = cast(int, key_item.duration)
-            buffer = np.linspace(
-                duration / key_item.attack,
-                min(1.0, (duration + buffer_size) / key_item.attack),
-                buffer_size,
-            )
+                return np.linspace(
+                    # start: progress of attack
+                    duration / attack,
+                    # stop: progress at buf end, clipped to 1.0
+                    min(1.0, (duration + float(buffer_size)) / attack),
+                    buffer_size,
+                    dtype=np.float32,
+                )
 
-            if duration + buffer_size > key_item.attack:
-                key_item.duration = 0
-                key_item.attack = None
+            case SynthStage.DECAY:
+                duration = float(key_item.duration)
+                decay = float(self._decay)
 
-        elif key_item.sustain:
-            buffer = np.ones(buffer_size, dtype=np.float32)
+                return np.linspace(
+                    # start: 1 - progress, (progress should never be > 1)
+                    1.0 - (self._decay_reduction * (duration / decay)),
+                    # stop: 1 - progress * decay reduction target
+                    1.0
+                    - (
+                        self._decay_reduction
+                        * min(1.0, (duration + float(buffer_size)) / decay)
+                    ),
+                    buffer_size,
+                    dtype=np.float32,
+                )
 
-            if cast(int, key_item.duration) + buffer_size >= key_item.sustain:
-                key_item.duration = 0
-                key_item.sustain = None
+            case SynthStage.SUSTAIN:
+                return np.full(
+                    buffer_size, 1.0 - self._decay_reduction, dtype=np.float32
+                )
 
-        elif key_item.decay:
-            duration = cast(int, key_item.duration)
-            buffer = np.linspace(
-                1.0 - (duration / key_item.decay),
-                1.0 - min(1.0, (duration + buffer_size) / key_item.decay),
-                buffer_size,
-            )
+            case SynthStage.RELEASE:
+                duration = float(key_item.duration)
+                release = float(self._release)
+                sustain_level = 1.0 - self._decay_reduction
 
-            if duration + buffer_size >= key_item.decay:
-                key_item.duration = None
+                return np.linspace(
+                    # start: sustain level times progress of release
+                    sustain_level - (sustain_level * (duration / release)),
+                    # stop:
+                    sustain_level
+                    - (sustain_level * min(1.0, (duration + buffer_size) / release)),
+                    buffer_size,
+                    dtype=np.float32,
+                )
 
-        else:
-            buffer = np.ones(buffer_size, dtype=np.float32)
+        raise ValueError()
 
-        return buffer
+    def _update_key_item(self, key_item: SynthKeyItem):
+        if key_item.stage == SynthStage.IDLE:
+            return
+
+        # we may need to skip stages, so this loops
+        # just in case, count iterations, we should not exeede 2
+        while True:
+            match key_item.stage:
+                case SynthStage.ATTACK:
+                    # check if advance to next stage
+                    if self._attack == 0 or key_item.duration >= self._attack:
+                        key_item.duration = 0
+                        key_item.stage = SynthStage.DECAY
+                        # do not break, let loop check again
+                    else:
+                        # still frames left in attack
+                        break
+
+                case SynthStage.DECAY:
+                    # check if advance to next stage
+                    if self._decay == 0 or key_item.duration >= self._decay:
+                        key_item.duration = 0
+                        key_item.stage = SynthStage.SUSTAIN
+                        # do not break, let loop check again
+                    else:
+                        # still frames left in attack
+                        break
+
+                case SynthStage.SUSTAIN:
+                    # sustain may be None, aka. the note hold until ended
+                    # in that case, this function does not ever advance to
+                    # release, which is triggered by `_note_will_end`
+                    if self._sustain is None:
+                        break
+
+                    if self._sustain == 0 or key_item.duration >= self._sustain:
+                        key_item.duration = 0
+                        key_item.stage = SynthStage.RELEASE
+                        # do not break, but loop again
+                    else:
+                        # still frames left in attack
+                        break
+
+                case SynthStage.RELEASE:
+                    if self._release == 0 or key_item.duration >= self._release:
+                        key_item.duration = 0
+                        key_item.stage = SynthStage.IDLE
+                    # here, we break out in either case
+                    break
 
     def stream_callback(
         self,
@@ -332,9 +406,23 @@ class SynthesizerTarget(AudioStream, Target):
         buffer = np.zeros(frame_count, dtype=np.float32)
 
         with self._lock:
+            # retrieve note events
+            try:
+                while True:
+                    item = self._event_queue.get(block=False)
+                    if item[2]:
+                        self._note_will_start(item[0], item[1])
+                    else:
+                        self._note_will_end(item[0])
+            except Empty:
+                pass
+
             for item in self._keys:
-                # not item.is_alive(), fixes type issue below
-                if item.duration is None:  # remember: 0 is falsy
+                # update key item stage
+                self._update_key_item(item)
+
+                # if item is not playing, continue
+                if item.stage == SynthStage.IDLE:
                     continue
 
                 buffer += (
@@ -342,11 +430,23 @@ class SynthesizerTarget(AudioStream, Target):
                         frame_count, item.t, item.step, 0.0, item.amp
                     )
                     * BASE_AMP
+                    * self._make_envelope(frame_count, item)
                 )
-                buffer *= self._make_envelope(frame_count, item)
 
                 item.t += item.step * float(frame_count)
-                if item.duration is not None:
-                    item.duration += frame_count
+                item.duration += frame_count
 
         return (np.clip(buffer, -1.0, 1.0).tobytes(), pa.paContinue)
+
+    # impl Target
+    @override
+    def note_on(self, channel: int, key: int, velocity: int):
+        """:meta private:"""
+        super().note_on(channel, key, velocity)
+        self._event_queue.put((key, velocity, True))
+
+    @override
+    def note_off(self, channel: int, key: int, velocity: int):
+        """:meta private:"""
+        super().note_off(channel, key, velocity)
+        self._event_queue.put((key, velocity, False))
