@@ -1,5 +1,5 @@
-from typing import override
-from os.path import abspath, expanduser
+from typing import override, Optional
+from os.path import abspath, expanduser, isfile
 
 from fluidsynth import Synth as FSynth
 
@@ -29,6 +29,10 @@ class Synth:
         multiple output sources that may not exist. As long as audio can be heard,
         you can ignore these messages.
 
+
+    Raises:
+        FileNotFoundError: If the given sound font path was not found
+
     Args:
         sound_font (str): Path to a SoundFont2 compatible library
     """
@@ -36,6 +40,9 @@ class Synth:
     def __init__(self, sound_font: str):
         path = abspath(sound_font)
         path = expanduser(path)
+
+        if not isfile(path):
+            raise FileNotFoundError(f'File "{path}" not found')
 
         synth = FSynth()
         synth.start()
@@ -139,10 +146,10 @@ class Synth:
     # Effects
     def set_reverb(
         self,
-        size: float | None = None,
-        damping: float | None = None,
-        width: float | None = None,
-        level: float | None = None,
+        size: Optional[float] = None,
+        damping: Optional[float] = None,
+        width: Optional[float] = None,
+        level: Optional[float] = None,
     ):
         """
         Updates parameters of the synth's reverb.
@@ -151,10 +158,10 @@ class Synth:
         from `0.0` to `100.0`.
 
         Args:
-            size (float): The size of the reverb in range from 0.0 to 1.0
-            damping (float): The damping of the reverb in range from 0.0 to 1.0
-            width (float): The width of the reverb in range from 0.0 to 100.0
-            level (float): The level of the reverb in range from 0.0 to 1.0
+            size (Optional[float]): The size of the reverb in range from 0.0 to 1.0
+            damping (Optional[float]): The damping of the reverb in range from 0.0 to 1.0
+            width (Optional[float]): The width of the reverb in range from 0.0 to 100.0
+            level (Optional[float]): The level of the reverb in range from 0.0 to 1.0
         """
         self._synth.set_reverb(
             size or -1.0, damping or -1.0, width or -1.0, level or -1.0
@@ -168,6 +175,9 @@ class Synth:
 class SynthPlayer(Player):
     """
     A player implementation for the :obj:`pythonmusic.synth.Synth` object.
+
+    When using the SynthPlayer to playback notes or phrases, you need to set an
+    instrument to use for playback. For this, use the ``set_instrument`` function.
 
     .. note:: On Linux using ALSA, you may encounter various error messages reporting that
         some playback devices have not been found. This is normal as ALSA checks for
@@ -240,9 +250,10 @@ class SynthPlayer(Player):
         elif message_type == PITCHWHEEL:
             self._pitchwheel(message)
 
+    @override
     def set_instrument(self, channel: int, instrument: int):
         """
-        Sets the instrument for the given channel.
+        Updates the instrument for a given channel.
 
         Args:
             channel (int): The channel for which to change the instrument
@@ -250,3 +261,15 @@ class SynthPlayer(Player):
         """
         patch, bank = instrument_get_patch_bank(instrument)
         self._synth.set_instrument(channel, patch, bank)
+
+    @override
+    def send_cc(self, channel: int, control: int, value: int):
+        """
+        Notifies the internal synth of a control value change.
+
+        Args:
+            channel (int): The channel for which to update the cc value
+            control (int): The control id to update
+            value (int): The control value to update with
+        """
+        self._synth.set_control_change(channel, control, value)

@@ -24,8 +24,8 @@ Der Nutzende kann unter Nutzung der Bibliothek...
 
 Das System sollte...
 
-- [ ] [PlayCode](https://jythonmusic.me/play-code/\] {5}
-- [ ] [AudioSample](https://jythonmusic.me/api/audiosample/) {4}
+- [x] [PlayCode](https://jythonmusic.me/play-code/) {5}
+- [x] [AudioSample](https://jythonmusic.me/api/audiosample/) {4}
 - [ ] [MidiSequence](https://jythonmusic.me/api/midisequence/) {4}
 - [ ] [ModFunctions](https://jythonmusic.me/api/music-library-functions/mod-functions/) ist nicht das meiste davon recht simpel, funktional selbst zu implementieren? {3}
     - check functions for useful material that is not easily implemented
@@ -35,9 +35,9 @@ Das System sollte...
 
 # Nichtfunktionale Anforderungen
 
-- [ ] Die Bibliothek muss einfach zu verwenden & aufzusetzen sein.
+- [x] Die Bibliothek muss einfach zu verwenden & aufzusetzen sein.
 - [x] Die Auswahl eines MIDI-Gerätes (MidiIn, MidiOut) muss für Laien einfach vorzunehmen sein (z. B. durch Dialog)
 - [ ] Die Bibliothek muss effektiv mit den Event-Handlern einer GUI-Bibliothek (z. B. tkinter) verknüpfbar sein. \[thin layer für tkinter\]
 - [x] Die Bibliothek muss sich am MIDI-Standard (1.0) orientieren.
 - [x] Die verwendeten externen Bibliothek müssen maintained sein.
-- [ ] Die Schnittstellen müssen exakt dokumentiert sein und die Dokumentation muss IDE-integriert sowie als PDF oder HTML vorliegen (z. B. pydocs).
+- [x] Die Schnittstellen müssen exakt dokumentiert sein und die Dokumentation muss IDE-integriert sowie als PDF oder HTML vorliegen (z. B. pydocs).

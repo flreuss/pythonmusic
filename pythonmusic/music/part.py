@@ -1,4 +1,6 @@
+from typing import Optional
 from .phrase import Phrase
+from .note import Note
 from pythonmusic.constants.panning import PAN_CENTER
 from pythonmusic.constants.instruments import ACOUSTIC_GRAND_PIANO
 
@@ -10,7 +12,7 @@ class Part:
     A part represents an instrument and consists of phrases.
 
     Args:
-        title (str | None): A title for the part. Defaults to `None`
+        title (Optional[str]): A title for the part. Defaults to `None`
         instrument (int): An instrument for the part
         phrases (list[Phrase]): A list of phrases to add to the part. Phrases
             can be added later
@@ -20,13 +22,13 @@ class Part:
 
     def __init__(
         self,
-        title: str | None = None,
+        title: Optional[str] = None,
         instrument: int = ACOUSTIC_GRAND_PIANO,
         phrases: list[Phrase] = [],
         channel: int = 0,
         panning: int = PAN_CENTER,
     ) -> None:
-        self.title: str | None = title
+        self.title: Optional[str] = title
         self.instrument: int = instrument
         self.channel: int = channel
         self.phrases: list[tuple[float, Phrase]] = []
@@ -66,7 +68,7 @@ class Part:
             )
         )
 
-    def add_phrase(self, phrase: Phrase, start_time: float | None = None):
+    def add_phrase(self, phrase: Phrase, start_time: Optional[float] = None):
         """
         Adds the given phrase to the part.
 
@@ -76,7 +78,7 @@ class Part:
 
         Args:
             phrase (Phrase): A phrase to add
-            start_time (float | None): Time at which the phrase should start.
+            start_time (Optional[float]): Time at which the phrase should start.
                 Defaults to the end of the part, so the phrase is appended to
                 the end and played after the last phrase ends
         """
@@ -88,7 +90,7 @@ class Part:
     def add_phrases(
         self,
         phrases: list[Phrase],
-        start_times: list[float | None] | None = None,
+        start_times: Optional[list[Optional[float]]] = None,
     ):
         """
         Adds the given phrases to the part.
@@ -109,14 +111,14 @@ class Part:
 
         Args:
             phrases (list[Phrase]): The phrases to add
-            start_time (list[float | None]): The phrases' start times
+            start_time (Optional[list[Optional[float]]]): The phrases' start times
         """
 
         # check if start_times was provided
         if start_times is None:
             # if not generate list of None with length of len(phrases)
             # this setup is needed to satisfy the type checker
-            NONE_ELEMENT: list[float | None] = [None]
+            NONE_ELEMENT: list[Optional[float]] = [None]
             start_times = NONE_ELEMENT * len(phrases)
         else:
             # otherwise, check that length is equal
@@ -167,3 +169,25 @@ class Part:
     def clear(self):
         """Removes all phrases from the part."""
         self.phrases = []
+
+    def linearise(self) -> list[tuple[float, Note]]:
+        """
+        Returns a list of this part's notes flattened.
+
+        Use this function to retrieve all notes contained in this part.
+        Because Phrases are not necessarily contiguous, each note is also
+        prefixed by its start time.
+
+        The returned list is not sorted and may not be in order of start times.
+
+        Returns:
+            list[tuple[float, Note]]: All notes contained in the phrase with
+                their start_time attached
+        """
+        notes: list[tuple[float, Note]] = []
+
+        for phrase_start_time, phrase in self.phrases:
+            for note_start_time, note in phrase.linearise():
+                notes.append((phrase_start_time + note_start_time, note))
+
+        return notes

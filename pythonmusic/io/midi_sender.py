@@ -101,3 +101,5 @@ class MidiSender:
         controller values.
         """
         self.port.panic()
+
+    # def play_note(self, note: Note, )

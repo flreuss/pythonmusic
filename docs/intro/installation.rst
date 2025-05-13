@@ -21,21 +21,17 @@ this automatically.
 Additional Windows Dependencies
 ...............................
 
-.. important:: This step must be completed **before** installing PythonMusic. Your installation may break without it.
+.. important:: This step must be completed **before** installing PythonMusic, otherwise you may need to remove and reinstall ``python-rtmidi`` after this step before continuing.
 
-PythonMusic requires certain `DLLs <https://en.wikipedia.org/wiki/Dynamic-link_library>`_ to be present during the installation process
-which are not installed by default. Download and install the `Visual C++ Redistributable for Visual Studio 2015 <https://www.microsoft.com/en-us/download/details.aspx?id=48145>`_ (32-bit) *before* continuing this guide. Restart your system.
+PythonMusic on Windows requires 
+`Microsoft Build Tools for Visual Studio 2022 <https://visualstudio.microsoft.com/downloads/?q=build+tools>`_.
+After downloading and running the installer, select the *Desktop development with C++* package in the workloads section. To minimise the
+disk space needed for installation, you can deselect all optional features in the side bar on the right side **except the current 
+version of the MSVC build tools and Windows SDK**. Click on install.
 
-If you installed PythonMusic first, you may need to remove the ``python-rtmidi`` package and reinstall PythonMusic afterwards. 
-
-.. code-block:: bash
-
-   pip uninstall python-rtmidi
-
-If you use an IDE, remove the ``python-rtmidi`` package. If this is not listed, remove the ``pythonmusic`` package instead, and reinstall.
-
-Should you still encounter the "DLL not found" error, try installing the 64-bit version of the Redistributable as well. Repeat the 
-reinstallation of ``python-rtmidi``.
+.. note::
+  If you have previously installed Visual Studio or the build tools itself, make sure that the *Desktop development with C++* workload is
+  installed. Visual Studio can be used instead of the build tools, as long as the same dependencies are installed.
 
 
 Synth
@@ -44,7 +40,8 @@ Synth
 Optionally, this library supports on-device playback through `FluidSynth <https://www.fluidsynth.org/>`_ and a GM (General MIDI)
 compatible SoundFont2 library.
 
-SF2 libraries can be found online. For a good starting point, have a look at a  `Default Windows MIDI Soundfont <https://musical-artifacts.com/artifacts/713>`_.
+SF2 libraries can be found online. For a good starting point, have a look at a `Default Windows MIDI Soundfont <https://musical-artifacts.com/artifacts/713>`_ or 
+`FluidR3 GM2-2.SF2 <https://www.dropbox.com/s/xixtvox70lna6m2/FluidR3%20GM2-2.SF2>`_.
 
 
 Linux / macOS
@@ -87,31 +84,122 @@ To uninstall FluidSynth, remove the DLLs you moved to ``System32``. Be careful n
 Creating a Project
 ------------------
 
-.. warning::
-   TODO: remove.
-   Because this repository is not public, installing via pip as described below may not work. See the REAMDE on `gitup <https://gitup.uni-potsdam.de/music-with-pc/pythonmusic>`_.
+PythonMusic is a normal Python library that can be added to your projects. Below you will find instructions for setting up PythonMusic
+in PyCharm, Visual Studio Code, and the terminal. For other IDE and environments, consult their respective documentation.
+
+.. note:: All instructions below that need to be run in the terminal assume that the ``python`` command is available. If this command is not found, try using ``python3`` instead.
+
+.. important:: The instructions below may not work while the project's repository is not public. Instead, download the repo as a zip and install locally.
 
 
-Terminal
-........
+In PyCharm
+..........
 
-Create a new directory and initialise a virtual environment inside. Activate the environment and install the PythonMusic package.
+.. note:: If you are adding PythonMusic to an existing project, you can skip the first step. Make sure that your Python version is supported.
+
+Create a new project make sure that a Python version ``>=3.11`` is selected. This is the minimum supported version by this library and may not be selected by default.
+
+.. image:: ../images/pycharm_new_project.png
+
+Once the new project has loaded, open the "Python Packages" toolbar by click on the corresponding button in the sidebar. Next, select
+"Add Package" and then "From Version Control.
+
+.. image:: ../images/pycharm_add_pm.png
+
+In the "Install Package" dialogue, enter the PythonMusic repository URL (``https://gitup.uni-potsdam.de/music-with-pc/pythonmusic.git``).
+Do not select "Install as editable (-e)". Click on "OK".
+
+.. image:: ../images/pycharm_install_package.png
+
+PyCharm should now clone and install the PythonMusic git repository. Once the process is complete, PythonMusic is installed into your 
+environment and available to your project. See :doc:`Getting Started <./getting_started>` to start making music.
+
+.. note:: If the installation fails, try cloning via SSH. For this, use ``git@gitup.uni-potsdam.de:music-with-pc/pythonmusic.git``,
+   instead.
+
+
+In Visual Studio Code
+.....................
+
+Install the Python extension for VS Code from the Extension Marketplace.
+
+.. image:: ../images/vscode_install_python.png
+
+Open VS Code inside a new folder, or if already present, your existing project.
+
+
+Creating the Environment
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+As a code editor, VS Code does not create a Python environment automatically. Instead, you create an environment manually by either
+using the installed Python plug-in or the terminal.
+
+The Python plug-in for VS Code can create a virtual environment for you. For this, go to the "View" menu in the menu bar, and select
+"Command Palette...". Search for "Python: Create Environment".
+
+.. image:: ../images/vscode_create_venv.png
+
+Afterwards, select "Venv" and a compatible Python version (``>=3.11``).
+
+Open a terminal by selecting the "New Terminal" option from the "Terminal" menu item. Continue with the instructions for a terminal
+setup below. Skip the first step, if you have setup the environment above.
+
+
+In the Terminal
+...............
+
+.. _from_vs_full:
+
+Creating the Environment
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+In the terminal, we need to create the virtual environment manually. Starting in Python ``3.4``, this can be done using the *venv* module. The command below will create a new environment.
 
 .. code-block:: bash
 
-   $ mkdir my_project
-   $ cd my_project
-   $ python3 -m venv venv
-   $ source venv/bin/activate
-   $ pip install git+https://gitup.uni-potsdam.de/music-with-pc/pythonmusic
+   python -m venv venv
 
-IDE
-...
+.. _from_vs_partial:
 
-When creating a new project, make sure to select a Python version ``>=3.11``. This may not be the default option.
+Activate the Environment
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-Consult your IDE's documentation on how to install python packages. The repository can be found at ``git+https://gitup.uni-potsdam.de/music-with-pc/pythonmusic``.
+Activating the environment differs depending on your operating system.
 
+
+Linux and macOS
+***************
+
+On Linux and macOS, the *source* command is used to activate the environment. The script to do so can be found in ``./venv/bin/activate``.
+
+.. code-block::
+
+   source venv/bin/activate
+
+
+Windows
+*******
+
+On Windows, activate the environment by running the activate script. Which script to run depends on the type of console you are using.
+
+.. code-block:: powershell
+
+   # in powershell
+   venv\Scripts\Activate.ps1
+
+   # in command prompt (cmd.exe)
+   venv\Scripts\activate.bat
+
+
+Adding PythonMusic
+~~~~~~~~~~~~~~~~~~
+
+In your activated environment, install PythonMusic with pip.
+
+.. code-block:: bash
+
+   pip install git+https://gitup.uni-potsdam.de/music-with-pc/pythonmusic
+   # or
+   pip install https://gitup.uni-potsdam.de/music-with-pc/pythonmusic.git
 
 See :doc:`Getting Started <./getting_started>` to start making music.
-

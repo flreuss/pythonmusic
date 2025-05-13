@@ -1,8 +1,11 @@
 Getting Started
 ===============
 
+Importing PythonMusic
+---------------------
+
 In your ``main.py``, import PythonMusic. This can be done as a ``*``-import which imports all definitions, 
-or by importing specific Symbols directly:
+or by importing symbols directly:
 
 .. code-block:: python
 

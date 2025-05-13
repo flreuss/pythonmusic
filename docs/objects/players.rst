@@ -11,8 +11,8 @@ Players are objects used to playback
 PythonMusic provides two player implementations by default. 
 
 
-Callbacks
----------
+Message Callbacks
+-----------------
 
 All players feature functions to play musical objects. These functions allow for callbacks that react to certain stages 
 of the playback.
@@ -91,6 +91,22 @@ If you know the name of the midi receiver, you can simply pass that as a string 
     player = MidiPlayer(receiver)
     player.play_score(score)
 
+
+When using a :obj:`MidiPlayer <pythonmusic.play.MidiPlayer>`, you may want to add a small delay after your
+playback finishes. A note may still continue to play (fade out, or similar) on the synthesizer even after 
+the note-off event has been sent. If Python terminates before the sound finishes, you may experience a cut 
+off on your midi receiver. 
+
+.. code-block:: python
+
+   from pythonmusic import *
+   from time import sleep
+
+   ...
+
+   player = MidiPlayer("Some Piano")
+   player.play_score(score)
+   sleep(1)
 
 Reference
 .........
@@ -172,10 +188,123 @@ method.
     player.play_phrase(Phrase([Note(C4, EN), Note(E4, QN)]), ADAGIO)
 
 
+Optionally, you can also override the :meth:`set_instrument <pythonmusic.play.Player.set_instrument>` and 
+:meth:`send_cc <pythonmusic.play.Player.send_cc>` methods to add more functionality.
+
 Reference
 .........
 
 .. autoclass:: pythonmusic.play.Player
+   :no-index:
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+CodePlayer
+----------
+
+The :obj:`CodePlayer <pythonmusic.play.CodePlayer>` is a different kind of player. It allows you to specify a playback function 
+that reacts to a note event as opposed to :obj:`MidiMessages <pythonmusic.io.MidiMessage>` for normal players.
+
+When creating a new :obj:`CodePlayer <pythonmusic.play.CodePlayer>` object, you can optionally pass an already initialised 
+:obj:`Player <pythonmusic.play.Player>` (sub-) class to enable playback with that player during your callback. The callback 
+needs to be defined with certain parameters. See below.
+
+.. code-block:: python
+
+    from pythonmusic import *
+
+
+    def my_callback(
+        proxy: ProxyPlayer,
+        note: Note,
+        channel: int,
+        instrument: int,
+        panning: int,
+    ):
+        print(f"{note} on channel {channel}, instrument {instrument}, panning {panning}")
+        proxy.play_note(note)
+
+
+    receiver = find_midi_receiver("Digital Piano")
+    if receiver is None:
+        print("Device not found")
+        exit(1)
+
+    midi_player = MidiPlayer(receiver)
+    code_player = CodePlayer(midi_player, my_callback)
+
+
+If you don't want to use an internal player, pass an explicit ``None`` instead of the player.
+
+.. code-block:: python
+
+   code_player = CodePlayer(None, my_callback)
+   
+
+Inside your callback, you can can update a channel's instrument or panning by passing a value to the 
+corresponding parameter of the :meth:`play_code() <pythonmusic.play.ProxyPlayer.play_node>` method. 
+These changes will be saved during the playback, but generally revert back to default values when a 
+new play-session starts. 
+You can also reroute a note to a different channel. This will update the instrument and panning
+of that channel, instead.
+
+.. important:: You can access other players from within your callback. However, keep in mind that normal players will block the 
+   thread during playback and wait for a given note to finish.
+   This means that you would not be able to playback multiple notes at the same time. Use the provided
+   :obj:`ProxyPlayer <pythonmusic.play.ProxyPlayer>`, instead.
+
+   .. code-block:: python
+
+      synth = SynthPlayer("./resources/gm.sf2")
+
+      def my_callback(
+        proxy: ProxyPlayer, 
+        note: Note, 
+        channel: int, 
+        instrument: int,
+        panning: int
+      ):
+        # do this
+        proxy.play_note(note)
+        # not this
+        synth.play_note(note)
+
+      player = CodePlayer(synth, my_callback)
+      player.play_score(...)
+
+
+Reference
+.........
+
+.. autoclass:: pythonmusic.play.CodePlayer
+   :no-index:
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ProxyPlayer
+...........
+
+A proxy player is an object that stores note events you pass to it during your callback. Generally, you do not need
+to create this class yourself, an instance will be passed to your playback function.
+
+.. autoclass:: pythonmusic.play.ProxyPlayer
+   :no-index:
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+SamplePlayer
+------------
+
+The :obj:`SamplePlayer <pythonmusic.play.SamplePlayer>` is a player implementation around a
+:obj:`AudioSampler <pythonmusic.sample.AudioSampler>`. For more information see the 
+:doc:`Sample <../objects/sample>` section.
+
+.. autoclass:: pythonmusic.play.SamplePlayer
    :no-index:
    :members:
    :undoc-members:

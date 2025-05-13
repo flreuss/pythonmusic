@@ -106,3 +106,16 @@ class PartTests(unittest.TestCase):
         self.assertEqual(len(part.phrases), 3)
         part.clear()
         self.assertEqual(len(part.phrases), 0)
+
+    def test_linearise(self):
+        """Tests Part linearisation"""
+        part = Part(phrases=[PHRASE_A, PHRASE_B])
+        self.assertEqual(
+            part.linearise(),
+            [
+                (0.0, Note(1, 5.0)),
+                (5.0, Note(1, 4.0)),
+                (9.0, Note(1, 1.0)),
+                (10.0, Note(1, 10.0)),
+            ],
+        )

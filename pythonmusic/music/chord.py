@@ -1,4 +1,4 @@
-from typing import cast, Any, Self
+from typing import cast, Any, Self, Optional
 
 from .note import Note
 from .phrase_element import PhraseElement
@@ -77,6 +77,9 @@ class Chord(PhraseElement, NoteCollection):
     def notes(self) -> list[PhraseElement]:
         """
         The notes within the chord.
+
+        Does not guarantee that the returned notes are not chords. Use
+        meth:`flatten() <pythonmusic.music.Chord.flatten>` instead.
         """
         return self._notes
 
@@ -112,7 +115,7 @@ class Chord(PhraseElement, NoteCollection):
         intervals: list[int],
         duration: float,
         dynamic: int = MF,
-        limit: int | None = None,
+        limit: Optional[int] = None,
     ) -> Self:
         """Creates a chord from given intervals over a root note.
 
@@ -121,7 +124,7 @@ class Chord(PhraseElement, NoteCollection):
             intervals (list[int]) A list of intervals over the root note
             duration (float): The duration of the chord
             dynamic (int): The dynamic of the chord
-            limit (int | None): The upperlimit of the chord. If given, repeats
+            limit (Optional[int]): The upperlimit of the chord. If given, repeats
                 intervale over the root note until limit is reached, otherwise,
                 repeats only once. Defaults to `None`
 
@@ -159,3 +162,30 @@ class Chord(PhraseElement, NoteCollection):
                 notes.append(Note(pitch, duration, dynamic))
 
         return cls(notes)
+
+    def flatten(self) -> list[Note]:
+        """
+        Returns all notes in this phrase, flattening embedded chords.
+
+        Raises:
+            TypeError: If an object inside the chord is not a PhraseElement
+
+        Returns:
+            list[Note]: All notes in the chord
+        """
+
+        def _flatten(pe: PhraseElement) -> list[PhraseElement]:
+            if isinstance(pe, Note):
+                return [pe]
+            if isinstance(pe, Chord):
+                output = []
+                for em in pe._notes:
+                    output += _flatten(em)
+                return output
+            raise TypeError("Not a Phrase Element")
+
+        out: list[Note] = []
+        for pe in self._notes:
+            out += cast(list[Note], _flatten(pe))
+
+        return out

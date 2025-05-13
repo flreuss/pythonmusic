@@ -287,9 +287,9 @@ class PhraseTests(unittest.TestCase):
         self.assertEqual(
             phrase.linearise(),
             [
-                Note(C4, QN),
-                Note(D4, QN),
-                Note(C4, QN),
-                Note(E4, QN),
+                (0.0, Note(C4, QN)),
+                (1.0, Note(D4, QN)),
+                (2.0, Note(C4, QN)),
+                (2.0, Note(E4, QN)),
             ],
         )

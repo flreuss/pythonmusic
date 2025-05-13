@@ -110,7 +110,7 @@ class IrEncodeTests(unittest.TestCase):
         )
 
         nodes = phrase_to_ir(phrase, start_time)
-        notes = phrase.linearise()
+        notes = list(map(lambda element: element[1], phrase.linearise()))
         self.assertEqual(len(nodes), 7)
         self.assertEqual(len(notes), 7)
 
@@ -187,7 +187,8 @@ class IrEncodeTests(unittest.TestCase):
 
         notes = []
         for _, phrase in part.phrases:
-            notes += phrase.linearise()
+            for _, note in phrase.linearise():
+                notes.append(note)
 
         pitches_t = list(map(lambda note: note.pitch, notes))
         pitches_d = list(map(lambda node: cast(IrNote, node.payload).note, nodes))

@@ -159,3 +159,14 @@ class ChordTests(unittest.TestCase):
 
         chord = Chord(NOTES)
         self.assertEqual(chord.max_dynamic(), FF)
+
+    def test_flatten(self):
+        chord = Chord([Note(C4, EN), Note(C4, EN)])
+        self.assertEqual(chord.flatten(), [Note(C4, EN), Note(C4, EN)])
+
+        chord = Chord(
+            [Note(C4, EN), Note(C4, EN), Chord([Note(C4, EN), Note(C4, EN)])]  # type: ignore
+        )
+        self.assertEqual(
+            chord.flatten(), [Note(C4, EN), Note(C4, EN), Note(C4, EN), Note(C4, EN)]
+        )
