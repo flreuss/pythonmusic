@@ -188,7 +188,7 @@ class SynthesizerTarget(AudioStream, Target):
         self,
         oscillator: Oscillator,
         attack: float = 0.02,
-        decay: tuple[float, float] = (0.0, 1.0),
+        decay: tuple[float, float] = (0.0, 0.0),
         sustain: Optional[float] = None,
         release: float = 0.05,
         sample_rate: int = AUDIO_STREAM_DEFAULT_SAMPLE_RATE,
@@ -375,7 +375,7 @@ class SynthesizerTarget(AudioStream, Target):
             match key_item.stage:
                 case SynthStage.ATTACK:
                     # check if advance to next stage
-                    if self._attack == 0 or key_item.duration >= self._attack:
+                    if key_item.duration >= self._attack:
                         key_item.duration = 0
                         key_item.stage = SynthStage.DECAY
                         # do not break, let loop check again
@@ -385,7 +385,7 @@ class SynthesizerTarget(AudioStream, Target):
 
                 case SynthStage.DECAY:
                     # check if advance to next stage
-                    if self._decay == 0 or key_item.duration >= self._decay:
+                    if key_item.duration >= self._decay:
                         key_item.duration = 0
                         key_item.stage = SynthStage.SUSTAIN
                         # do not break, let loop check again
@@ -400,7 +400,7 @@ class SynthesizerTarget(AudioStream, Target):
                     if self._sustain is None:
                         break
 
-                    if self._sustain == 0 or key_item.duration >= self._sustain:
+                    if key_item.duration >= self._sustain:
                         key_item.duration = 0
                         key_item.stage = SynthStage.RELEASE
                         # do not break, but loop again
@@ -409,7 +409,7 @@ class SynthesizerTarget(AudioStream, Target):
                         break
 
                 case SynthStage.RELEASE:
-                    if self._release == 0 or key_item.duration >= self._release:
+                    if key_item.duration >= self._release:
                         key_item.duration = 0
                         key_item.stage = SynthStage.IDLE
                     # here, we break out in either case
