@@ -48,7 +48,7 @@ This library supports playback via an integrated `SoundFont <https://en.wikipedi
    player.play_score(score)
 
 
-To get started, see the :doc:`Installation <intro/installation>` and :doc:`Getting Started <intro/getting_started>` sections of this document.
+To get started, see the :doc:`Installation <intro/installation>` and :doc:`Getting Started <intro/getting_started>`.
 
 
 Requirements

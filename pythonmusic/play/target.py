@@ -340,7 +340,7 @@ class MidiOutTarget(Target):
             port if `False`.
     """
 
-    def __init__(self, name: str, virtual: bool):
+    def __init__(self, name: str, virtual: bool = False):
         self._port = MidiOut(name, virtual)
 
     def __del__(self):

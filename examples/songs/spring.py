@@ -1,9 +1,7 @@
-from time import sleep
-
 from pythonmusic import *
 
 # Defines the path to a SoundFont2 file. Change as needed.
-SF2_PATH = "./resources/gm.sf2"
+SF_PATH = "path/to/sound_font.sf2"
 
 # A list of notes that represent the melody.
 notes = [
@@ -38,23 +36,15 @@ score.add_part(part)
 
 
 # === Using the SfPlayer ===
-# player = SfPlayer(SF2_PATH)
+player = SfPlayer(SF_PATH)
+player.play_score(score)
+
+
+# === Using the MidiOutPlayer ===
+# port = input_user_prompt()
+# if port is None:
+#     print("no port found")
+#     exit(1)
+#
+# player = MidiOutPlayer(port)
 # player.play_score(score)
-
-# exit(0)
-
-# === Using a MIDI Keyboard ===
-# Find midi devices connected to your system
-receivers = midi_inputs()
-if len(receivers) > 0:
-    # get the first receiver
-    receiver = receivers[0]
-
-    player = MidiOutPlayer(receiver, False)
-    # wrapping in try/except to prevent error stack on KeyboardInterrupt
-    try:
-        player.play_score(score)
-    except KeyboardInterrupt:
-        pass
-else:
-    print("No midi devices found")

@@ -393,7 +393,7 @@ class MidiOutPlayer(Player):
     For more information, see :obj:`MidiOut <pythonmusic.midi.MidiOut>`.
     """
 
-    def __init__(self, name: str, virtual: bool):
+    def __init__(self, name: str, virtual: bool = False):
         target = MidiOutTarget(name, virtual)
         super().__init__(target)
 
@@ -426,7 +426,7 @@ class MidiInPlayer(Player):
             an existing port
     """
 
-    def __init__(self, target: Target, name: str, virtual: bool):
+    def __init__(self, target: Target, name: str, virtual: bool = False):
         super().__init__(target)
         self._port = MidiIn(name, virtual)
         self._port.set_callback(None, self.play_message)
