@@ -153,7 +153,9 @@ class SawOscillator(Oscillator):
     def _make_buffer_for_key(
         self, buffer_size: int, t: float, step: float, phase: float, amp: float
     ) -> NDArray[np.float32]:
-        return ((phase + t + (step * np.arange(buffer_size))) % 1.0) * amp
+        return ((phase + t + (step * np.arange(buffer_size))) % 1.0).astype(
+            np.float32
+        ) * amp
 
 
 class SynthesizerTarget(AudioStream, Target):
