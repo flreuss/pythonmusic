@@ -11,8 +11,9 @@ dependencies = [
   "pyaudio>=0.2.14",
   "python-osc>=1.9.3",
   "python-rtmidi>=1.5.8 ",
-  # TODO: replace with "main" version
-  # this commit fixes an issure during installation on Windows
+  # TODO: replace with version dependence, not commit
+  # this commit fixes an issue during installation on Windows with scikit
+  # as of late 2024, this patch is not included in the pipy release
   "tinysoundfont @ git+https://github.com/nwhitehead/tinysoundfont-pybind@1a690fb0dc3a7908d1873786e824c4538c030f51",
 ]
 authors = [

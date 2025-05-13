@@ -14,14 +14,36 @@ Python
 
 This library requires Python ``3.12`` or newer on your system. To install Python, refer to the official `Python download page <https://www.python.org/downloads/>`_, or install using your operating system's package manager.
 
-You can check your installed version in the terminal with the following command:
+You can check the installed version in the terminal with the following command:
 
 .. code-block:: bash
 
-   $ python3 --version
+   python3 --version
+
+
+.. important::
+   On Windows, ``python`` and ``python3`` sometimes refer to the Python app from the Microsoft Store. If you use the terminal
+   and installed Python via the official installer, try using ``py`` instead of ``python3``:
+
+   .. code-block:: powershell
+
+      py --version
 
 Installing this library and its dependencies also requires Python's Pip package installer. A normal Python installation should install 
 this automatically.
+
+
+Git
+...
+
+To clone PythonMusic and its dependencies, you need Git installed on your system. Refer to the official 
+`Git download page <https://git-scm.com/downloads>`_ for installation instructions.
+
+You can check the installed version in the terminal with the following command:
+
+.. code-block:: bash
+
+   git --version
 
 
 Windows
@@ -32,9 +54,10 @@ Windows
 
 PythonMusic on Windows requires 
 `Microsoft Build Tools for Visual Studio 2022 <https://visualstudio.microsoft.com/downloads/?q=build+tools>`_.
+
 After downloading and running the installer, select the *Desktop development with C++* package in the workloads section. To minimise the
-disk space needed for installation, you can deselect all optional features in the side bar on the right side **except the current 
-version of the MSVC build tools** and **Windows SDK**. Click on install.
+disk space needed for installation, you can deselect all optional features in the right side bar, except the current 
+version of the *MSVC build tools* and *Windows SDK*. Click on install.
 
 .. note::
    Windows ARM is not tested and may require additional installation steps.
@@ -55,9 +78,6 @@ Creating a Project
 ------------------
 
 PythonMusic is a normal Python library and can be installed as such.
-
-The instructions below assume that the ``python`` command is available. If you get a *command not found* error,
-try ``python3`` instead.
 
 PyCharm
 .......
@@ -133,6 +153,25 @@ On Windows, run the script for your respective prompt.
 
    # in command prompt (cmd.exe)
    venv\Scripts\activate.bat
+
+
+.. note::
+   You may get an error like this:
+
+        venv\Scripts\Activate.ps1 : File {path} cannot be loaded because running scripts is disabled on this system. For more information, see about_Execution_Policies at https:/go.microsoft.com/fwlink/?LinkID=135170.
+
+   Sometimes, Windows Powershell blocks execution of scripts on your system. You can disable this by opening a new terminal
+   with administrator access and setting the respective execution policy.
+
+   To open a terminal with elevated privileges, open the start menu, search for "Terminal", right-click, and select
+   "Run as administrator". Inside the terminal run the following command:
+
+   .. code-block:: poweroff
+
+      Set-ExecutionPolicy remoteSigned
+
+
+   This will allow powershell to execute Python's venv activation script.
 
 In your activated environment, install PythonMusic with pip.
 
