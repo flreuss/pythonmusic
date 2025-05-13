@@ -1,10 +1,11 @@
-from copy import deepcopy
 import unittest
-from pythonmusic.music import Chord, Note
-from pythonmusic.constants.pitches import *
-from pythonmusic.constants.dynamics import *
-from pythonmusic.constants.durations import *
+from copy import deepcopy
+
 from pythonmusic.constants.chords import *
+from pythonmusic.constants.durations import *
+from pythonmusic.constants.dynamics import *
+from pythonmusic.constants.pitches import *
+from pythonmusic.music import Chord, Note
 
 NOTES = [
     Note(C3, QN, F),
@@ -22,6 +23,10 @@ class ChordTests(unittest.TestCase):
 
         self.assertEqual(len(chord), len(NOTES))
         self.assertTrue(chord.is_chord())
+
+    def test_iter(self):
+        notes = list(map(lambda x: Note(2 * x, x), range(50)))
+        self.assertEqual(notes, list(Chord(notes).__iter__()))
 
     def test_from_root(self):
         notes = [
@@ -50,6 +55,21 @@ class ChordTests(unittest.TestCase):
 
         chord = Chord.from_lists(pitches, durations, dynamics)
         self.assertEqual(check, chord)
+
+        chord = Chord.from_lists([A4, D4, C4], [QN], [MF, FF])
+        self.assertEqual(
+            chord.notes, [Note(A4, QN, MF), Note(D4, QN, FF), Note(C4, QN, FF)]
+        )
+
+        chord = Chord.from_lists([A4], [QN, EN, SN], [MF, FF])
+        self.assertEqual(
+            chord.notes, [Note(A4, QN, MF), Note(A4, EN, FF), Note(A4, SN, FF)]
+        )
+
+        chord = Chord.from_lists([A4, D4], [QN], [MF, FF, FFF])
+        self.assertEqual(
+            chord.notes, [Note(A4, QN, MF), Note(D4, QN, FF), Note(D4, QN, FFF)]
+        )
 
     def test_eq(self):
         chord_a = Chord(NOTES)

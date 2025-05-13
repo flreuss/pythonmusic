@@ -1,13 +1,15 @@
-from copy import deepcopy
 import unittest
-from pythonmusic.music import Note
-from pythonmusic.constants.pitches import REST
+from copy import deepcopy
+
 from pythonmusic.constants.articulations import (
+    ACCENT,
     LEGATO,
-    STACCATO,
     MARCATO,
     PORTATO,
+    STACCATO,
 )
+from pythonmusic.constants.pitches import REST
+from pythonmusic.music import Note
 
 PITCH = 50
 DURATION = 1.0
@@ -84,6 +86,10 @@ class NoteTests(unittest.TestCase):
         notes_a = [Note(x, float(x * 2)) for x in range(100)]
         notes_b = deepcopy(notes_a)
 
+        self.assertIsNot(notes_a, notes_b)
+        for note_a, note_b in zip(notes_a, notes_b):
+            self.assertIsNot(note_a, note_b)
+
         # asserts that identity is different
         self.assertEqual(len(notes_a), len(notes_b))
         for i in range(len(notes_a)):
@@ -105,6 +111,9 @@ class NoteTests(unittest.TestCase):
         """Tests that Note as_rest() returns a valid rest"""
         note = Note(PITCH, DURATION, DYNAMIC)
         rest = note.as_rest()
+
+        self.assertIsNot(note, rest)
+        self.assertIsNot(note.pitch, rest.pitch)
 
         self.assertEqual(rest.duration, DURATION)
         self.assertEqual(rest.dynamic, DYNAMIC)
@@ -162,3 +171,19 @@ class NoteTests(unittest.TestCase):
         self.assertFalse(note.has_articulation(LEGATO))
         self.assertFalse(note.has_articulation(STACCATO))
         self.assertFalse(note.has_articulation(PORTATO))
+
+    def test_with_legato(self):
+        note = Note(PITCH, DURATION, DYNAMIC)
+        note_wl = note.with_legato()
+
+        self.assertIsNot(note, note_wl)
+        self.assertTrue(note_wl.has_articulation(LEGATO))
+        self.assertFalse(note.has_articulation(LEGATO))
+
+    def test_with_accent(self):
+        note = Note(PITCH, DURATION, DYNAMIC)
+        note_wa = note.with_accent()
+
+        self.assertIsNot(note, note_wa)
+        self.assertTrue(note_wa.has_articulation(ACCENT))
+        self.assertFalse(note.has_articulation(ACCENT))

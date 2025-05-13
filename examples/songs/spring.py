@@ -1,7 +1,7 @@
 from pythonmusic import *
 
 # Defines the path to a SoundFont2 file. Change as needed.
-SF2_PATH = "./resources/gm.sf2"
+SF_PATH = "path/to/sound_font.sf2"
 
 # A list of notes that represent the melody.
 notes = [
@@ -35,23 +35,16 @@ score.tempo = 96  # in bpm where a beat is a quarter
 score.add_part(part)
 
 
-# === Using the SynthPlayer ===
-# If FluidSynth was not found on your system, the Synth and SynthPlayer classes
-# will not be available.
-try:
-    player = SynthPlayer(SF2_PATH)
-    player.play_score(score)
-except NameError:
-    print("FluidSynth was not detected. Skipping")
+# === Using the SfPlayer ===
+player = SfPlayer(SF_PATH)
+player.play_score(score)
 
-# === Using a MIDI Keyboard ===
-# Find midi devices connected to your system
-receivers = get_midi_receivers()
-if len(receivers) > 0:
-    # get the first receiver
-    receiver = receivers[0]
 
-    player = MidiPlayer(receiver)
-    player.play_score(score)
-else:
-    print("No midi devices found")
+# === Using the MidiOutPlayer ===
+# port = input_user_prompt()
+# if port is None:
+#     print("no port found")
+#     exit(1)
+#
+# player = MidiOutPlayer(port)
+# player.play_score(score)

@@ -163,4 +163,3 @@ cython_debug/
 
 # Other
 .DS_Store
-run.sh

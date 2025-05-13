@@ -1,9 +1,10 @@
 import unittest
 from copy import deepcopy
-from pythonmusic.music import Score, Part, Phrase, Note
-from pythonmusic.constants.pitches import *
+
 from pythonmusic.constants.durations import *
 from pythonmusic.constants.dynamics import *
+from pythonmusic.constants.pitches import *
+from pythonmusic.music import Note, Part, Phrase, Score
 
 PART_A = Part(
     "Part A",
@@ -58,6 +59,10 @@ class ScoreTests(unittest.TestCase):
         self.assertEqual(score.title, TITLE)
         self.assertEqual(score.parts, PARTS)
         self.assertEqual(score.tempo, TEMPO)
+
+    def test_iter(self):
+        parts = list(map(lambda i: Part(f"part_{i}"), range(13)))
+        self.assertEqual(parts, list(Score(None, parts=parts).__iter__()))
 
     def test_len(self):
         """Tests Score __len__() dunder"""

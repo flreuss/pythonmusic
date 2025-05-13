@@ -1,10 +1,10 @@
-from typing import cast, Any, Self, Optional
+from typing import Any, Optional, Self, cast
 
-from .note import Note
-from .phrase_element import PhraseElement
-from .note_collection import NoteCollection
 from ..constants.dynamics import MF
 from ..constants.intervals import OCTAVE
+from .note import Note
+from .note_collection import NoteCollection
+from .phrase_element import PhraseElement
 
 __all__ = ["Chord"]
 
@@ -37,6 +37,9 @@ class Chord(PhraseElement, NoteCollection):
 
         return True
 
+    def __str__(self) -> str:
+        return f"Chord([{", ".join(map(lambda note: str(note), self.notes))}])"
+
     def length(self) -> int:
         """
         Returns the number of notes in the chord.
@@ -55,21 +58,27 @@ class Chord(PhraseElement, NoteCollection):
         pitches: list[int],
         durations: list[float],
         dynamics: list[int],
+        articulation: list[int] = [],
     ) -> Self:
         """
         Creates a chord by adding notes created from their individual values.
 
-        .. warning:: The length of the given lists must be equal. That is, each
-            note must have a pitch, duration and dynamic.
+        Each list must contain at least one value. If any list has less items
+        than another, its last value is repeated for all remaining notes. This
+        allows, for instance, adding multiple notes with the same duration,
+        without having to provide the same duration multiple times.
 
         Args:
             pitches (list[int]): A list of pitches
             durations (list[int]): A list of durations
             dynamics (list[int]): A list of dynamics
+            articulation (list[int]): A list of articulations for the notes
 
+        Returns:
+            Chord: A chord
         """
         chord = cls()
-        chord.add_notes_by_lists(pitches, durations, dynamics)
+        chord.add_notes_by_lists(pitches, durations, dynamics, articulation)
 
         return chord
 
@@ -165,7 +174,10 @@ class Chord(PhraseElement, NoteCollection):
 
     def flatten(self) -> list[Note]:
         """
-        Returns all notes in this phrase, flattening embedded chords.
+        Returns a list of all notes in the chord.
+
+        Unlike `self.notes`, embedded chords are recursively flattened. The
+        returned list is guaranteed to only contain notes.
 
         Raises:
             TypeError: If an object inside the chord is not a PhraseElement

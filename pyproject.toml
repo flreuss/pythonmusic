@@ -6,13 +6,15 @@ build-backend = "setuptools.build_meta"
 name = "pythonmusic"
 version = "0.0.1"
 dependencies = [
-  "mido",
-  "python-osc",
-  "python-rtmidi",
-  "pyfluidsynth",
-  "pyaudio",
-  "numpy",
-  "wave",
+  "librosa>=0.11.0",
+  "numpy>=2.1",
+  "pyaudio>=0.2.14",
+  "python-osc>=1.9.3",
+  "python-rtmidi>=1.5.8 ",
+  # TODO: replace with version dependence, not commit
+  # this commit fixes an issue during installation on Windows with scikit
+  # as of late 2024, this patch is not included in the pipy release
+  "tinysoundfont @ git+https://github.com/nwhitehead/tinysoundfont-pybind@1a690fb0dc3a7908d1873786e824c4538c030f51",
 ]
 authors = [
   { name = "Darius Löschner", email = "darius.loeschner@uni-potsdam.de" },
@@ -20,12 +22,19 @@ authors = [
 ]
 description = "Make music in python"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 4 - Beta",
   "Programming Language :: Python",
+  "Intended Audience :: Education",
+  "Topic :: Education :: Computer Aided Instruction (CAI)",
+  "Topic :: Multimedia :: Sound/Audio :: MIDI",
+
 ]
-keywords = []
+keywords = ["music", "education", "creativity", "midi", "composition"]
 
 [project.urls]
 Homepage = "https://gitup.uni-potsdam.de/music-with-pc/pythonmusic"
+
+[project.optional-dependencies]
+docs = ["sphinx>=8.2", "sphinx-rtd-theme>=3.0", "myst-parser>=4.0"]

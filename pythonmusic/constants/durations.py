@@ -185,11 +185,6 @@ DDEN: float = DOUBLE_DOTTED_EIGHTH_NOTE
 DOUBLE_DOTTED_QUAVER: float = DOUBLE_DOTTED_EIGHTH_NOTE
 """Defines the length constant for a double dotted *eighth note* or *crotchet*."""
 
-
-# TODO: Implement functionality and provide warning below for creating triplets.
-# Using too many duration values of the following types may create a shift, as
-# `3 * (1/3)` may not be guaranteed to equal `1`.
-
 # Quarter Note Triplet
 QUARTER_NOTE_TRIPLET: float = QUARTER_NOTE / 3
 """Defines the length constant for a *quarter note* triplet."""
