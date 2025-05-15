@@ -1,5 +1,8 @@
-Midi Messages
+Midi
 =============
+
+Midi Messages
+-------------
 
 PythonMusic introduces a small abstraction layer on top of midi messages. 
 
@@ -8,7 +11,7 @@ provides several class methods to construct messages semantically and properties
 message parameters.
 
 Message Types
--------------
+.............
 
 ==============  =========================================================================
 Message Type    Midi Message
@@ -35,7 +38,7 @@ RESET           ``Message.new_reset()``
 
 
 Parameters Types and Ranges
----------------------------
+...........................
 
 ===========  ======================
 Parameter    Range           
@@ -54,3 +57,25 @@ pitch        -8192..8191
 pos          0..16383              
 time         any integer or float  
 ===========  ======================
+
+
+Variable Length Quantity (VLQ)
+..............................
+
+While most midi message parameters are represented by a known, fixed number of bytes, a few parameters, such as *time* in
+midi files, are encoded using a variable length quantity (vlq). In a vlq, integers are encoded into a series of bytes, where
+the first 7 bits of each byte represent a chunk of the source integer, and the most significant bit (msb) indicates whether
+the vlq ends or should continue to be read.
+
+.. figure:: ../images/vlq.svg
+   :alt: vlq example
+   :figwidth: 90%
+
+   By Wonderstruck (talk) - Own work, Public Domain, `link <https://commons.wikimedia.org/w/index.php?curid=30211332>`_
+
+When decoding a vlq to an integer, seven bits are continuously read and bit-shifted to the right while the msb is ``1``. 
+Once the msb is ``0``, the decoder has reached the last seven bits of the vlq and the integer has successfully been decoded.
+
+
+This library provides the :meth:`vlq_to_int <pythonmusic.util.vlq_to_int>` and :meth:`int_to_vlq <pythonmusic.util.int_to_vlq>` functions 
+to convert between an integer and a vlq.

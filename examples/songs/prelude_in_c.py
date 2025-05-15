@@ -12,7 +12,7 @@ def left_part() -> Part:
     """
     Returns the left part of the prelude, i.e., what the left hand plays.
     """
-    part = Part("left", ACOUSTIC_GRAND_PIANO, channel=1)
+    part = Part(1, "left", ACOUSTIC_GRAND_PIANO)
 
     # the prelude's left part consists of two held notes
     # we define this as two phrases
@@ -218,7 +218,7 @@ def right_part() -> Part:
     chord = Chord([Note(E4, WN), Note(G4, WN), Note(C5, WN)])
     phrase.add_chord(chord)
 
-    part = Part("right", ACOUSTIC_GRAND_PIANO, phrases=[], channel=0)
+    part = Part(0, "right", ACOUSTIC_GRAND_PIANO, phrases=[])
     part.add_phrase(phrase)
     return part
 

@@ -24,7 +24,7 @@ def flute_part() -> Part:
     )
     phrase_b.add_rest(BREATH)
 
-    return Part("Flutes", FLUTE, [phrase_a, phrase_a, phrase_b])
+    return Part(0, "Flutes", FLUTE, [phrase_a, phrase_a, phrase_b])
 
 
 def oboe_part() -> Part:
@@ -47,7 +47,7 @@ def oboe_part() -> Part:
     phrase_b.add_chord_by_lists([E5, A5, E6], [WWN + WN], [MF])
     phrase_b.add_rest(BREATH)
 
-    return Part("Oboes&English Horn", OBOE, [phrase_a, phrase_a, phrase_b])
+    return Part(1, "Oboes&English Horn", OBOE, [phrase_a, phrase_a, phrase_b])
 
 
 def clarinet_part() -> Part:
@@ -70,7 +70,7 @@ def clarinet_part() -> Part:
     phrase_b.add_chord_by_lists([E5, A5, E6], [WWN + WN], [MF])
     phrase_b.add_rest(BREATH)
 
-    return Part("Clarinet", CLARINET, [phrase_a, phrase_a, phrase_b])
+    return Part(2, "Clarinet", CLARINET, [phrase_a, phrase_a, phrase_b])
 
 
 def bassoon_part() -> Part:
@@ -84,7 +84,7 @@ def bassoon_part() -> Part:
         [Note(A2, WN, MP), Note(A3, WWN + WN + WWN + WN, MP), Note.rest(BREATH)]
     )
 
-    return Part("Bassoon", BASSOON, [phrase_a, phrase_a, phrase_b])
+    return Part(3, "Bassoon", BASSOON, [phrase_a, phrase_a, phrase_b])
 
 
 def horn_part() -> Part:
@@ -107,7 +107,7 @@ def horn_part() -> Part:
     phrase_b.add_chord_by_lists([E3, E5], [WWN + WN], [MP])
     phrase_b.add_rest(BREATH)
 
-    return Part("Horns", FRENCH_HORNS, [phrase_a, phrase_a, phrase_b])
+    return Part(4, "Horns", FRENCH_HORNS, [phrase_a, phrase_a, phrase_b])
 
 
 def trumpet_part() -> Part:
@@ -136,7 +136,7 @@ def trumpet_part() -> Part:
     phrase_a = mods.pitch_phrase(phrase_a, -MAJOR_SECOND)
     phrase_b = mods.pitch_phrase(phrase_b, -MAJOR_SECOND)
 
-    return Part("Trumpets", TRUMPET, [phrase_a, phrase_a, phrase_b])
+    return Part(5, "Trumpets", TRUMPET, [phrase_a, phrase_a, phrase_b])
 
 
 def trombone_part() -> Part:
@@ -159,7 +159,7 @@ def trombone_part() -> Part:
     phrase_b.add_chord_by_lists([A3, E4, E4], [WWN + WN], [MP])
     phrase_b.add_rest(BREATH)
 
-    return Part("Trombones", TROMBONE, [phrase_a, phrase_a, phrase_b])
+    return Part(6, "Trombones", TROMBONE, [phrase_a, phrase_a, phrase_b])
 
 
 def tuba_part() -> Part:
@@ -173,7 +173,7 @@ def tuba_part() -> Part:
         [Note(A2, WN, MP), Note(A3, WWN + WN + WWN + WN, MP), Note.rest(BREATH)]
     )
 
-    return Part("Tuba", TUBA, [phrase_a, phrase_a, phrase_b])
+    return Part(7, "Tuba", TUBA, [phrase_a, phrase_a, phrase_b])
 
 
 def timpani_part() -> Part:
@@ -191,7 +191,7 @@ def timpani_part() -> Part:
     )
     phrase.add_note(Note(A2, QN, MF))
 
-    part = Part("Timpani", TIMPANI, [phrase])
+    part = Part(8, "Timpani", TIMPANI, [phrase])
     return part
 
 
@@ -215,7 +215,7 @@ def choir_part() -> Part:
     phrase.add_chord_by_lists([A3, A4, E4, E5], [WWN + WN], [MF])
     phrase.add_rest(BREATH)
 
-    part = Part("Choir", CHOIR_AAHS, [phrase])
+    part = Part(10, "Choir", CHOIR_AAHS, [phrase])
     return part
 
 
@@ -264,7 +264,7 @@ def piano_part() -> Part:
     left_part.add_chord_by_lists([A0, A2, A3], [WWN + WN + WWN + WN], [MF], [PORTATO])
     left_part.add_rest(BREATH)
 
-    part = Part("Piano", ACOUSTIC_GRAND_PIANO)
+    part = Part(11, "Piano", ACOUSTIC_GRAND_PIANO)
     part.add_phrase(right_part, 0.0)
     part.add_phrase(left_part, 0.0)
     return part
@@ -290,7 +290,7 @@ def violin_part() -> Part:
     phrase_b.add_chord_by_lists([A4, E6], [WWN + WN], [MF])
     phrase_b.add_rest(BREATH)
 
-    return Part("Violins", STRING_ENSEMBLE, [phrase_a, phrase_a, phrase_b])
+    return Part(12, "Violins", STRING_ENSEMBLE, [phrase_a, phrase_a, phrase_b])
 
 
 def viola_part() -> Part:
@@ -313,7 +313,7 @@ def viola_part() -> Part:
     phrase_b.add_chord_by_lists([A4, E5], [WWN + WN], [MF])
     phrase_b.add_rest(BREATH)
 
-    return Part("Viola", STRING_ENSEMBLE, [phrase_a, phrase_a, phrase_b])
+    return Part(13, "Viola", STRING_ENSEMBLE, [phrase_a, phrase_a, phrase_b])
 
 
 def cello_db_part() -> Part:
@@ -328,7 +328,7 @@ def cello_db_part() -> Part:
     phrase_b.add_chord_by_lists([A3, A2], [WWN + WN + WWN + WN], [MF])
     phrase_b.add_rest(BREATH)
 
-    return Part("Cello&Bass", STRING_ENSEMBLE, [phrase_a, phrase_a, phrase_b])
+    return Part(14, "Cello&Bass", STRING_ENSEMBLE, [phrase_a, phrase_a, phrase_b])
 
 
 def make_score() -> Score:
@@ -349,16 +349,6 @@ def make_score() -> Score:
         cello_db_part(),
     ]
 
-    # set channels for each part
-    # channel 9 (midi channel 10) is reserved for percussion and is not used
-    # here. you can use the `PERCUSSION_CHANNEL` constant instead of `9`
-    channel_index = 0
-    for part in parts:
-        if channel_index == PERCUSSION_CHANNEL:
-            channel_index += 1
-        part.channel = channel_index
-        channel_index += 1
-
     return Score(
         "Carmina Burana: 1. O Fortuna",
         parts=parts,
@@ -372,6 +362,7 @@ if __name__ == "__main__":
 
     # create a sound font player, pass a path the a sound font 2 file
     SF2 = "soundfonts/my_soundfont.sf2"
+    SF2 = "~/projects/music-dev/resources/gm.sf2"
 
     # this song uses a lot of instruments which can get very loud
     # use the `gain` parameter to adjust the base sound level

@@ -33,7 +33,7 @@ The :obj:`SynthesizerTarget <pythonmusic.play.SynthesizerTarget>` implements a s
    :alt: ADSR Envelope
    :figwidth: 90%
 
-   By Abdull, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=1729613
+   By Abdull, CC BY-SA 3.0, `link <https://commons.wikimedia.org/w/index.php?curid=1729613>`_
 
 ``attack`` defines the duration it takes the note to reach its full volume. Once that has been reached, it decays. You can define the 
 duration and amount of decay as a tuple that you pass to ``decay``. If you ``sustain``, the note will continue to play for that many seconds.
@@ -53,10 +53,16 @@ Reference
 The Oscillator
 ----------------------
 
-The synthesizer uses an oscillator to generate sound. You can create your own oscillators by inheriting from the
-:obj:`Oscillators <pythonmusic.play.Oscillator>` class, and implementing the :meth:`sample() <pythonmusic.play.Oscillator.sample>` method.
+The synthesizer uses an oscillator to generate sound. PythonMusic comes with three oscillators by default.
 
-A simple sine oscillator can be implemented as such:
+* :obj:`SineOscillator <pythonmusic.play.SineOscillator>`
+* :obj:`SquareOscillator <pythonmusic.play.SquareOscillator>`
+* :obj:`SawOscillator <pythonmusic.play.SawOscillator>`
+
+
+You can create your own oscillators by inheriting from the :obj:`Oscillators <pythonmusic.play.Oscillator>` class, 
+and implementing the :meth:`sample() <pythonmusic.play.Oscillator.sample>` method. A simple sine oscillator can be
+implemented as such:
 
 .. code-block:: python
 
@@ -71,6 +77,24 @@ Reference
 .........
 
 .. autoclass:: pythonmusic.play.Oscillator
+   :no-index:
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. autoclass:: pythonmusic.play.SineOscillator
+   :no-index:
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. autoclass:: pythonmusic.play.SquareOscillator
+   :no-index:
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. autoclass:: pythonmusic.play.SawOscillator
    :no-index:
    :members:
    :undoc-members:

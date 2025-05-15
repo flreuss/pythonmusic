@@ -26,7 +26,7 @@ notes = [
 phrase = Phrase(notes)
 
 # A part represents an instrument in a score.
-part = Part("A Druid", FLUTE)
+part = Part(0, "A Druid", FLUTE)
 part.add_phrase(phrase)
 
 # A score represents a piece of music.

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pythonmusic"
-version = "0.0.1"
+version = "1.0.0"
 dependencies = [
   "librosa>=0.11.0",
   "numpy>=2.1",

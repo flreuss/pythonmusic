@@ -70,7 +70,9 @@ class Player:
         """
         Updates the players instrument on the given channel.
 
-        Only instruments defined in @@@ should be used here.
+        Only instruments defined in
+        :mod:`instruments <pythonmusic.constants.instruments>`
+        should be used here.
 
         Args:
             channel(int): The channel for which to change the instrument

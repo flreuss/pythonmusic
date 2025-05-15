@@ -172,7 +172,7 @@ class SamplerTarget(AudioStream, Target):
         path: str,
         base_key: int,
         add_to: Iterable[int],
-        pitch: bool = True,
+        should_pitch: bool = True,
         base_amp: float = 1.0,
         falloff: float = 0.1,
     ):
@@ -184,7 +184,7 @@ class SamplerTarget(AudioStream, Target):
         match the given ``base_key`` and is pitched to all keys defined in
         ``add_to``.
 
-        You can ser ``pitch`` to false to not automatically pitch the sample to
+        You can set ``should_pitch`` to ``False`` to not automatically pitch the sample to
         each corresponding new frequency, but use the sample as-is.
 
         You can use the ``base_amp`` parameter to change the base volume for
@@ -206,7 +206,7 @@ class SamplerTarget(AudioStream, Target):
         sample = WaveSample.load(path, base_amp, falloff, self._sample_rate)
 
         # TODO: multithread / pool execution?
-        if pitch:
+        if should_pitch:
             key_count = len(list(add_to))
             for index, target_key in enumerate(add_to):
                 print(

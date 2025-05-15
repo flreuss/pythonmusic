@@ -76,7 +76,6 @@ A chord can also be constructed from a base note and intervals, or lists definin
    >>> chord_b = Chord.from_lists([C4, E4, G4], [QN, QN, QN], [MF, MF, MF])
    >>> assert chord_a == chord_b  # both chords are identical
 
-
 Reference
 .........
 
@@ -100,4 +99,4 @@ a few common methods.
    :undoc-members:
    :show-inheritance:
 
-For more information, see the :doc:`Music reference page <../reference/music>`.
+For more information, see the :doc:`music api page <../api/music>`.

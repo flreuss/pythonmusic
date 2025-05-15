@@ -15,20 +15,20 @@ class Part:
     A part represents an instrument and consists of phrases.
 
     Args:
+        channel (int): A zero-indexed channel
         title (Optional[str]): A title for the part. Defaults to `None`
         instrument (int): An instrument for the part
         phrases (list[Phrase]): A list of phrases to add to the part. Phrases
-            can be added later
-        channel (int): A zero-indexed channel
+            can also be added later
         panning (int): Panning in range from 0 to 127. Defaults to centre, 64
     """
 
     def __init__(
         self,
+        channel: int,
         title: Optional[str] = None,
         instrument: int = ACOUSTIC_GRAND_PIANO,
         phrases: list[Phrase] = [],
-        channel: int = 0,
         panning: int = PAN_CENTER,
     ) -> None:
         self.title: Optional[str] = title

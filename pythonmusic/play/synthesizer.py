@@ -162,10 +162,14 @@ class SynthesizerTarget(AudioStream, Target):
     """
     A synthesizer target that generates sound from oscillators.
 
-    The synthesizer uses an :obj:`oscillators <pythonmusic.play.Oscillator>` to
+    The synthesizer uses an :obj:`oscillator <pythonmusic.play.Oscillator>` to
     create a base wave that is combined with an ADSR envelope, that you define
     by setting the ``attack``, ``decay``, ``sustain``, and ``release``
     parameters.
+
+    For available oscillators, see :obj:`SineOscillator <pythonmusic.play.SineOscillator>`,
+    :obj:`SquareOscillator <pythonmusic.play.SquareOscillator>`, and
+    :obj:`SawOscillator <pythonmusic.play.SawOscillator>`.
 
     The ``decay`` parameter requires a two-place tuple with the duration of the
     decay in first, and the amount of volume reduction in percent in the second.

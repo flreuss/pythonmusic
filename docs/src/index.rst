@@ -56,6 +56,23 @@ Requirements
 
 Requires Python ``>=3.12``. See :doc:`Installation <intro/installation>` for more information.
 
+Documentation
+-------------
+
+The documentation is split into four parts:
+
+1. | **Start Here**
+   | installation instructions and first steps
+
+2. | **Reference**
+   | detailed reference for each functionality
+
+3. | **API**
+   | full api reference for each module
+
+4. | **Appendix**
+   | miscellaneous information
+
 Source Code
 -----------
 
@@ -72,35 +89,35 @@ Source code is available on the project's `repository <https://gitup.uni-potsdam
 
 
 .. toctree::
-   :caption: API
+   :caption: Reference
    :maxdepth: 4
    :hidden:
 
-   api/phrase_elements
-   api/phrases
-   api/parts
-   api/scores
-   api/play
-   api/midi_io
-   api/sound_font
-   api/sampler
-   api/synthesizer
-   api/metronome
+   reference/phrase_elements
+   reference/phrases
+   reference/parts
+   reference/scores
+   reference/play
+   reference/midi_io
+   reference/sound_font
+   reference/sampler
+   reference/synthesizer
+   reference/metronome
 
 
 .. toctree::
-   :caption: Reference / API
+   :caption: API
    :maxdepth: 1
    :hidden:
 
-   reference/constants
-   reference/metronome
-   reference/midi
-   reference/mods
-   reference/music
-   reference/osc
-   reference/play
-   reference/utility
+   api/constants
+   api/metronome
+   api/midi
+   api/mods
+   api/music
+   api/osc
+   api/play
+   api/utility
 
 
 .. toctree::

@@ -188,17 +188,8 @@ the :doc:`section on midi <../appendix/midi>` in the appendix.
    if the type is not supported. You can check the message type with :meth:`Message.type() <pythonmusic.midi.Message.type>` and
    compare with :mod:`message constants <pythonmusic.constants.messages>`.
 
-Messages can be constructed from byte-data using the initialiser, or the various class-methods for specific message types.
-
-
-The Time attribute
-..................
-
-Messages also store the ``time`` attribute which defines the number of ticks from the previous event. 
-
-
-Reference
-.........
+Messages can be constructed from byte-data using the initialiser, or the various class-methods for specific message types. The ``time``
+attribute defines the number of ticks from the previous event.
 
 .. autoclass:: pythonmusic.midi.Message
    :no-index:

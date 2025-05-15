@@ -166,7 +166,7 @@ On Windows, run the script for your respective prompt.
    To open a terminal with elevated privileges, open the start menu, search for "Terminal", right-click, and select
    "Run as administrator". Inside the terminal run the following command:
 
-   .. code-block:: poweroff
+   .. code-block:: powershell
 
       Set-ExecutionPolicy remoteSigned
 

@@ -79,6 +79,8 @@ class Metronome:
         self._beat_duration: float = bpm_to_sec(bpm)
         self._callback = callback
 
+        self._should_continue = False
+
         self._synth: Target = target or _make_default_target()
 
         self._off_beat: int = A4
@@ -129,6 +131,13 @@ class Metronome:
         thread = Thread(target=self._run)
         thread.start()
 
+    def stop(self):
+        """
+        Stops the metronome.
+        """
+
+        self._should_continue = False
+
     def block(self):
         """
         Starts the metronome and blocks until the callback returns `False`.
@@ -136,8 +145,8 @@ class Metronome:
         self._run()
 
     def _run(self):
-        should_continue = True
-        while should_continue:
+        self._should_continue = True
+        while self._should_continue:
             # lets not users change this during sleep
             sleep_duration = self._beat_duration
 
@@ -150,7 +159,7 @@ class Metronome:
             if self._callback:
                 response = self._callback()
                 if response is not None:
-                    should_continue = response
+                    self._should_continue = response
 
             # subtract callback execution time
             sleep(sleep_duration - (time() - begin_callback))

@@ -6,7 +6,7 @@ from pythonmusic.constants.intervals import OCTAVE
 from pythonmusic.music import Chord, Note, Phrase, PhraseElement
 
 __all__ = [
-    "chain_phrases",
+    "concat_phrases",
     "repeat_phrase",
     "pitch",
     "pitch_phrase",
@@ -15,7 +15,7 @@ __all__ = [
 ]
 
 
-def chain_phrases(phrases: Sequence[Phrase]) -> Phrase:
+def concat_phrases(phrases: Sequence[Phrase]) -> Phrase:
     """
     Chains the given phrases into one.
 
@@ -43,7 +43,7 @@ def repeat_phrase(phrase: Phrase, n: int) -> Phrase:
     Returns:
         Phrase: A new phrase
     """
-    return chain_phrases([phrase] * n)
+    return concat_phrases([phrase] * n)
 
 
 def pitch(elements: Sequence[PhraseElement], interval: int) -> list[PhraseElement]:

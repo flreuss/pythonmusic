@@ -81,8 +81,8 @@ def make_instrument(patch: int, bank: int = 0) -> int:
     Normally, assigning an int directly is fine, use this function if you need
     to assign the bank value only.
 
-    For mor information, see
-    `General MIDI Level 2 <https://en.m.wikipedia.org/wiki/General_MIDI_Level_2>`.
+    For more information, see
+    `General MIDI Level 2 <https://en.m.wikipedia.org/wiki/General_MIDI_Level_2>`_.
 
     Args:
         patch (int): The instrument base id in range from 1 to 127.
@@ -171,11 +171,30 @@ def map_value(
     The input parameters define two ranges and a value. The position of the given
     value is mapped relative to the source mapping onto the target mapping.
 
-    If you map an `integer`, you may define a conversion strategy. Internally,
-    all values are converted into floats. If the output type is an `integer`, the
-    given `conversion_strategy` is used to convert the result. By default, this
-    uses Python's build-in `round()` function. You may also want to use
-    `floor()`. This is optional.
+    If you map a value onto an integer range, you may define a conversion
+    strategy. This function receives a float as input and converts it
+    to an integer. By default, it uses Python's built-in `round()` function,
+    which rounds to the nearest integer. However, you may also want to use
+    `math.floor()`, which always rounds down, or define your own function:
+
+    .. code-block:: python
+
+        from pythonmusic import *
+        import math
+
+        # conversion strategy converts a float to an int
+        def my_conversion(v: float) -> int:
+            base = math.floor(v)  # discard decimals
+            decimals = v % 1.0
+
+            # only return next-higher integer, if we are at
+            # .8 or higher
+            if decimals >= 0.8:
+                return base + 1
+            else:
+                return base
+
+        pitch = map_value(0.34, 0.0, 1.0, A3, A4, my_conversion)
 
     Args:
         value (Number): A base value
@@ -201,7 +220,11 @@ def map_value(
     multiplyer = offset_value / delta_value
     result = (delta_result * multiplyer) + min_result
 
-    return conversion_strategy(result) if type(value) == int else result
+    return (
+        conversion_strategy(result)
+        if type(max_result) == int or type(min_result) == int
+        else result
+    )
 
 
 def map_scale(
@@ -438,6 +461,8 @@ def int_to_vlq(input: int) -> bytes:
     """
     Converts an integer to a variable length quantity (vlq).
 
+    For more information on vlq, see the :doc:`midi <../appendix/midi>` appendix.
+
     Args:
         input(int): An integer
 
@@ -446,7 +471,7 @@ def int_to_vlq(input: int) -> bytes:
     """
     if input == 0:
         # wow, bytes(n) is [0x00] * n bytes, bytes(0) ~ []
-        # read the docs, dummy; this messed the entire export
+        # read the docs, dummy; this messed with the entire export
         # why is it always a one-liner?
         return bytes(1)
 
@@ -473,6 +498,8 @@ def int_to_vlq(input: int) -> bytes:
 def vlq_to_int(input: bytes) -> int:
     """
     Converts a variable length quantity (vlq) to an integer.
+
+    For more information on vlq, see the :doc:`midi <../appendix/midi>` appendix.
 
     Args:
         input(bytes): A vlq

@@ -12,10 +12,10 @@ To create a part, call its initialiser and pass a title and instrument. Use the 
 
 .. code-block:: python
 
-    part = Part("Violin 1", 
+    part = Part(0,
+                "Violin 1", 
                 VIOLIN, 
                 [phrase_a, phrase_b],
-                0,
                 PAN_CENTER)
 
     part.add_phrase(phrase_c)

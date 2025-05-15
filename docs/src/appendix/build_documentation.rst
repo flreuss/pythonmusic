@@ -23,4 +23,13 @@ repository and install inside a virtual environment.
 
 Navigate to the ``docs/`` directory in the main repository and build docs with ``make html``.
 
-.. note:: Sphinx support building for several targets, such as tex and pdf.
+.. code-block:: bash
+
+   cd docs
+   make html
+
+The documentation has been exported to ``docs/_build/html``.
+
+.. note::
+   Sphinx support various export formats. For more information, see
+   Sphinx' `documentation <https://www.sphinx-doc.org/en/master/usage/quickstart.html#running-the-build>`_.

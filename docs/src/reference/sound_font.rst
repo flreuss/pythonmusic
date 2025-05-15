@@ -4,8 +4,7 @@ Sound Font
 PythonMusic support playback via `SoundFonts <https://en.wikipedia.org/wiki/SoundFont>`_ via the 
 `tinysoundfont <https://nwhitehead.github.io/tinysoundfont-pybind/index.html>`_ library.
 
-The :obj:`SfPlayer <pythonmusic.play.SfPlayer>` :obj:`Target <pytonmusic.play.Target>` implementation can
-load SoundFont2 and SoundFont3 files.
+The :obj:`SfTarget <pythonmusic.play.SfTarget>` supports SoundFont libraries of version 2 and 3.
 
 .. code-block:: python
 

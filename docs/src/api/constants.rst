@@ -89,8 +89,7 @@ All intervals are defined as an offset of semi-tones over a root note.
 Messages
 -------------------------------------
 
-Defines midi message type constants as required my `mido <https://mido.readthedocs.io/en/stable/index.html>`_. See
-:doc:`midi <../appendix/midi>` for more information.
+Defines midi message type constants. See :doc:`midi <../appendix/midi>` for more information.
 
 .. automodule:: pythonmusic.constants.messages
    :members:

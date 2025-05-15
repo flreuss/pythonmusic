@@ -160,12 +160,12 @@ class NoteCollection(ABC):
         return self.notes.pop(index)
 
     def clear(self):
-        """Removes all notes from the phrase."""
+        """Removes all notes from the collection."""
         self.notes.clear()
 
     def min_pitch(self) -> Optional[int]:
         """
-        Returns the smallest pitch in the phrase or `None` if empty.
+        Returns the smallest pitch in the collection or `None` if empty.
         Ignores rests.
 
         Returns:
@@ -186,11 +186,11 @@ class NoteCollection(ABC):
 
     def max_pitch(self) -> Optional[int]:
         """
-        Returns the highest pitch in the phrase or `None` if empty.
+        Returns the highest pitch in the collection or `None` if empty.
         Ignores rests.
 
         Returns:
-            Optional[int]: The highest pitch in the phrase of `None` if empty
+            Optional[int]: The highest pitch in the collection of `None` if empty
         """
         if len(self.notes) == 0:
             return None
@@ -205,10 +205,10 @@ class NoteCollection(ABC):
 
     def min_duration(self) -> Optional[float]:
         """
-        Returns the smallest duration in the phrase or `None` if empty.
+        Returns the smallest duration in the collection or `None` if empty.
 
         Returns:
-            Optional[float]: The smallest duration in the phrase of `None` if empty
+            Optional[float]: The smallest duration in the collection of `None` if empty
         """
         return (
             min(map(lambda note: note.duration, self.notes))
@@ -218,10 +218,10 @@ class NoteCollection(ABC):
 
     def max_duration(self) -> Optional[float]:
         """
-        Returns the highest duration in the phrase or `None` if empty.
+        Returns the highest duration in the collection or `None` if empty.
 
         Returns:
-            Optional[float]: The highest duration in the phrase of `None` if empty
+            Optional[float]: The highest duration in the collection of `None` if empty
         """
         return (
             max(map(lambda note: note.duration, self.notes))
@@ -231,11 +231,11 @@ class NoteCollection(ABC):
 
     def min_dynamic(self) -> Optional[int]:
         """
-        Returns the smallest dynamic in the phrase or `None` if empty.
+        Returns the smallest dynamic in the collection or `None` if empty.
         Ignores rests.
 
         Returns:
-            Optional[int]: The smallest dynamic in the phrase of `None` if empty
+            Optional[int]: The smallest dynamic in the collection of `None` if empty
         """
         if len(self.notes) == 0:
             return None
@@ -252,11 +252,11 @@ class NoteCollection(ABC):
 
     def max_dynamic(self) -> Optional[int]:
         """
-        Returns the highest dynamic in the phrase or `None` if empty.
+        Returns the highest dynamic in the collection or `None` if empty.
         Ignores rests.
 
         Returns:
-            Optional[int]: The highest dynamic in the phrase of `None` if empty
+            Optional[int]: The highest dynamic in the collection of `None` if empty
         """
         if len(self.notes) == 0:
             return None

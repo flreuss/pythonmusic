@@ -27,7 +27,7 @@ class Chord(PhraseElement, NoteCollection):
         if not isinstance(other, Chord):
             return False
 
-        length = self.length()
+        length = len(self)
         if length != len(other.notes):
             return False
 
@@ -39,18 +39,6 @@ class Chord(PhraseElement, NoteCollection):
 
     def __str__(self) -> str:
         return f"Chord([{", ".join(map(lambda note: str(note), self.notes))}])"
-
-    def length(self) -> int:
-        """
-        Returns the number of notes in the chord.
-
-        .. note:: Only checks for top level entries. Embedded chord will not be
-            counted recursively.
-
-        Return:
-            int: The count of notes in the chord
-        """
-        return len(self.notes)
 
     @classmethod
     def from_lists(
@@ -176,8 +164,10 @@ class Chord(PhraseElement, NoteCollection):
         """
         Returns a list of all notes in the chord.
 
-        Unlike `self.notes`, embedded chords are recursively flattened. The
-        returned list is guaranteed to only contain notes.
+        `self.notes` returns a list of elements contained in this chord. This
+        may also include other chords. This function recursively flattens
+        all elements, and guarantees that the returned list only consists of
+        notes.
 
         Raises:
             TypeError: If an object inside the chord is not a PhraseElement

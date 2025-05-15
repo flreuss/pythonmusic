@@ -1,6 +1,6 @@
 """
-Setup a midi receiver and connect to an external midi device. Use any target to
-playback input from a i.e. midi keyboard.
+Connect to an external midi device, such as a midi keyboard or digital piano,
+and play input on a target.
 """
 
 from pythonmusic import *

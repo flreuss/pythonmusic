@@ -5,7 +5,7 @@ counter = 0
 MAX = 16
 
 
-def callback() -> bool:
+def check_counter() -> bool:
     global counter
 
     counter += 1
@@ -14,7 +14,7 @@ def callback() -> bool:
     return counter < MAX
 
 
-metronome = Metronome(120.0, 3, callback=callback)
+metronome = Metronome(120.0, 3, callback=check_counter)
 metronome.set_velocity(MP)
 
 metronome.start()

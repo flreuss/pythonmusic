@@ -14,7 +14,7 @@ PHRASE_C = Phrase([Note(1, 5.0), Note(1, 5.0)])
 class PartTests(unittest.TestCase):
     def test_init(self):
         """Tests Part initialiser"""
-        part = Part()
+        part = Part(0)
         self.assertEqual(part.title, None)
         self.assertEqual(part.instrument, ACOUSTIC_GRAND_PIANO)
         self.assertEqual(part.channel, 0)
@@ -41,7 +41,7 @@ class PartTests(unittest.TestCase):
         phrase = Phrase([Note(A4, QN), Note(C4, QN), chord])
         phrase2 = Phrase([Note(A4, QN)])
 
-        part = Part(phrases=[phrase, phrase2])
+        part = Part(0, phrases=[phrase, phrase2])
         self.assertEqual(len(list(part.__iter__())), 2)
 
         part.add_phrase(phrase)
@@ -50,24 +50,24 @@ class PartTests(unittest.TestCase):
 
     def test_len(self):
         """Tests Part __len__() dunder method"""
-        part = Part(phrases=[Phrase(), Phrase()])
+        part = Part(0, phrases=[Phrase(), Phrase()])
         self.assertEqual(part.__len__(), 2)
         part.add_phrase(Phrase())
         self.assertEqual(part.__len__(), 3)
 
     def test_length(self):
         """Tests Part length() method"""
-        part = Part(phrases=[])
+        part = Part(0, phrases=[])
         self.assertEqual(part.length(), 0)
-        part = Part(phrases=[Phrase(), Phrase(), Phrase()])
+        part = Part(0, phrases=[Phrase(), Phrase(), Phrase()])
         self.assertEqual(part.length(), 3)
 
     def test_duration(self):
         """Tests Part duration() method"""
-        part = Part(phrases=[PHRASE_A, PHRASE_B, PHRASE_C])
+        part = Part(0, phrases=[PHRASE_A, PHRASE_B, PHRASE_C])
         self.assertEqual(part.duration(), 30.0)
 
-        part = Part()
+        part = Part(0)
         part.add_phrase(PHRASE_A)  # 10
         part.add_phrase(PHRASE_B, 5.0)  # 15
         part.add_phrase(PHRASE_C)  # 25
@@ -76,7 +76,7 @@ class PartTests(unittest.TestCase):
 
     def test_add_phrase(self):
         """Tests Part add_phrase() method"""
-        part = Part()
+        part = Part(0)
         self.assertEqual(len(part.phrases_with_start_times()), 0)
 
         part.add_phrase(PHRASE_A)
@@ -93,7 +93,7 @@ class PartTests(unittest.TestCase):
 
     def test_add_phrases(self):
         """Test Part add_phrases() method"""
-        part = Part()
+        part = Part(0)
         part.add_phrases([PHRASE_A, PHRASE_B, PHRASE_C])
         self.assertEqual(len(part.phrases_with_start_times()), 3)
         self.assertEqual(
@@ -101,7 +101,7 @@ class PartTests(unittest.TestCase):
             [(0.0, PHRASE_A), (10.0, PHRASE_B), (20.0, PHRASE_C)],
         )
 
-        part = Part()
+        part = Part(0)
         part.add_phrases([PHRASE_A, PHRASE_B, PHRASE_C], [0.0, 1.0, 2.0])
         self.assertEqual(
             part.phrases_with_start_times(),
@@ -111,7 +111,7 @@ class PartTests(unittest.TestCase):
 
     def test_remove_phrase(self):
         """Tests Part remove_phrase() method"""
-        part = Part(phrases=[PHRASE_A, PHRASE_B, PHRASE_C])
+        part = Part(0, phrases=[PHRASE_A, PHRASE_B, PHRASE_C])
         part.remove_phrase(PHRASE_B)
         self.assertEqual(
             part.phrases_with_start_times(), [(0.0, PHRASE_A), (20.0, PHRASE_C)]
@@ -119,14 +119,14 @@ class PartTests(unittest.TestCase):
 
     def test_clear(self):
         """Tests Part clear() method"""
-        part = Part(phrases=[PHRASE_A, PHRASE_B, PHRASE_C])
+        part = Part(0, phrases=[PHRASE_A, PHRASE_B, PHRASE_C])
         self.assertEqual(len(part.phrases_with_start_times()), 3)
         part.clear()
         self.assertEqual(len(part.phrases_with_start_times()), 0)
 
     def test_linearise(self):
         """Tests Part linearisation"""
-        part = Part(phrases=[PHRASE_A, PHRASE_B])
+        part = Part(0, phrases=[PHRASE_A, PHRASE_B])
         self.assertEqual(
             part.linearise(),
             [

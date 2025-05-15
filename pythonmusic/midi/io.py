@@ -160,8 +160,8 @@ class MidiIn:
       with the `name` parameter. Keep in mind that the system's name of midi
       devices may differ. Use `find_outputs()` to find the name of your device.
 
-    * If `virtual` is set to `True`, this class creates a new virtual input port
-      that other midi outputs can see attach to. Specify the name of the virtual
+    * if `virtual` is set to `True`, this class creates a new virtual input port
+      that other midi outputs can attach to. Specify the name of the virtual
       output with the `name` parameter.
 
     Some midi keyboards send a zero-velocity note on instead of a note off
@@ -267,11 +267,10 @@ class MidiIn:
             midi_in.set_callback(NOTE_ON, callback)
 
         Keep in mind that only one callback per message type can be registered
-        at the same time.
-
-        You can also register a callback that triggers for all message types.
-        This callback is separate from other callbacks and not exclusive. To set
-        this callback, pass `None` as the midi event type.
+        at the same time. However, you can additionally add a callback that
+        triggers for all messages types.
+        To set this callback, pass `None` as the midi event type. It will not
+        overwrite other callbacks.
 
         .. code-block:: python
 
