@@ -9,8 +9,11 @@ import pyaudio as pa
 from numpy.typing import NDArray
 
 from pythonmusic.constants import (
+    ALL_NOTES_OFF,
     AUDIO_STREAM_DEFAULT_BUFFER_SIZE,
     AUDIO_STREAM_DEFAULT_SAMPLE_RATE,
+    CHANNEL_VOLUME,
+    SUSTAIN_PEDAL,
 )
 from pythonmusic.play.audio_stream import AudioStream
 from pythonmusic.play.target import Target
@@ -102,7 +105,9 @@ class SineOscillator(Oscillator):
     def _make_buffer_for_key(
         self, buffer_size: int, t: float, step: float, phase: float, amp: float
     ) -> NDArray[np.float32]:
-        return np.sin(phase + t + (step * np.arange(buffer_size))) * amp
+        return (
+            np.sin(phase + t + (step * np.arange(buffer_size))).astype(np.float32) * amp
+        )
 
     def sample(self, t: float, phase: float, amplitude: float) -> float:
         # SineOscillator overwrites _make_buffer_for_key, to create the sine
@@ -132,7 +137,7 @@ class SquareOscillator(SineOscillator):
                 super()._make_buffer_for_key(buffer_size, t, step, phase, 1.0) > 0.5,
                 1.0,
                 0.0,
-            )
+            ).astype(np.float32)
             * amp
         )
 
@@ -200,9 +205,17 @@ class SynthesizerTarget(AudioStream, Target):
         sample_rate: int = AUDIO_STREAM_DEFAULT_SAMPLE_RATE,
         buffer_size: int = AUDIO_STREAM_DEFAULT_BUFFER_SIZE,
     ):
+        assert attack >= 0.0
+        assert decay[0] >= 0.0
+        assert_range(decay[1], 0.0, 1.0)
+        assert release >= 0
+
         super().__init__(1, sample_rate, buffer_size, pa.paFloat32)
-        self._sample_rate = sample_rate
-        self._buffer_size = buffer_size
+
+        # note storage
+        self._event_queue: Queue[tuple[int, int, bool]] = Queue()
+        self._note_offs: list[int] = []
+        self._is_sustained: bool = False
         self._keys = list(
             map(
                 lambda key: SynthKeyItem(
@@ -212,15 +225,8 @@ class SynthesizerTarget(AudioStream, Target):
             )
         )
 
-        self._event_queue: Queue[tuple[int, int, bool]] = Queue()
-
+        # parameters
         self._oscillator = oscillator
-
-        assert attack >= 0.0
-        assert decay[0] >= 0.0
-        assert_range(decay[1], 0.0, 1.0)
-        assert release >= 0
-
         self._attack: int = seconds_to_samples(attack, sample_rate)
         self._decay: int = seconds_to_samples(decay[0], sample_rate)
         self._decay_reduction: float = decay[1]
@@ -228,6 +234,7 @@ class SynthesizerTarget(AudioStream, Target):
             seconds_to_samples(sustain, sample_rate) if sustain is not None else None
         )
         self._release: int = seconds_to_samples(release, sample_rate)
+        self._channel_volume: float = 1.0
 
     @property
     def oscillator(self) -> Oscillator:
@@ -442,9 +449,14 @@ class SynthesizerTarget(AudioStream, Target):
                     if item[2]:
                         self._note_will_start(item[0], item[1])
                     else:
-                        self._note_will_end(item[0])
+                        self._note_offs.append(item[0])
             except Empty:
                 pass
+
+            if not self._is_sustained:
+                while len(self._note_offs) > 0:
+                    key = self._note_offs.pop()
+                    self._note_will_end(key)
 
             for item in self._keys:
                 # update key item stage
@@ -454,11 +466,13 @@ class SynthesizerTarget(AudioStream, Target):
                 if item.stage == SynthStage.IDLE:
                     continue
 
+                amp_multiplier = BASE_AMP * self._channel_volume
+
                 buffer += (
                     self._oscillator._make_buffer_for_key(
                         frame_count, item.t, item.step, 0.0, item.amp
                     )
-                    * BASE_AMP
+                    * amp_multiplier
                     * self._make_envelope(frame_count, item)
                 )
 
@@ -471,11 +485,29 @@ class SynthesizerTarget(AudioStream, Target):
     @override
     def note_on(self, channel: int, key: int, velocity: int):
         """:meta private:"""
-        super().note_on(channel, key, velocity)
+        del channel
         self._event_queue.put((key, velocity, True))
 
     @override
     def note_off(self, channel: int, key: int, velocity: int):
         """:meta private:"""
-        super().note_off(channel, key, velocity)
+        del channel
         self._event_queue.put((key, velocity, False))
+
+    @override
+    def control_change(self, channel: int, control: int, value: int):
+        """:meta private:"""
+        del channel
+        if control == SUSTAIN_PEDAL:
+            self._is_sustained = value >= 64
+        elif control == ALL_NOTES_OFF:
+            for key in range(128):
+                self.note_off(0, key, 64)
+        elif control == CHANNEL_VOLUME:
+            # 0..64 controls 0.0..1.0, but 65..127 only 1.0..1.5
+            # 64 / 64 = 1
+            self._channel_volume = (
+                float(value) / 64.0
+                if value <= 64
+                else 1.0 + (0.5 * (float(value - 64) / 63.0))
+            )

@@ -6,7 +6,7 @@ from tinysoundfont import Synth as TsfSynth
 
 import pythonmusic.constants.messages as mm
 from pythonmusic.constants import PERCUSSION_CHANNEL
-from pythonmusic.constants.control_change import BANK_CHANGE
+from pythonmusic.constants.control_change import BANK_CHANGE, SUSTAIN_PEDAL
 from pythonmusic.constants.instruments import ACOUSTIC_GRAND_PIANO
 from pythonmusic.midi.io import MidiOut
 from pythonmusic.midi.message import Message
@@ -234,6 +234,9 @@ class SfTarget(Target):
         self._sfid = self._target.sfload(abspath(expanduser(sound_font)), gain)
         self._target.start()
 
+        self._is_sustained = False
+        self._note_offs: list[tuple[int, int]] = []
+
         self._target.program_change(PERCUSSION_CHANNEL, 127, True)
 
     def __del__(self):
@@ -244,31 +247,41 @@ class SfTarget(Target):
     @override
     def note_on(self, channel: int, key: int, velocity: int):
         """:meta private:"""
-        super().note_on(channel, key, velocity)
         self._target.noteon(channel, key, velocity)
+
+    def _note_off(self, channel: int, key: int):
+        self._target.noteoff(channel, key)
 
     @override
     def note_off(self, channel: int, key: int, velocity: int):
         """:meta private:"""
-        super().note_off(channel, key, velocity)
-        self._target.noteoff(channel, key)
+        del velocity
+
+        if self._is_sustained:
+            self._note_offs.append((channel, key))
+        else:
+            self._note_off(channel, key)
 
     @override
     def control_change(self, channel: int, control: int, value: int):
         """:meta private:"""
-        super().control_change(channel, control, value)
-        self._target.control_change(channel, control, value)
+        if control == SUSTAIN_PEDAL:
+            self._is_sustained = value >= 64
+            if not self._is_sustained:
+                while len(self._note_offs) > 0:
+                    channel, key = self._note_offs.pop()
+                    self._note_off(channel, key)
+        else:
+            self._target.control_change(channel, control, value)
 
     @override
     def program_change(self, channel: int, program: int):
         """:meta private:"""
-        super().program_change(channel, program)
         self._target.program_change(channel, program, channel == PERCUSSION_CHANNEL)
 
     @override
     def pitch_bend(self, channel: int, value: int):
         """:meta private:"""
-        super().pitch_bend(channel, value)
         # midi uses two bytes (7 bit available) to represent pitch bend
         # this library uses only the msb (0..128), so we need to shift
         self._target.pitchbend(channel, value << 7)
