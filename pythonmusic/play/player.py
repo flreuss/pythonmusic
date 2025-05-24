@@ -84,6 +84,7 @@ class Player:
         self,
         pe: PhraseElement,
         channel: int,
+        instrument: int,
         tempo: float = ADAGIO,
         callback: Optional[Callable[[Note, int, bool], Note]] = None,
     ):
@@ -97,16 +98,18 @@ class Player:
         Args:
             note(PhraseElement): A phrase element
             channel(int): The channel to play on
+            instrument(int): The instrument to use
             tempo(float): The tempo in BPM
             callback (Optional[Callable[[Note, int, bool], Note]]): Callback for
                 each note
         """
-        self.play_phrase(Phrase([pe]), channel, tempo, callback)
+        self.play_phrase(Phrase([pe]), channel, instrument, tempo, callback)
 
     def play_note(
         self,
         note: Note,
         channel: int,
+        instrument: int,
         tempo: float = ADAGIO,
         callback: Optional[Callable[[Note, int, bool], Note]] = None,
     ):
@@ -116,16 +119,19 @@ class Player:
         Args:
             note(Note): A note
             channel(int): The channel to play on
+            instrument(int): The instrument to use
             tempo(float): The tempo in BPM
             callback (Optional[Callable[[Note, int, bool], Note]]): Callback for
                 each note
         """
-        self.play_phrase_element(note, channel, tempo, callback)
+        self.set_instrument(channel, instrument)
+        self.play_phrase_element(note, channel, instrument, tempo, callback)
 
     def play_chord(
         self,
         chord: Chord,
         channel: int,
+        instrument: int,
         tempo: float = ADAGIO,
         callback: Optional[Callable[[Note, int, bool], Note]] = None,
     ):
@@ -135,16 +141,19 @@ class Player:
         Args:
             note(Chord): A chord
             channel(int): The channel to play on
+            instrument(int): The instrument to use
             tempo(float): The tempo in BPM
             callback (Optional[Callable[[Note, int, bool], Note]]): Callback for
                 each note
         """
-        self.play_phrase_element(chord, channel, tempo, callback)
+        self.set_instrument(channel, instrument)
+        self.play_phrase_element(chord, channel, instrument, tempo, callback)
 
     def play_phrase(
         self,
         phrase: Phrase,
         channel: int,
+        instrument: int,
         tempo: float = ADAGIO,
         callback: Optional[Callable[[Note, int, bool], Note]] = None,
     ):
@@ -154,11 +163,13 @@ class Player:
         Args:
             phrase(Phrase): A phrase
             channel(int): The channel to play on
+            instrument(int): The instrument to use
             tempo(float):  Tempo in BPM
             callback (Optional[Callable[[Note, int, bool], Note]]): Callback for
                 each note
         """
-        self.play_part(Part(None, phrases=[phrase], channel=channel), tempo, callback)
+        self.set_instrument(channel, instrument)
+        self.play_part(Part(channel, None, phrases=[phrase]), tempo, callback)
 
     def play_part(
         self,
@@ -446,9 +457,11 @@ class SynthesizerPlayer(Player):
 
     Args:
         oscillator (Oscillator): An oscillator
-        attack (Optional[float]): Attack in seconds
-        sustain (Optional[float]): Sustain in seconds
-        decay (Optional[float]): Decay in seconds
+        attack (float): Duration of attack in seconds
+        decay (tuple[float, float]): Tuple containing delay duration in seconds
+            and volume reduction in percent
+        sustain (Optional[float]): Duration of sustain in seconds
+        release (float): Duration of release in seconds
         sample_rate(int): Sample rate per second
         buffer_size(int): Sample buffer size
     """
@@ -456,13 +469,14 @@ class SynthesizerPlayer(Player):
     def __init__(
         self,
         oscillator: Oscillator,
-        attack: Optional[float] = None,
+        attack: float = 0.02,
+        decay: tuple[float, float] = (0.0, 0.0),
         sustain: Optional[float] = None,
-        decay: Optional[float] = None,
+        release: float = 0.05,
         sample_rate: int = AUDIO_STREAM_DEFAULT_SAMPLE_RATE,
         buffer_size: int = AUDIO_STREAM_DEFAULT_BUFFER_SIZE,
     ):
         target = SynthesizerTarget(
-            oscillator, attack, sustain, decay, sample_rate, buffer_size
+            oscillator, attack, decay, sustain, release, sample_rate, buffer_size
         )
         super().__init__(target)

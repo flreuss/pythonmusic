@@ -10,8 +10,9 @@ To add parts to the score, pass them to the initialiser or add them manually.
    score = Score("MyScore", [part_a], ADAGIO)
    score.add_part(part_b)
 
-.. note:: All :obj:`parts <pythonmusic.music.Part>` contained in the score start playing at the same time. To offset the start time
-    of a part, change the start time of the first phrase in the part.
+.. note:: All :obj:`parts <pythonmusic.music.Part>` contained in the score start playing at the same time. To offset the
+   start of a part, change the start time of the part's phrases. 
+   See :meth:`shift_start_time() <pythonmusic.music.Part.shift_start_time>`.
 
 You can playback scores by creating a :obj:`Player <pythonmusic.play.Player>` and passing the score to its :meth:`play_score() <pythonmusic.play.Player.play_score>` method.
 

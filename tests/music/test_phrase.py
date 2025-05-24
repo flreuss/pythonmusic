@@ -90,14 +90,6 @@ class PhraseTests(unittest.TestCase):
         phrase.add_note(Note(0, 0))
         self.assertEqual(phrase.notes.__len__(), NOTES.__len__() + 1)
 
-    def test_length(self):
-        """Tests Phrase length() method"""
-        phrase = Phrase(NOTES)
-        self.assertEqual(phrase.length(), NOTES.__len__())
-
-        phrase.add_note(Note(0, 0))
-        self.assertEqual(phrase.length(), NOTES.__len__() + 1)
-
     def test_duration(self):
         """Tests Phrase duration property"""
         notes: list[PhraseElement] = [Note(0, 1.0), Note(30, 0.5), Note(15, 56.0)]

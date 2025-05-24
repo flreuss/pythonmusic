@@ -29,7 +29,7 @@ class Phrase(NoteCollection):
         if not isinstance(other, Phrase):
             return False
 
-        length = self.length()
+        length = len(self)
         if length != len(other):
             return False
 
@@ -47,17 +47,6 @@ class Phrase(NoteCollection):
     @notes.setter
     def notes(self, new_value: list[PhraseElement]):
         self._notes = new_value
-
-    def length(self) -> int:
-        """
-        Returns the number of elements in the phrase.
-
-        Chords only count as one element.
-
-        Returns:
-            int: The number of elements in the phrase.
-        """
-        return len(self.notes)
 
     @property
     def duration(self) -> float:

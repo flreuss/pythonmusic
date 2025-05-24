@@ -145,7 +145,10 @@ class NoteCollection(ABC):
 
     def remove_note(self, index: int) -> PhraseElement:
         """
-        Removes the note at the given index and optionally returns it.
+        Removes the note at the given index and returns it.
+
+        Notes are ordered how they are added. The first note that was added to
+        a note collection is at index `0`, the second at index `1`, ...
 
         Raises:
             IndexError: If given index is out of bounds

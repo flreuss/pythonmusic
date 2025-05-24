@@ -36,10 +36,6 @@ class Score:
     def __len__(self) -> int:
         return self.parts.__len__()
 
-    def length(self) -> int:
-        """The number of of parts in the score."""
-        return len(self)
-
     def duration(self) -> float:
         """The unit length of the score."""
         return (

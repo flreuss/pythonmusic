@@ -7,6 +7,7 @@ from pythonmusic.constants.pitches import *
 from pythonmusic.music import Note, Part, Phrase, Score
 
 PART_A = Part(
+    0,
     "Part A",
     phrases=[
         Phrase(
@@ -21,6 +22,7 @@ PART_A = Part(
 )
 
 PART_B = Part(
+    1,
     "Part B",
     phrases=[
         Phrase(
@@ -34,6 +36,7 @@ PART_B = Part(
 )
 
 PART_C = Part(
+    2,
     "Part C",
     phrases=[
         Phrase(
@@ -61,18 +64,13 @@ class ScoreTests(unittest.TestCase):
         self.assertEqual(score.tempo, TEMPO)
 
     def test_iter(self):
-        parts = list(map(lambda i: Part(f"part_{i}"), range(13)))
+        parts = list(map(lambda i: Part(0, f"part_{i}"), range(13)))
         self.assertEqual(parts, list(Score(None, parts=parts).__iter__()))
 
     def test_len(self):
         """Tests Score __len__() dunder"""
         score = Score("A", [PART_A, PART_B])
         self.assertEqual(score.__len__(), 2)
-
-    def test_length(self):
-        """Tests Score length() method"""
-        score = Score("A", [PART_A, PART_B])
-        self.assertEqual(score.length(), 2)
 
     def test_duration(self):
         """Tests Score duration() method"""
@@ -124,4 +122,4 @@ class ScoreTests(unittest.TestCase):
         """Tests Score clear() method"""
         score = Score("Test Score", parts=[PART_A, PART_B, PART_C])
         score.clear()
-        self.assertEqual(score.length(), 0)
+        self.assertEqual(len(score), 0)

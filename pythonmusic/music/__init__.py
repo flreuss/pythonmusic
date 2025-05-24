@@ -17,57 +17,9 @@ __all__ = [
     "Phrase",
     "Part",
     "Score",
-    # functions
-    "sharp",
-    "flat",
-    "dotted",
     "legato",
+    "legato_l",
 ]
-
-
-def sharp(pitch: int) -> int:
-    """
-    Returns the given pitch raised by one.
-
-    .. note:: This is equivalent to ``pitch + 1``.
-
-    Args:
-        pitch (int): The base pitch
-
-    Returns:
-        int: Increased pitch
-    """
-    return pitch + 1
-
-
-def flat(pitch: int) -> int:
-    """
-    Returns the given pitch lowered by one.
-
-    Args:
-        pitch (int): The base pitch
-
-    Returns:
-        int: Decreased pitch
-
-    .. note:: This is equivalent to ``pitch - 1``."""
-    return pitch - 1
-
-
-def dotted(duration: float, dots: int = 1) -> float:
-    """
-    Calculates the length of a dotted note.
-
-    Args:
-        duration(float): The base note's duration
-        dots(int): The number of dots to apply
-
-    Returns:
-        float: The new duration
-    """
-    if dots < 1:
-        return duration
-    return duration * (2 - (0.5**dots))
 
 
 def legato_l(notes: list[Note]) -> list[Note]:

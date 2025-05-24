@@ -55,13 +55,6 @@ class PartTests(unittest.TestCase):
         part.add_phrase(Phrase())
         self.assertEqual(part.__len__(), 3)
 
-    def test_length(self):
-        """Tests Part length() method"""
-        part = Part(0, phrases=[])
-        self.assertEqual(part.length(), 0)
-        part = Part(0, phrases=[Phrase(), Phrase(), Phrase()])
-        self.assertEqual(part.length(), 3)
-
     def test_duration(self):
         """Tests Part duration() method"""
         part = Part(0, phrases=[PHRASE_A, PHRASE_B, PHRASE_C])
@@ -136,3 +129,12 @@ class PartTests(unittest.TestCase):
                 (10.0, Note(1, 10.0)),
             ],
         )
+
+    def test_shift_start_time(self):
+        part = Part(0, phrases=[PHRASE_A, PHRASE_B])
+        self.assertEqual(part.phrases_with_start_times()[0][0], 0.0)
+        self.assertEqual(part.phrases_with_start_times()[1][0], 10.0)
+
+        part.shift_start_time(2.0)
+        self.assertEqual(part.phrases_with_start_times()[0][0], 2.0)
+        self.assertEqual(part.phrases_with_start_times()[1][0], 12.0)

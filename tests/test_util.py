@@ -3,7 +3,6 @@ from math import floor
 from typing import Self
 
 import pythonmusic.constants.pitches as pitches
-from pythonmusic.music import sharp
 from pythonmusic.util import *
 
 
@@ -141,3 +140,13 @@ class UtilTests(unittest.TestCase):
         sr = 44_100
         self.assertEqual(seconds_to_samples(1.0, sr), sr)
         self.assertEqual(samples_to_seconds(seconds_to_samples(1.0, sr), sr), 1.0)
+
+    def test_sharp(self):
+        self.assertEqual(sharp(5), 6)
+
+    def test_flat(self):
+        self.assertEqual(flat(5), 4)
+
+    def test_dotted(self):
+        self.assertEqual(dotted(1.0, 1), 1.5)
+        self.assertEqual(dotted(1.0, 2), 1.75)

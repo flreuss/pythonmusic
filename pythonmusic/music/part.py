@@ -85,10 +85,6 @@ class Part:
     def __len__(self) -> int:
         return self._elements.__len__()
 
-    def length(self) -> int:
-        """Returns the number of phrases in the part."""
-        return len(self)
-
     def duration(self) -> float:
         """
         Returns the total unit length of the phrase.
@@ -192,6 +188,27 @@ class Part:
             self._elements.append((start_time, phrase))
             start_time += phrase.duration
 
+    def shift_start_time(self, delta: float):
+        """
+        Changes the start time of the phrase by shifting the start times of
+        all its phrases.
+
+        While `delta` can be negative to decrease the start offset, phrases
+        cannot start at a value below ``0``.
+
+        Args:
+            delta(float): Change in start time
+        """
+
+        done: list[Phrase] = []
+
+        for index, (start_time, phrase) in enumerate(self._elements):
+            if phrase in done:
+                continue
+            done.append(phrase)
+
+            self._elements[index] = (max(0, start_time + delta), phrase)
+
     def remove_phrase(self, phrase: Phrase):
         """
         Removes the given phrase from the part.
@@ -218,13 +235,36 @@ class Part:
 
     def linearise(self) -> list[tuple[float, Note]]:
         """
-        Returns a list of this part's notes flattened.
+        Returns a list of all notes in the part with their start times.
 
-        Use this function to retrieve all notes contained in this part.
-        Because Phrases are not necessarily contiguous, each note is also
-        prefixed by its start time.
+        A part may consist of multiple phrases that all start at different times.
+        Use this method to retrieve a list of all notes independent of their
+        phrases, with their respective start times in seconds from the beginning
+        of playback.
 
-        The returned list is not sorted and may not be in order of start times.
+        This method is useful in scenarios where you need the notes of a part,
+        but don't care about phrase boundaries.
+
+        .. code-block:: python
+
+            part = Part(0, "some part")
+
+            # add phrases as needed
+            ...
+
+            # iterate over all notes in part
+            for note_start_time, note in part.linearise()):
+                print(f"Note with pitch {note.pitch} starts at {note_start_time}")
+
+
+        .. note::
+            The returned list is not sorted, because it depends on the order in
+            which phrases where added to the part. Sort as needed:
+
+            .. code-block:: python
+
+                for note_start_time, note in sorted(part.linearise(), key=lambda tupl: tupl[0]):
+                    print(f"Note with pitch {note.pitch} starts at {note_start_time}")
 
         Returns:
             list[tuple[float, Note]]: All notes contained in the phrase with

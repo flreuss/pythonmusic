@@ -13,6 +13,8 @@ class Chord(PhraseElement, NoteCollection):
     """
     A type that groups multiple notes together.
 
+    Notes are not stored in ascending order, but how they were added.
+
     Args:
         notes (list[Note]): A list of notes to add to the chord
     """

@@ -31,6 +31,18 @@ types and functions with the module name.
    and should generally avoided, this documentation uses them for simplicity.
 
 
+Installing a SoundFont
+----------------------
+
+SoundFonts are libraries that contain a single or multiple instruments and are used by this libary's
+`SfTarget <pythonmusic.play.SfTarget>` to play back your projects. More on that in the example below.
+
+You can find SoundFonts online. For a good starting point, have a look at 
+`Default Windows MIDI SoundFont <https://musical-artifacts.com/artifacts/713>`_. 
+Once downloaded, save the `.sf2` or `.sf3` file in a location accessable by your project. For instance,
+create a directory called `sound_fonts` in your project and save it there.
+
+
 A small Melody
 --------------
 
@@ -43,12 +55,8 @@ we will need later.
 
    from pythonmusic import *
 
-   SF_PATH = "path/to/sound_font.sf2"
+   SF_PATH = "sound_fonts/FluidR3_GM2-2.sf2"
 
-
-SoundFonts can be found online. For a good starting point, have a look at 
-`Default Windows MIDI SoundFont <https://musical-artifacts.com/artifacts/713>`_. For more information on
-targets, see the :doc:`Playback <../api/play>` section.
 
 Next, we define a list of notes that make up our melody. In their basic form, notes are defined by their
 pitch and duration. Optionally, you can also set the velocity (volume) and articulation. Various
@@ -92,7 +100,7 @@ see :mod:`instruments <pythonmusic.constants.instruments>`.
 .. code-block:: python
 
     phrase = Phrase(notes)
-    part = Part("A Druid", FLUTE)
+    part = Part(0, "A Druid", FLUTE)
     part.add_phrase(phrase)
 
 Finally, we create a :obj:`score <pythonmusic.music.Score>` and add our part. Scores group multiple
@@ -108,6 +116,7 @@ In order to play back the score, we create an :obj:`SfPlayer <pythonmusic.play.S
 :obj:`Player <pythonmusic.play.Player>`. Players convert our score and Parts, Phrases, etc. into
 messages that a :obj:`Target <pythonmusic.play.Target>` can interpret and convert to sound. This
 library provides various targets for playback. You can easily implement your own targets.
+For more information on targets, see the :doc:`Playback <../api/play>` section.
 
 .. code-block:: python
 
