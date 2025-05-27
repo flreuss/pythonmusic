@@ -38,7 +38,7 @@ SoundFonts are libraries that contain a single or multiple instruments and are u
 `SfTarget <pythonmusic.play.SfTarget>` to play back your projects. More on that in the example below.
 
 You can find SoundFonts online. For a good starting point, have a look at 
-`Default Windows MIDI SoundFont <https://musical-artifacts.com/artifacts/713>`_. 
+`Fluid R2 <https://www.dropbox.com/s/xixtvox70lna6m2/FluidR3%20GM2-2.SF2?dl=1>`_. 
 Once downloaded, save the `.sf2` or `.sf3` file in a location accessable by your project. For instance,
 create a directory called `sound_fonts` in your project and save it there.
 
