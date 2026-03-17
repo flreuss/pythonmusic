@@ -44,7 +44,7 @@ python --version
 Install PythonMusic with pip.
 
 ``` bash
-pip install git+https://gitup.uni-potsdam.de/music-with-pc/pythonmusic
+pip install git+https://github.com/flreuss/pythonmusic.git
 ```
 
 For the full installation instructions and platform-dependencies, see the documentation.
